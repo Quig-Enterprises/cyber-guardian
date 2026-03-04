@@ -129,10 +129,15 @@ class TestJailbreakAttack:
     async def test_execute_uses_fresh_session_per_variant(self, attack):
         client = make_mock_client()
         await attack.execute(client)
-        # Each call should have a different session_id
+        # Each call should have a unique valid UUID session_id
+        import uuid
+        seen = set()
         for call in client.chat.call_args_list:
             _, kwargs = call
-            assert kwargs.get("session_id", "").startswith("redteam-jailbreak-")
+            sid = kwargs.get("session_id", "")
+            uuid.UUID(sid)  # raises ValueError if not a valid UUID
+            seen.add(sid)
+        assert len(seen) == len(client.chat.call_args_list)
 
 
 # ---------------------------------------------------------------------------

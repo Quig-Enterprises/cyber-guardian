@@ -81,12 +81,9 @@ class DatabaseCleaner:
             note_count = cur.rowcount
             logger.info(f"Deleted {note_count} bearing notes")
 
-            # Delete messages with redteam session prefix
-            cur.execute(
-                "DELETE FROM ai_chat_messages WHERE session_id LIKE 'redteam-%'"
-            )
-            session_count = cur.rowcount
-            logger.info(f"Deleted {session_count} messages with redteam session prefix")
+            # Session-based cleanup no longer needed — session_id is UUID type
+            # and we use proper UUIDs now. User-based cleanup above covers it.
+            session_count = 0
 
             # Optionally delete user accounts
             user_count = 0
@@ -115,14 +112,14 @@ class DatabaseCleaner:
             cur.close()
             conn.close()
 
-    def cleanup_session_data(self, session_prefix: str = "redteam-"):
-        """Remove only chat messages matching a session prefix.
+    def cleanup_session_data(self, user_ids: list[int] | None = None):
+        """Remove only chat messages for redteam test users.
 
         This is a lighter cleanup for use between individual attack runs
         without touching user accounts or notes.
 
         Args:
-            session_prefix: Session ID prefix to match (default: "redteam-")
+            user_ids: Specific user IDs to clean. If None, discovers redteam-* users.
         """
         try:
             conn = self._connect()
@@ -133,13 +130,22 @@ class DatabaseCleaner:
         cur = conn.cursor()
 
         try:
+            if user_ids is None:
+                cur.execute("SELECT user_id FROM users WHERE email LIKE 'redteam-%'")
+                user_ids = [row[0] for row in cur.fetchall()]
+
+            if not user_ids:
+                logger.info("No test users found, nothing to clean")
+                return
+
+            placeholders = ",".join(["%s"] * len(user_ids))
             cur.execute(
-                "DELETE FROM ai_chat_messages WHERE session_id LIKE %s",
-                (f"{session_prefix}%",),
+                f"DELETE FROM ai_chat_messages WHERE user_id IN ({placeholders})",
+                user_ids,
             )
             count = cur.rowcount
             conn.commit()
-            logger.info(f"Deleted {count} messages with session prefix '{session_prefix}'")
+            logger.info(f"Deleted {count} chat messages for test users")
         except Exception as e:
             logger.error(f"Session cleanup failed: {e}")
             conn.rollback()

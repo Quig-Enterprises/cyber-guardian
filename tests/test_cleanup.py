@@ -125,25 +125,27 @@ class TestDatabaseCleanerCleanup:
 
 class TestDatabaseCleanerSessionCleanup:
     @patch("redteam.cleanup.db.psycopg2.connect")
-    def test_session_cleanup_deletes_by_prefix(self, mock_connect):
+    def test_session_cleanup_deletes_by_user_ids(self, mock_connect):
         mock_conn, mock_cur = make_mock_connection()
         mock_connect.return_value = mock_conn
 
         cleaner = DatabaseCleaner(DB_CONFIG)
-        cleaner.cleanup_session_data("redteam-xss-")
+        cleaner.cleanup_session_data(user_ids=[1, 2])
 
         mock_cur.execute.assert_called_once()
         call_args = mock_cur.execute.call_args
-        assert "session_id LIKE" in str(call_args)
+        assert "user_id IN" in str(call_args)
         mock_conn.commit.assert_called_once()
 
     @patch("redteam.cleanup.db.psycopg2.connect")
-    def test_session_cleanup_default_prefix(self, mock_connect):
+    def test_session_cleanup_discovers_users_when_none(self, mock_connect):
         mock_conn, mock_cur = make_mock_connection()
         mock_connect.return_value = mock_conn
 
         cleaner = DatabaseCleaner(DB_CONFIG)
         cleaner.cleanup_session_data()
 
-        call_args = mock_cur.execute.call_args
-        assert "redteam-%" in str(call_args)
+        # First call discovers users, second deletes messages
+        assert mock_cur.execute.call_count == 2
+        first_call = mock_cur.execute.call_args_list[0]
+        assert "redteam-%" in str(first_call)
