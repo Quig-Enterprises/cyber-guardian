@@ -49,12 +49,11 @@ class TestAttackRegistry:
         assert registry.get_by_name("ai.jailbreak") is None
 
     def test_discover_returns_count(self):
-        """discover() should return integer count and not crash on empty packages."""
+        """discover() should return integer count of registered attacks."""
         registry = AttackRegistry()
-        # Discover against real (currently empty) attack packages
         count = registry.discover()
         assert isinstance(count, int)
-        assert count == 0  # No attack modules implemented yet
+        assert count == 18  # 7 AI + 7 API + 4 Web attack modules
 
     def test_register_attack_manually(self):
         """Test internal _attacks registration and retrieval."""
