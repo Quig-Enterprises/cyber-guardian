@@ -98,7 +98,7 @@ class JailbreakAttack(Attack):
 
     async def execute(self, client) -> list[AttackResult]:
         results = []
-        session_id = f"redteam-jailbreak-{uuid.uuid4().hex[:8]}"
+        session_id = str(uuid.uuid4())
 
         for variant_name, prompt in self.VARIANTS:
             resp = await client.chat(prompt, session_id=session_id)
@@ -128,7 +128,7 @@ class JailbreakAttack(Attack):
             ))
 
             # Use a fresh session for each variant to avoid cross-contamination
-            session_id = f"redteam-jailbreak-{uuid.uuid4().hex[:8]}"
+            session_id = str(uuid.uuid4())
 
         return results
 

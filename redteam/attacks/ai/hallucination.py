@@ -60,7 +60,7 @@ class HallucinationAttack(Attack):
         results = []
 
         for variant_name, prompt in self.VARIANTS:
-            session_id = f"redteam-hallucinate-{uuid.uuid4().hex[:8]}"
+            session_id = str(uuid.uuid4())
             resp = await client.chat(prompt, session_id=session_id)
 
             if resp.error:

@@ -65,7 +65,7 @@ class ManipulationAttack(Attack):
 
         for sequence_name, description, messages in self.SEQUENCES:
             # Each manipulation sequence gets its own session for context continuity
-            session_id = f"redteam-manip-{uuid.uuid4().hex[:8]}"
+            session_id = str(uuid.uuid4())
             conversation_log = []
             final_status = Status.DEFENDED
             final_evidence = ""
