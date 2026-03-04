@@ -12,10 +12,9 @@ from redteam.client import RedTeamClient
 from redteam.registry import AttackRegistry
 from redteam.scoring import aggregate_scores
 from redteam.reporters.console import ConsoleReporter
-# These will be imported as they're implemented:
-# from redteam.reporters.json_report import JsonReporter
-# from redteam.reporters.html import HtmlReporter
-# from redteam.cleanup.db import DatabaseCleaner
+from redteam.reporters.json_report import JsonReporter
+from redteam.reporters.html import HtmlReporter
+from redteam.cleanup.db import DatabaseCleaner
 
 logger = logging.getLogger("redteam")
 
@@ -179,18 +178,20 @@ async def run(args):
             if fmt == "console":
                 ConsoleReporter().print_report(summary)
             elif fmt == "json":
-                # JsonReporter().write_report(summary, args.output)
-                logger.warning("JSON reporter not yet implemented")
+                path = JsonReporter().write_report(summary, args.output)
+                logger.info(f"JSON report: {path}")
             elif fmt == "html":
-                # HtmlReporter().write_report(summary, args.output)
-                logger.warning("HTML reporter not yet implemented")
+                path = HtmlReporter().write_report(summary, args.output)
+                logger.info(f"HTML report: {path}")
 
     # Global cleanup
     if not args.no_cleanup and config.get("cleanup", {}).get("enabled", True):
         logger.info("Running global cleanup...")
-        # from redteam.cleanup.db import DatabaseCleaner
-        # cleaner = DatabaseCleaner(config["database"])
-        # await cleaner.cleanup(config["auth"]["test_users"])
+        try:
+            cleaner = DatabaseCleaner(config["database"])
+            cleaner.cleanup(delete_users=False)
+        except Exception as e:
+            logger.warning(f"Cleanup failed (non-fatal): {e}")
 
 
 def main():
