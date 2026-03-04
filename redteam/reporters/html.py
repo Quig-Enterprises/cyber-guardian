@@ -1,7 +1,9 @@
 """HTML report generator using Jinja2."""
 
+import json
 from datetime import datetime
 from pathlib import Path
+from html import escape
 from jinja2 import Template
 
 from ..base import Severity
@@ -27,6 +29,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   .finding { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 15px; margin: 10px 0; }
   .finding-header { display: flex; justify-content: space-between; align-items: center; }
   .evidence { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  .repro { margin-top: 12px; }
+  .repro summary { cursor: pointer; color: #58a6ff; font-weight: 600; font-size: 0.9em; }
+  .repro summary:hover { text-decoration: underline; }
+  .repro-section { margin-top: 8px; }
+  .repro-section h4 { color: #8b949e; font-size: 0.8em; text-transform: uppercase; margin: 8px 0 4px 0; }
+  .repro-block { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.82em; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+  .duration { color: #8b949e; font-size: 0.8em; margin-top: 6px; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
   .badge.critical { background: #f8514922; border: 1px solid #f85149; }
   .badge.high { background: #f0883e22; border: 1px solid #f0883e; }
@@ -64,7 +73,23 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </div>
   <p class="{{ finding.status }}">{{ finding.status | upper }}</p>
   {% if finding.details %}<p>{{ finding.details }}</p>{% endif %}
-  {% if finding.evidence %}<div class="evidence">{{ finding.evidence[:500] }}</div>{% endif %}
+  {% if finding.evidence %}<div class="evidence">{{ finding.evidence }}</div>{% endif %}
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      {% if finding.request %}
+      <h4>Request</h4>
+      <div class="repro-block">{{ finding.request_formatted }}</div>
+      {% endif %}
+      {% if finding.response %}
+      <h4>Response</h4>
+      <div class="repro-block">{{ finding.response_formatted }}</div>
+      {% endif %}
+      {% if finding.duration_ms %}
+      <p class="duration">Duration: {{ "%.1f"|format(finding.duration_ms) }}ms</p>
+      {% endif %}
+    </div>
+  </details>
 </div>
 {% endif %}
 {% endfor %}
@@ -88,9 +113,17 @@ class HtmlReporter:
                     "variant": r.variant,
                     "status": r.status.value,
                     "severity": r.severity.value,
-                    "evidence": r.evidence,
-                    "details": r.details,
+                    "evidence": escape(r.evidence),
+                    "details": escape(r.details),
                     "duration_ms": r.duration_ms,
+                    "request": r.request,
+                    "response": r.response,
+                    "request_formatted": escape(
+                        json.dumps(r.request, indent=2, default=str)
+                    ) if r.request else "",
+                    "response_formatted": escape(
+                        json.dumps(r.response, indent=2, default=str)
+                    ) if r.response else "",
                 })
 
         html = template.render(

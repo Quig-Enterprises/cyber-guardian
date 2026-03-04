@@ -35,6 +35,7 @@ class JsonReporter:
                     "evidence": r.evidence,
                     "details": r.details,
                     "request": r.request,
+                    "response": r.response,
                     "duration_ms": r.duration_ms,
                 })
 

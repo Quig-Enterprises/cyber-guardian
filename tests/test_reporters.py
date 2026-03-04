@@ -322,8 +322,8 @@ class TestHtmlReporter:
         assert filename.startswith("redteam-report-")
         assert filename.endswith(".html")
 
-    def test_evidence_truncated_in_html(self, tmp_path):
-        """Long evidence should be truncated to 500 chars in HTML."""
+    def test_full_evidence_in_html(self, tmp_path):
+        """Full evidence should be included in HTML for reproduction."""
         long_evidence = "A" * 1000
         results = [_make_result(evidence=long_evidence)]
         scores = [_make_score("Long Evidence", "ai", vulnerable=1, defended=0,
@@ -332,8 +332,8 @@ class TestHtmlReporter:
         path = self.reporter.write_report(summary, str(tmp_path))
         with open(path) as f:
             content = f.read()
-        # Evidence in template is truncated to 500 chars
-        assert "A" * 501 not in content
+        # Full evidence is included for reproduction
+        assert "A" * 1000 in content
 
     def test_empty_summary(self, tmp_path):
         summary = aggregate_scores([])
