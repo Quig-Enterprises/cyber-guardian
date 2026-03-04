@@ -340,7 +340,7 @@ class TestAIAttackRegistry:
         registry = AttackRegistry()
         registry.discover()
         ai_attacks = registry.get_by_category("ai")
-        assert len(ai_attacks) == 7, f"Expected 7 AI attacks, found {len(ai_attacks)}"
+        assert len(ai_attacks) == 14, f"Expected 14 AI attacks, found {len(ai_attacks)}"
 
     def test_registry_ai_attacks_have_correct_names(self):
         from redteam.registry import AttackRegistry
@@ -351,6 +351,8 @@ class TestAIAttackRegistry:
         expected = sorted([
             "ai.jailbreak", "ai.prompt_injection", "ai.extraction",
             "ai.off_topic", "ai.data_leakage", "ai.hallucination",
-            "ai.manipulation",
+            "ai.manipulation", "ai.crescendo", "ai.encoding",
+            "ai.persona", "ai.rag_injection", "ai.context_manipulation",
+            "ai.boundary", "ai.output_format",
         ])
         assert names == expected
