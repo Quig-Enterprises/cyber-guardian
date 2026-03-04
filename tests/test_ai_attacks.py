@@ -356,3 +356,55 @@ class TestAIAttackRegistry:
             "ai.boundary", "ai.output_format",
         ])
         assert names == expected
+
+
+# ---------------------------------------------------------------------------
+# AI-Powered attack registry tests
+# ---------------------------------------------------------------------------
+
+class TestAIPoweredAttackRegistry:
+    def test_registry_discovers_ai_powered_attacks(self):
+        from redteam.registry import AttackRegistry
+        registry = AttackRegistry()
+        registry.discover()
+        ai_powered = registry.get_by_category("ai_powered")
+        assert len(ai_powered) == 2, f"Expected 2 AI-powered attacks, found {len(ai_powered)}"
+
+    def test_ai_powered_attack_names(self):
+        from redteam.registry import AttackRegistry
+        registry = AttackRegistry()
+        registry.discover()
+        ai_powered = registry.get_by_category("ai_powered")
+        names = sorted(a.name for a in ai_powered)
+        expected = sorted([
+            "ai_powered.adaptive_jailbreak",
+            "ai_powered.creative_extraction",
+        ])
+        assert names == expected
+
+    def test_ai_powered_attacks_have_correct_category(self):
+        from redteam.registry import AttackRegistry
+        registry = AttackRegistry()
+        registry.discover()
+        ai_powered = registry.get_by_category("ai_powered")
+        assert all(a.category == "ai" for a in ai_powered)
+
+    def test_ai_powered_attacks_are_critical_severity(self):
+        from redteam.registry import AttackRegistry
+        registry = AttackRegistry()
+        registry.discover()
+        ai_powered = registry.get_by_category("ai_powered")
+        assert all(a.severity == Severity.CRITICAL for a in ai_powered)
+
+
+# ---------------------------------------------------------------------------
+# Total registry count test
+# ---------------------------------------------------------------------------
+
+class TestTotalRegistryCount:
+    def test_total_attack_count(self):
+        from redteam.registry import AttackRegistry
+        registry = AttackRegistry()
+        count = registry.discover()
+        # 14 ai + 2 ai_powered + 11 api + 4 web = 31
+        assert count >= 29, f"Expected at least 29 attacks, found {count}"

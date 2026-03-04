@@ -7,6 +7,9 @@ from redteam.attacks.api.injection import InjectionAttack
 from redteam.attacks.api.input_validation import InputValidationAttack
 from redteam.attacks.api.rate_limiting import RateLimitingAttack
 from redteam.attacks.api.error_leakage import ErrorLeakageAttack
+from redteam.attacks.api.ssrf import SsrfAttack
+from redteam.attacks.api.concurrent_sessions import ConcurrentSessionsAttack
+from redteam.attacks.api.file_upload import FileUploadAttack
 
 __all__ = [
     "AuthBypassAttack",
@@ -16,4 +19,7 @@ __all__ = [
     "InputValidationAttack",
     "RateLimitingAttack",
     "ErrorLeakageAttack",
+    "SsrfAttack",
+    "ConcurrentSessionsAttack",
+    "FileUploadAttack",
 ]

@@ -28,9 +28,10 @@ reporting:
   output_dir: "reports/"
 
 ai_attacker:
-  enabled: false
-  model: "claude-sonnet-4-20250514"
-  api_key_env: "ANTHROPIC_API_KEY"
+  enabled: true
+  attacker_model: "qwen2.5:32b"
+  judge_model: "llama3.2:latest"
+  ollama_url: "http://localhost:11434/api/chat"
 
 database:
   host: "localhost"

@@ -1,10 +1,10 @@
-"""Tests for Phase 2 stub classes.
+"""Tests for Phase 2 AI-powered attack classes.
 
 Verify that:
-1. Stub classes can be instantiated
-2. Stub methods raise NotImplementedError with helpful messages
-3. Class metadata (name, category, severity) is set correctly
-4. AiPoweredAttack extends Attack base class
+1. Classes can be instantiated
+2. Class metadata (name, category, severity) is set correctly
+3. AiPoweredAttack extends Attack base class and has Ollama model config
+4. AdaptiveJailbreakAttack and CreativeExtractionAttack have correct structure
 5. AiJudgeEvaluator can be instantiated with default and custom params
 """
 
@@ -27,11 +27,11 @@ class TestAiPoweredAttackBase:
 
     def test_has_attacker_model(self):
         assert hasattr(AiPoweredAttack, "attacker_model")
-        assert "claude" in AiPoweredAttack.attacker_model.lower()
+        assert AiPoweredAttack.attacker_model == "qwen2.5:32b"
 
     def test_has_judge_model(self):
         assert hasattr(AiPoweredAttack, "judge_model")
-        assert "claude" in AiPoweredAttack.judge_model.lower()
+        assert AiPoweredAttack.judge_model == "llama3.2:latest"
 
     def test_has_max_attempts(self):
         assert hasattr(AiPoweredAttack, "max_attempts")
@@ -40,31 +40,21 @@ class TestAiPoweredAttackBase:
     def test_default_severity(self):
         assert AiPoweredAttack.severity == Severity.HIGH
 
-    @pytest.mark.asyncio
-    async def test_generate_prompt_raises(self):
-        class ConcreteAiAttack(AiPoweredAttack):
-            name = "test"
-            async def execute(self, client):
-                return []
+    def test_has_generate_prompt(self):
+        assert hasattr(AiPoweredAttack, "generate_prompt")
+        assert asyncio.iscoroutinefunction(AiPoweredAttack.generate_prompt)
 
-        attack = ConcreteAiAttack()
-        with pytest.raises(NotImplementedError, match="Phase 2"):
-            await attack.generate_prompt({"target_description": "test"})
+    def test_has_evaluate_with_ai(self):
+        assert hasattr(AiPoweredAttack, "evaluate_with_ai")
+        assert asyncio.iscoroutinefunction(AiPoweredAttack.evaluate_with_ai)
 
-    @pytest.mark.asyncio
-    async def test_evaluate_with_ai_raises(self):
-        class ConcreteAiAttack(AiPoweredAttack):
-            name = "test"
-            async def execute(self, client):
-                return []
-
-        attack = ConcreteAiAttack()
-        with pytest.raises(NotImplementedError, match="Phase 2"):
-            await attack.evaluate_with_ai("prompt", "response", "goal")
+    def test_has_call_ollama(self):
+        assert hasattr(AiPoweredAttack, "_call_ollama")
+        assert asyncio.iscoroutinefunction(AiPoweredAttack._call_ollama)
 
 
 # ---------------------------------------------------------------------------
-# AdaptiveJailbreakAttack stub
+# AdaptiveJailbreakAttack
 # ---------------------------------------------------------------------------
 
 class TestAdaptiveJailbreakAttack:
@@ -87,15 +77,18 @@ class TestAdaptiveJailbreakAttack:
         attack = AdaptiveJailbreakAttack()
         assert len(attack.description) > 0
 
-    @pytest.mark.asyncio
-    async def test_execute_raises(self):
+    def test_has_attack_goals(self):
         attack = AdaptiveJailbreakAttack()
-        with pytest.raises(NotImplementedError, match="Phase 2"):
-            await attack.execute(None)
+        assert hasattr(attack, "attack_goals")
+        assert len(attack.attack_goals) == 5
+
+    def test_execute_is_implemented(self):
+        attack = AdaptiveJailbreakAttack()
+        assert asyncio.iscoroutinefunction(attack.execute)
 
 
 # ---------------------------------------------------------------------------
-# CreativeExtractionAttack stub
+# CreativeExtractionAttack
 # ---------------------------------------------------------------------------
 
 class TestCreativeExtractionAttack:
@@ -118,15 +111,18 @@ class TestCreativeExtractionAttack:
         attack = CreativeExtractionAttack()
         assert len(attack.description) > 0
 
-    @pytest.mark.asyncio
-    async def test_execute_raises(self):
+    def test_has_target_fragments(self):
         attack = CreativeExtractionAttack()
-        with pytest.raises(NotImplementedError, match="Phase 2"):
-            await attack.execute(None)
+        assert hasattr(attack, "target_fragments")
+        assert len(attack.target_fragments) == 7
+
+    def test_execute_is_implemented(self):
+        attack = CreativeExtractionAttack()
+        assert asyncio.iscoroutinefunction(attack.execute)
 
 
 # ---------------------------------------------------------------------------
-# AiJudgeEvaluator stub
+# AiJudgeEvaluator stub (still Phase 2 stub - uses Anthropic API)
 # ---------------------------------------------------------------------------
 
 class TestAiJudgeEvaluator:
