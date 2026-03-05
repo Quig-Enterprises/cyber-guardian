@@ -185,7 +185,7 @@ def incidents_dfars(ctx):
         console.print("  [green]No overdue reports.[/green]")
 
 
-# --- Alert and report stubs ---
+# --- Alert commands ---
 
 @main.group()
 def alerts():
@@ -193,10 +193,66 @@ def alerts():
     pass
 
 
+# --- Report commands ---
+
 @main.group()
 def report():
     """Generate reports."""
     pass
+
+
+@report.command(name="posture")
+@click.pass_context
+def report_posture(ctx):
+    """Show overall security posture score."""
+    from blueteam.reports.posture import calculate_posture
+    posture = calculate_posture(ctx.obj["config"])
+
+    def score_color(score):
+        if score >= 80:
+            return "green"
+        elif score >= 50:
+            return "yellow"
+        return "red"
+
+    console.print("\n[bold]Security Posture Score[/bold]")
+    c = score_color(posture["overall"])
+    console.print(f"  Overall: [{c} bold]{posture['overall']}/100[/{c} bold]")
+    for key in ("compliance", "redteam", "incident", "monitoring"):
+        c = score_color(posture[key])
+        label = key.replace("_", " ").title()
+        console.print(f"  {label}: [{c}]{posture[key]}/100[/{c}]")
+    console.print(f"\n  Controls: {posture['controls_implemented']}/{posture['controls_total']} implemented")
+
+
+@report.command(name="assessor")
+@click.option("--output", "-o", default="/tmp/cmmc-assessor-report.md")
+@click.pass_context
+def report_assessor(ctx, output):
+    """Generate CMMC assessor-ready compliance report."""
+    from blueteam.reports.assessor import generate_assessor_report
+    path = generate_assessor_report(ctx.obj["config"], output)
+    console.print(f"[green]Assessor report written to {path}[/green]")
+
+
+# --- Red team integration ---
+
+@main.group()
+def redteam():
+    """Red team integration commands."""
+    pass
+
+
+@redteam.command(name="import")
+@click.argument("report_path")
+@click.pass_context
+def redteam_import(ctx, report_path):
+    """Import a red team report for posture scoring."""
+    from blueteam.reports.redteam_import import import_report
+    result = import_report(ctx.obj["config"], report_path)
+    console.print(f"[green]Imported: score={result['redteam_score']}/100[/green]")
+    console.print(f"  Defended: {result['defended']}/{result['total']}")
+    console.print(f"  Vulnerable: {result['vulnerable']}/{result['total']}")
 
 
 if __name__ == "__main__":
