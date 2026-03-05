@@ -25,6 +25,15 @@ def status(ctx):
     console.print("Run 'blueteam monitor' to start real-time monitoring.")
 
 
+@main.command()
+@click.pass_context
+def monitor(ctx):
+    """Start real-time security monitoring daemon."""
+    from blueteam.monitor import MonitorDaemon
+    daemon = MonitorDaemon(ctx.obj["config"])
+    daemon.start()
+
+
 @main.group()
 def compliance():
     """Compliance tracking commands."""
