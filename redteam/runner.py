@@ -84,6 +84,13 @@ Examples:
         help="Config file path (default: config.yaml)",
     )
     parser.add_argument(
+        "--mode",
+        choices=["full", "aws"],
+        default=None,
+        help="Execution mode: 'full' (all attacks) or 'aws' (EC2-safe, restricted). "
+             "Overrides execution.mode in config.yaml.",
+    )
+    parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="Enable verbose (DEBUG) logging",
@@ -102,6 +109,12 @@ async def run(args):
 
     # Load config
     config = load_config(args.config)
+
+    # CLI --mode overrides execution.mode in config
+    if args.mode is not None:
+        config.setdefault("execution", {})["mode"] = args.mode
+    exec_mode = config.get("execution", {}).get("mode", "full")
+    logger.info(f"Execution mode: {exec_mode}")
 
     # Discover attacks
     registry = AttackRegistry()
@@ -141,6 +154,15 @@ async def run(args):
         logger.warning("No attacks matched the filter")
         return
 
+    # In AWS mode, drop attacks that are in the skip list
+    skip_attacks = config.get("execution", {}).get("aws", {}).get("skip_attacks", [])
+    if skip_attacks:
+        before = len(attacks)
+        attacks = [a for a in attacks if a.name not in skip_attacks]
+        skipped = before - len(attacks)
+        if skipped:
+            logger.info(f"AWS mode: skipping {skipped} attack(s): {skip_attacks}")
+
     # Authenticate
     test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
     async with RedTeamClient(config["target"]["base_url"]) as client:
@@ -154,6 +176,7 @@ async def run(args):
         scores = []
         for attack in attacks:
             logger.info(f"Running: {attack.name} ({attack.category})")
+            attack._config = config  # make execution config available inside attack
             attack_start = time.time()
             try:
                 results = await attack.execute(client)

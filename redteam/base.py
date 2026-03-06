@@ -73,6 +73,25 @@ class Attack(ABC):
     severity: Severity = Severity.INFO
     description: str = ""
 
+    # Set by runner before execute() is called.
+    _config: dict = {}
+
+    def _is_aws_mode(self) -> bool:
+        """Return True when running in AWS-safe mode."""
+        return self._config.get("execution", {}).get("mode", "full") == "aws"
+
+    def _get_throttle(self, attack_key: str) -> dict:
+        """Return throttle overrides for this attack in AWS mode, or {} in full mode."""
+        if not self._is_aws_mode():
+            return {}
+        return self._config.get("execution", {}).get("aws", {}).get("throttle", {}).get(attack_key, {})
+
+    def _get_blocked_ips(self) -> list:
+        """Return IPs that must never appear in attack payloads (AWS mode only)."""
+        if not self._is_aws_mode():
+            return []
+        return self._config.get("execution", {}).get("aws", {}).get("blocked_ips", [])
+
     @abstractmethod
     async def execute(self, client) -> list[AttackResult]:
         """Run all variants of this attack. Returns a list of results."""

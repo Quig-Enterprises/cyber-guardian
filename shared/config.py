@@ -96,6 +96,39 @@ class Config:
         """Database configuration"""
         return self._config.get("database", {})
 
+    @property
+    def execution(self) -> Dict[str, Any]:
+        """Execution mode configuration"""
+        return self._config.get("execution", {})
+
+    @property
+    def execution_mode(self) -> str:
+        """Current execution mode: 'full' or 'aws'"""
+        return self.execution.get("mode", "full")
+
+    @property
+    def is_aws_mode(self) -> bool:
+        """Whether running in AWS-safe mode"""
+        return self.execution_mode == "aws"
+
+    def get_skip_attacks(self) -> list:
+        """Get list of attack keys to skip in current mode"""
+        if not self.is_aws_mode:
+            return []
+        return self.execution.get("aws", {}).get("skip_attacks", [])
+
+    def get_throttle(self, attack_key: str) -> dict:
+        """Get throttle overrides for a specific attack in current mode"""
+        if not self.is_aws_mode:
+            return {}
+        return self.execution.get("aws", {}).get("throttle", {}).get(attack_key, {})
+
+    def get_blocked_ips(self) -> list:
+        """Get list of IPs that must not appear in attack payloads"""
+        if not self.is_aws_mode:
+            return []
+        return self.execution.get("aws", {}).get("blocked_ips", [])
+
 
 def _deep_merge(base: dict, override: dict) -> dict:
     """Deep-merge override into base, returning a new dict."""
@@ -137,3 +170,34 @@ def load_config(config_path: str | Path = "config.yaml") -> dict:
         result = _deep_merge(result, local_cfg._config)
 
     return result
+
+
+def get_execution_mode(config: dict) -> str:
+    """Get execution mode from a config dict."""
+    return config.get("execution", {}).get("mode", "full")
+
+
+def is_aws_mode(config: dict) -> bool:
+    """Check if config is in AWS-safe mode."""
+    return get_execution_mode(config) == "aws"
+
+
+def get_skip_attacks(config: dict) -> list:
+    """Get list of attack keys to skip in current mode."""
+    if not is_aws_mode(config):
+        return []
+    return config.get("execution", {}).get("aws", {}).get("skip_attacks", [])
+
+
+def get_throttle(config: dict, attack_key: str) -> dict:
+    """Get throttle overrides for a specific attack."""
+    if not is_aws_mode(config):
+        return {}
+    return config.get("execution", {}).get("aws", {}).get("throttle", {}).get(attack_key, {})
+
+
+def get_blocked_ips(config: dict) -> list:
+    """Get list of IPs blocked in current mode."""
+    if not is_aws_mode(config):
+        return []
+    return config.get("execution", {}).get("aws", {}).get("blocked_ips", [])

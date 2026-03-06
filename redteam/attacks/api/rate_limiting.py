@@ -17,9 +17,13 @@ class RateLimitingAttack(Attack):
         results = []
         test_path = "/api/ai_chat.php"
 
-        # 1. Rapid-fire: 50 GET requests in quick succession
+        # Pull throttle overrides for this attack (non-empty only in AWS mode)
+        throttle = self._get_throttle("api.rate_limiting")
+
+        # 1. Rapid-fire GET requests (default 50; reduced to 10 in AWS mode)
         session_id = f"redteam-ratelimit-{uuid.uuid4().hex[:8]}"
-        num_requests = 50
+        num_requests = throttle.get("serial_requests", 50)
+        delay_ms = throttle.get("delay_ms", 0)
         start = time.monotonic()
         statuses = []
 
@@ -29,6 +33,8 @@ class RateLimitingAttack(Attack):
                 params={"session_id": f"{session_id}-{i}"},
             )
             statuses.append(status_code)
+            if delay_ms:
+                await asyncio.sleep(delay_ms / 1000.0)
 
         elapsed = time.monotonic() - start
         rate_limited = any(s == 429 for s in statuses)
@@ -45,7 +51,7 @@ class RateLimitingAttack(Attack):
             rl_status = Status.PARTIAL
             detail = f"Mixed responses (no 429). Statuses: {set(statuses)}."
         results.append(self._make_result(
-            variant="rapid_fire_50_gets",
+            variant=f"rapid_fire_{num_requests}_gets",
             status=rl_status,
             evidence=(
                 f"Sent {num_requests} requests in {elapsed:.1f}s. "
@@ -57,9 +63,9 @@ class RateLimitingAttack(Attack):
             response={"status_distribution": {str(s): statuses.count(s) for s in set(statuses)}},
         ))
 
-        # 2. Concurrent SSE: 10 simultaneous chat POST requests
+        # 2. Concurrent SSE streams (default 10; reduced to 2 in AWS mode)
         # Opening many concurrent SSE streams can exhaust server resources.
-        num_concurrent = 10
+        num_concurrent = throttle.get("concurrent_streams", 10)
 
         async def _send_chat(idx: int) -> tuple[int, float]:
             """Send a chat request and return (status_code, duration_ms)."""
@@ -109,7 +115,7 @@ class RateLimitingAttack(Attack):
             rl_status = Status.PARTIAL
             detail = f"Mixed responses under concurrent load. Statuses: {set(concurrent_statuses)}."
         results.append(self._make_result(
-            variant="concurrent_sse_10_streams",
+            variant=f"concurrent_sse_{num_concurrent}_streams",
             status=rl_status,
             evidence=(
                 f"Sent {num_concurrent} concurrent requests in {elapsed:.1f}s. "
@@ -124,8 +130,8 @@ class RateLimitingAttack(Attack):
             },
         ))
 
-        # 3. Note spam: create 100 notes rapidly
-        num_notes = 100
+        # 3. Note spam (default 100; reduced to 10 in AWS mode)
+        num_notes = throttle.get("note_count", 100)
         device_id = f"redteam-ratelimit-device-{uuid.uuid4().hex[:8]}"
         start = time.monotonic()
         note_statuses = []
@@ -169,7 +175,7 @@ class RateLimitingAttack(Attack):
             rl_status = Status.PARTIAL
             detail = f"Mixed responses during note spam. Statuses: {set(note_statuses)}."
         results.append(self._make_result(
-            variant="note_spam_100",
+            variant=f"note_spam_{num_notes}",
             status=rl_status,
             evidence=(
                 f"Created {note_statuses.count(200)} of {num_notes} notes in {elapsed:.1f}s. "

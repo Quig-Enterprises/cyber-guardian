@@ -45,6 +45,30 @@ redteam:
     judge_model: "llama3.2:latest"
     ollama_url: "http://localhost:11434/api/chat"
 
+# Execution mode: "full" (on-prem, all attacks) or "aws" (EC2-safe, restricted)
+execution:
+  mode: "full"
+
+  aws:
+    # Attacks completely skipped in aws mode
+    skip_attacks:
+      - "api.ssrf"
+      - "api.dos_resilience"
+
+    # Reduced parameters for throttled attacks
+    throttle:
+      api.rate_limiting:
+        serial_requests: 10
+        concurrent_streams: 2
+        note_count: 10
+        delay_ms: 200
+
+    # IPs/CIDRs that must never appear in attack payloads
+    blocked_ips:
+      - "169.254.169.254"
+      - "169.254.170.2"
+      - "fd00:ec2::254"
+
 blueteam:
   enabled: true
   collectors:

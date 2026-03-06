@@ -19,6 +19,18 @@ class DosResilienceAttack(Attack):
     description = "DoS resilience: resource exhaustion and input size limit testing against the AI chat endpoint"
 
     async def execute(self, client) -> list[AttackResult]:
+        # In AWS mode this entire attack is skipped to avoid throttling EC2 resources.
+        if self._is_aws_mode():
+            return [self._make_result(
+                variant="skipped_aws_mode",
+                status=Status.SKIPPED,
+                evidence="Attack skipped: execution mode is 'aws'.",
+                details=(
+                    "DoS resilience tests are disabled in AWS mode to prevent resource "
+                    "exhaustion on EC2 instances and avoid triggering AWS abuse detection."
+                ),
+            )]
+
         results = []
 
         results.append(await self._test_long_prompt(client))
