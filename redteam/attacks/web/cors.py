@@ -25,6 +25,7 @@ class CORSAttack(Attack):
     category = "web"
     severity = Severity.HIGH
     description = "CORS misconfiguration and credential exposure tests"
+    target_types = {"generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         """Run all CORS variants."""

@@ -5,8 +5,11 @@ import sys
 import logging
 from pathlib import Path
 
+import os
+
 from shared import load_config
 from redteam.client import RedTeamClient
+from redteam.wp_client import WordPressClient
 from redteam.registry import AttackRegistry
 from redteam.scoring import aggregate_scores
 from redteam.reporters.console import ConsoleReporter
@@ -81,28 +84,64 @@ async def execute_attacks(args, config):
         logger.warning("No attacks found matching criteria")
         return []
 
-    # Execute attacks
+    # Determine target type
     target = config.get("target", {})
+    target_type = getattr(args, "target", None) or target.get("type", "eqmon")
     base_url = target.get("base_url", "")
 
-    async with RedTeamClient(base_url) as client:
-        # Authenticate if test user configured
-        auth = config.get("redteam", {}).get("auth", {})
-        test_users = auth.get("test_users", {})
+    # Handle --plugin flag
+    if hasattr(args, "plugin") and args.plugin:
+        target_type = "wordpress"
+        wp_cfg = config.setdefault("target", {}).setdefault("wordpress", {})
+        existing = wp_cfg.get("plugins", [])
+        for slug in args.plugin:
+            if slug not in existing:
+                existing.append(slug)
+        wp_cfg["plugins"] = existing
 
-        if test_users:
-            # Use first available test user
-            user_config = next(iter(test_users.values()))
-            username = user_config.get("username")
-            password = user_config.get("password")
+    # Filter attacks by target type
+    attacks = [
+        a for a in attacks
+        if target_type in a.target_types or "generic" in a.target_types
+    ]
+    if not attacks:
+        logger.warning(f"No attacks compatible with target type '{target_type}'")
+        return []
 
-            if username and password:
-                await client.login(username, password)
+    # Create appropriate client
+    if target_type == "wordpress":
+        wp_cfg = target.get("wordpress", {})
+        client = WordPressClient(base_url, wp_config=wp_cfg)
+    else:
+        client = RedTeamClient(base_url)
+
+    async with client:
+        # Authenticate based on target type
+        if target_type == "wordpress":
+            auth = config.get("redteam", {}).get("auth", {})
+            test_users = auth.get("test_users", {})
+            wp_user = test_users.get("wp_admin", {})
+            username = os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
+            password = os.environ.get("WP_ADMIN_PASS", wp_user.get("password", ""))
+            if username and password and not username.startswith("${"):
+                await client.wp_login(username, password)
+            else:
+                logger.info("No WordPress credentials — running unauthenticated tests only")
+        else:
+            auth = config.get("redteam", {}).get("auth", {})
+            test_users = auth.get("test_users", {})
+            if test_users:
+                user_config = next(iter(test_users.values()))
+                username = user_config.get("username")
+                password = user_config.get("password")
+                if username and password:
+                    await client.login(username, password)
 
         # Run all attacks
         all_results = []
         for attack in attacks:
             logger.info(f"Running attack: {attack.name}")
+            attack._config = config
             results = await attack.execute(client)
             all_results.extend(results)
 

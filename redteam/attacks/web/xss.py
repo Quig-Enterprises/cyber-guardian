@@ -23,6 +23,7 @@ class XSSAttack(Attack):
     category = "web"
     severity = Severity.HIGH
     description = "Stored/reflected XSS via chat messages and bearing notes"
+    target_types = {"eqmon", "wordpress", "generic"}
 
     # Each variant: (variant_name, payload, description, injection_target)
     VARIANTS = [

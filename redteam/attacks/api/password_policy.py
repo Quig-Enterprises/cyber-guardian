@@ -15,6 +15,7 @@ class PasswordPolicyAttack(Attack):
         "NIST 3.5.7/3.5.8 — Verify password complexity, minimum length, "
         "and common password rejection policies"
     )
+    target_types = {"eqmon", "wordpress"}
 
     # Test passwords that SHOULD be rejected by a compliant system
     WEAK_PASSWORDS = [

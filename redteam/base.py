@@ -72,6 +72,7 @@ class Attack(ABC):
     category: str = "unknown"
     severity: Severity = Severity.INFO
     description: str = ""
+    target_types: set[str] = {"eqmon"}
 
     # Set by runner before execute() is called.
     _config: dict = {}

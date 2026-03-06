@@ -1,6 +1,15 @@
 target:
+  type: "eqmon"  # "eqmon" or "wordpress"
   base_url: "http://localhost:8081"
   api_path: "/api"
+  wordpress:
+    login_path: "/wp-login.php"
+    rest_prefix: "/wp-json"
+    xmlrpc_path: "/xmlrpc.php"
+    admin_path: "/wp-admin"
+    cron_path: "/wp-cron.php"
+    content_path: "/wp-content"
+    plugins: []
 
 auth:
   test_users:
@@ -12,6 +21,14 @@ auth:
       username: "redteam-viewer@test.com"
       password: "RedTeamV!ewer2026!"
       role: "viewer"
+    wp_admin:
+      username: "${WP_ADMIN_USER}"
+      password: "${WP_ADMIN_PASS}"
+      role: "administrator"
+    wp_subscriber:
+      username: "${WP_SUBSCRIBER_USER}"
+      password: "${WP_SUBSCRIBER_PASS}"
+      role: "subscriber"
 
 test_data:
   session_id_prefix: "redteam-"
@@ -32,6 +49,26 @@ ai_attacker:
   attacker_model: "qwen2.5:32b"
   judge_model: "llama3.2:latest"
   ollama_url: "http://localhost:11434/api/chat"
+
+execution:
+  mode: "full"
+  aws:
+    skip_attacks:
+      - "api.ssrf"
+      - "api.dos_resilience"
+      - "wordpress.xmlrpc_abuse"
+      - "wordpress.brute_force"
+      - "wordpress.cron_abuse"
+    throttle:
+      wordpress.user_enumeration:
+        max_author_ids: 5
+        delay_ms: 200
+      wordpress.plugin_enumeration:
+        max_plugins: 50
+        delay_ms: 100
+      wordpress.plugin_audit:
+        max_ajax_probes: 20
+        delay_ms: 200
 
 database:
   host: "localhost"

@@ -12,6 +12,7 @@ class RateLimitingAttack(Attack):
     category = "api"
     severity = Severity.MEDIUM
     description = "Rate limiting and flood protection tests"
+    target_types = {"eqmon", "wordpress", "generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         results = []

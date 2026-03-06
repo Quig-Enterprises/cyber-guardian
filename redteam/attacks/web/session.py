@@ -25,6 +25,7 @@ class SessionAttack(Attack):
     category = "web"
     severity = Severity.MEDIUM
     description = "Session cookie security flag verification"
+    target_types = {"generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         """Login and examine the Set-Cookie header for security flags."""

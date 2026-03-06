@@ -17,6 +17,7 @@ class DosResilienceAttack(Attack):
     category = "api"
     severity = Severity.MEDIUM
     description = "DoS resilience: resource exhaustion and input size limit testing against the AI chat endpoint"
+    target_types = {"eqmon", "wordpress", "generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         # In AWS mode this entire attack is skipped to avoid throttling EC2 resources.

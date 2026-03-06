@@ -10,6 +10,7 @@ class ErrorLeakageAttack(Attack):
     category = "api"
     severity = Severity.MEDIUM
     description = "Information disclosure via error messages and stack traces"
+    target_types = {"eqmon", "wordpress", "generic"}
 
     # Keywords that indicate internal implementation details are leaking
     LEAKAGE_KEYWORDS = {

@@ -13,6 +13,7 @@ from pathlib import Path
 from shared import load_config
 from shared.config import get_skip_attacks, get_execution_mode
 from redteam.client import RedTeamClient
+from redteam.wp_client import WordPressClient
 from redteam.registry import AttackRegistry
 from redteam.scoring import aggregate_scores
 from redteam.reporters.console import ConsoleReporter
@@ -25,14 +26,17 @@ logger = logging.getLogger("redteam")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Security Red Team - EQMON Attack Framework",
+        description="Security Red Team - Cyber-Guardian Attack Framework",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   runner.py --list
+  runner.py --list --target wordpress
   runner.py --all --report console json
   runner.py --category ai --report console
+  runner.py --category wordpress --target wordpress
   runner.py --attack ai.jailbreak --verbose
+  runner.py --attack wordpress.plugin_audit --plugin my-plugin --target wordpress
   runner.py --cleanup
         """,
     )
@@ -41,7 +45,7 @@ Examples:
     group.add_argument("--all", action="store_true", help="Run all attack batteries")
     group.add_argument(
         "--category",
-        choices=["ai", "api", "web", "compliance"],
+        choices=["ai", "api", "web", "compliance", "wordpress"],
         help="Run attacks in a specific category",
     )
     group.add_argument(
@@ -93,6 +97,21 @@ Examples:
              "Overrides execution.mode in config.yaml.",
     )
     parser.add_argument(
+        "--target",
+        choices=["eqmon", "wordpress"],
+        default=None,
+        help="Target type: 'eqmon' (default) or 'wordpress'. "
+             "Filters attacks by target_types compatibility.",
+    )
+    parser.add_argument(
+        "--plugin",
+        type=str,
+        action="append",
+        metavar="SLUG",
+        help="WordPress plugin slug to audit (implies --target wordpress). "
+             "Can be specified multiple times.",
+    )
+    parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="Enable verbose (DEBUG) logging",
@@ -122,6 +141,21 @@ async def run(args):
     exec_mode = get_execution_mode(config)
     logger.info(f"Execution mode: {exec_mode}")
 
+    # --plugin implies --target wordpress and adds slugs to config
+    if args.plugin:
+        args.target = "wordpress"
+        wp_cfg = config.setdefault("target", {}).setdefault("wordpress", {})
+        existing = wp_cfg.get("plugins", [])
+        for slug in args.plugin:
+            if slug not in existing:
+                existing.append(slug)
+        wp_cfg["plugins"] = existing
+
+    # Determine target type (CLI > config > default)
+    target_type = args.target or config.get("target", {}).get("type", "eqmon")
+    config.setdefault("target", {})["type"] = target_type
+    logger.info(f"Target type: {target_type}")
+
     # Discover attacks
     registry = AttackRegistry()
     count = registry.discover()
@@ -129,9 +163,22 @@ async def run(args):
 
     # Handle --list
     if args.list:
-        attacks = registry.list_attacks()
+        all_attacks = registry.get_all()
+        if args.target:
+            all_attacks = _filter_by_target(all_attacks, target_type)
+        attacks_info = [
+            {
+                "key": f"{a.category}.{a.name.split('.')[-1] if '.' in a.name else a.name}",
+                "name": a.name,
+                "category": a.category,
+                "severity": a.severity.value,
+                "description": a.description,
+                "target_types": ", ".join(sorted(a.target_types)),
+            }
+            for a in all_attacks
+        ]
         console = ConsoleReporter()
-        console.print_attack_list(attacks)
+        console.print_attack_list(attacks_info)
         return
 
     # Handle --cleanup
@@ -160,6 +207,13 @@ async def run(args):
         logger.warning("No attacks matched the filter")
         return
 
+    # Filter attacks by target type compatibility
+    attacks = _filter_by_target(attacks, target_type)
+    if not attacks:
+        logger.warning(f"No attacks compatible with target type '{target_type}'")
+        return
+    logger.info(f"Running {len(attacks)} attack(s) for target '{target_type}'")
+
     # In AWS mode, drop attacks that are in the skip list
     skip_attacks = get_skip_attacks(config)
     if skip_attacks:
@@ -169,12 +223,32 @@ async def run(args):
         if skipped:
             logger.info(f"AWS mode: skipping {skipped} attack(s): {skip_attacks}")
 
-    # Authenticate
-    test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
-    async with RedTeamClient(config["target"]["base_url"]) as client:
-        if not await client.login(test_user["username"], test_user["password"]):
-            logger.error("Authentication failed. Have test users been created?")
-            sys.exit(1)
+    # Create client and authenticate based on target type
+    base_url = config["target"]["base_url"]
+    if target_type == "wordpress":
+        wp_cfg = config.get("target", {}).get("wordpress", {})
+        client = WordPressClient(base_url, wp_config=wp_cfg)
+    else:
+        client = RedTeamClient(base_url)
+
+    async with client:
+        # Authenticate with appropriate method
+        if target_type == "wordpress":
+            # Try wp_admin user first, fall back to system_admin
+            test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
+            wp_user = test_users.get("wp_admin", {})
+            username = os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
+            password = os.environ.get("WP_ADMIN_PASS", wp_user.get("password", ""))
+            if username and password and not username.startswith("${"):
+                if not await client.wp_login(username, password):
+                    logger.warning("WordPress admin login failed — running unauthenticated tests only")
+            else:
+                logger.info("No WordPress credentials configured — running unauthenticated tests only")
+        else:
+            test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
+            if not await client.login(test_user["username"], test_user["password"]):
+                logger.error("Authentication failed. Have test users been created?")
+                sys.exit(1)
 
         # Run attacks
         suite_start = time.time()
@@ -238,6 +312,20 @@ async def run(args):
             cleaner.cleanup(delete_users=False)
         except Exception as e:
             logger.warning(f"Cleanup failed (non-fatal): {e}")
+
+
+def _filter_by_target(attacks: list, target_type: str) -> list:
+    """Filter attacks by target type compatibility.
+
+    An attack is included if:
+    - target_type is in the attack's target_types, OR
+    - "generic" is in the attack's target_types
+    """
+    filtered = []
+    for a in attacks:
+        if target_type in a.target_types or "generic" in a.target_types:
+            filtered.append(a)
+    return filtered
 
 
 def main():
