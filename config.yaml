@@ -8,6 +8,7 @@ target:
 
 database:
   host: "localhost"
+  port: 5432
   database: "eqmon"
   user: "${DB_USER}"
   password: "${DB_PASSWORD}"
@@ -39,9 +40,10 @@ redteam:
     formats: ["html", "json", "console"]
     output_dir: "reports/"
   ai_attacker:
-    enabled: false  # Phase 2
-    model: "claude-sonnet-4-20250514"
-    api_key_env: "ANTHROPIC_API_KEY"
+    enabled: true
+    attacker_model: "qwen2.5:32b"
+    judge_model: "llama3.2:latest"
+    ollama_url: "http://localhost:11434/api/chat"
 
 blueteam:
   enabled: true
@@ -54,11 +56,17 @@ blueteam:
       paths:
         - "/var/log/auth.log"
         - "/var/log/syslog"
+    nginx:
+      enabled: true
+      path: "/var/log/nginx/access.log"
     application_logs:
       enabled: true
       paths:
-        - "/var/log/apache2/access.log"
-        - "/var/log/apache2/error.log"
+        - "/var/www/html/eqmon/logs/server_errors.log"
+        - "/opt/eqmon/logs/server_errors.log"
+    redteam_reports:
+      enabled: true
+      reports_dir: "/opt/claude-workspace/projects/cyber-guardian/reports"
   correlator:
     enabled: true
     rules_dir: "blueteam/rules/"
@@ -67,12 +75,28 @@ blueteam:
     channels:
       email:
         enabled: false
-        smtp_host: "smtp.example.com"
-        from: "alerts@example.com"
-        to: ["security@example.com"]
+        smtp_host: "localhost"
+        smtp_port: 587
+        from: "blueteam@eqmon.local"
+        to: []
+      syslog:
+        enabled: true
+        facility: "local6"
       webhook:
         enabled: false
         url: "https://hooks.example.com/alerts"
+  correlation:
+    window_seconds: 300
+    rules:
+      brute_force:
+        threshold: 5
+        window_seconds: 300
+      credential_stuffing:
+        threshold: 10
+        window_seconds: 300
+      data_exfiltration:
+        threshold: 20
+        window_seconds: 3600
   compliance:
     framework: "NIST-800-171-Rev2"
     tracking_enabled: true
