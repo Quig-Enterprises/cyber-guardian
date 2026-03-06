@@ -64,6 +64,9 @@ config.local.yaml
 *.db
 *.sqlite
 
+# OMC state
+.omc/
+
 # OS
 .DS_Store
 Thumbs.db
