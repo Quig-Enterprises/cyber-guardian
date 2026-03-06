@@ -53,6 +53,7 @@ class Score:
     errors: int = 0
     worst_severity: Severity = Severity.INFO
     results: list[AttackResult] = field(default_factory=list)
+    duration_ms: float = 0.0
 
     @property
     def pass_rate(self) -> float:

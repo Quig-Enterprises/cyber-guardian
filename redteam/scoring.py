@@ -25,13 +25,14 @@ def aggregate_scores(scores: list[Score]) -> dict:
         cat = s.category
         if cat not in summary["by_category"]:
             summary["by_category"][cat] = {
-                "attacks": 0, "vulnerable": 0, "partial": 0, "defended": 0, "errors": 0
+                "attacks": 0, "vulnerable": 0, "partial": 0, "defended": 0, "errors": 0, "duration_ms": 0
             }
         summary["by_category"][cat]["attacks"] += 1
         summary["by_category"][cat]["vulnerable"] += s.vulnerable
         summary["by_category"][cat]["partial"] += s.partial
         summary["by_category"][cat]["defended"] += s.defended
         summary["by_category"][cat]["errors"] += s.errors
+        summary["by_category"][cat]["duration_ms"] += s.duration_ms
 
         # By severity (count findings)
         for r in s.results:

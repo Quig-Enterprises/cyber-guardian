@@ -45,6 +45,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </head><body>
 <h1>Security Red Team Report</h1>
 <p>Generated: {{ generated }}</p>
+{% if timing %}
+<p>Run: {{ timing.start }} &mdash; {{ timing.end }} ({{ "%.1f"|format(timing.duration_ms / 1000) }}s total)</p>
+{% endif %}
 
 <div class="summary">
   <div class="stat"><div class="number">{{ total_attacks }}</div><div class="label">Attacks</div></div>
@@ -53,13 +56,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div class="stat"><div class="number partial">{{ total_partial }}</div><div class="label">Partial</div></div>
   <div class="stat"><div class="number defended">{{ total_defended }}</div><div class="label">Defended</div></div>
   <div class="stat"><div class="number {{ worst_severity }}">{{ worst_severity | upper }}</div><div class="label">Worst Severity</div></div>
+  <div class="stat"><div class="number">{{ "%.1f"|format(timing.duration_ms / 1000 if timing else 0) }}s</div><div class="label">Duration</div></div>
 </div>
 
 <h2>Results by Category</h2>
 <table>
-<tr><th>Category</th><th>Attacks</th><th>Vulnerable</th><th>Partial</th><th>Defended</th><th>Errors</th></tr>
+<tr><th>Category</th><th>Attacks</th><th>Vulnerable</th><th>Partial</th><th>Defended</th><th>Errors</th><th>Duration</th></tr>
 {% for cat, data in by_category.items() %}
-<tr><td>{{ cat | upper }}</td><td>{{ data.attacks }}</td><td class="vulnerable">{{ data.vulnerable }}</td><td class="partial">{{ data.partial }}</td><td class="defended">{{ data.defended }}</td><td>{{ data.errors }}</td></tr>
+<tr><td>{{ cat | upper }}</td><td>{{ data.attacks }}</td><td class="vulnerable">{{ data.vulnerable }}</td><td class="partial">{{ data.partial }}</td><td class="defended">{{ data.defended }}</td><td>{{ data.errors }}</td><td>{{ "%.1f"|format(data.duration_ms / 1000 if data.duration_ms else 0) }}s</td></tr>
 {% endfor %}
 </table>
 
@@ -137,6 +141,7 @@ class HtmlReporter:
             worst_severity=summary["worst_severity"].value,
             by_category=summary["by_category"],
             by_severity=summary["by_severity"],
+            timing=summary.get("timing", {}),
             findings=findings,
         )
 

@@ -86,6 +86,13 @@ class ConsoleReporter:
                 color = severity_color(worst)
                 console.print(f"Worst severity: [{color}]{worst.value.upper()}[/{color}]")
 
+            timing = summary.get("timing", {})
+            if timing:
+                console.print(f"Started:      {timing.get('start', 'N/A')}")
+                console.print(f"Finished:     {timing.get('end', 'N/A')}")
+                duration = timing.get('duration_ms', 0)
+                console.print(f"Duration:     {duration/1000:.1f}s")
+
             by_cat = summary.get("by_category", {})
             if by_cat:
                 table = Table(title="Results by Category")
@@ -95,6 +102,7 @@ class ConsoleReporter:
                 table.add_column("Partial", justify="right", style="yellow")
                 table.add_column("Defended", justify="right", style="green")
                 table.add_column("Errors", justify="right", style="magenta")
+                table.add_column("Duration", justify="right", style="cyan")
 
                 for cat, data in sorted(by_cat.items()):
                     table.add_row(
@@ -104,6 +112,7 @@ class ConsoleReporter:
                         str(data["partial"]),
                         str(data["defended"]),
                         str(data["errors"]),
+                        f"{data.get('duration_ms', 0)/1000:.1f}s",
                     )
                 console.print(table)
 
@@ -118,6 +127,7 @@ class ConsoleReporter:
                 detail.add_column("Def", justify="right")
                 detail.add_column("Err", justify="right")
                 detail.add_column("Severity")
+                detail.add_column("Duration", justify="right", style="cyan")
 
                 for score in scores:
                     sev_color = severity_color(score.worst_severity)
@@ -129,6 +139,7 @@ class ConsoleReporter:
                         str(score.defended),
                         str(score.errors),
                         Text(score.worst_severity.value.upper(), style=sev_color),
+                        f"{score.duration_ms/1000:.1f}s",
                     )
                 console.print(detail)
 

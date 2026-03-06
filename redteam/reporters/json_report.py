@@ -22,8 +22,21 @@ class JsonReporter:
             "worst_severity": summary["worst_severity"].value,
             "by_category": summary["by_category"],
             "by_severity": summary["by_severity"],
+            "timing": summary.get("timing", {}),
+            "attacks": [],
             "findings": [],
         }
+
+        for score in summary["scores"]:
+            report["attacks"].append({
+                "name": score.attack_name,
+                "category": score.category,
+                "duration_ms": round(score.duration_ms, 1),
+                "vulnerable": score.vulnerable,
+                "partial": score.partial,
+                "defended": score.defended,
+                "errors": score.errors,
+            })
 
         for score in summary["scores"]:
             for r in score.results:

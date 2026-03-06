@@ -5,6 +5,8 @@ import argparse
 import asyncio
 import sys
 import logging
+import time
+from datetime import datetime
 from pathlib import Path
 
 from shared import load_config
@@ -147,17 +149,23 @@ async def run(args):
             sys.exit(1)
 
         # Run attacks
+        suite_start = time.time()
+        suite_start_iso = datetime.now().isoformat()
         scores = []
         for attack in attacks:
             logger.info(f"Running: {attack.name} ({attack.category})")
+            attack_start = time.time()
             try:
                 results = await attack.execute(client)
                 score = attack.score(results)
+                attack_elapsed = (time.time() - attack_start) * 1000
+                score.duration_ms = attack_elapsed
                 scores.append(score)
                 logger.info(
                     f"  -> {score.vulnerable} vulnerable, "
                     f"{score.partial} partial, "
-                    f"{score.defended} defended"
+                    f"{score.defended} defended "
+                    f"({attack_elapsed:.0f}ms)"
                 )
             except Exception as e:
                 logger.error(f"  -> Error running {attack.name}: {e}")
@@ -169,8 +177,17 @@ async def run(args):
                 except Exception as e:
                     logger.warning(f"  -> Cleanup error for {attack.name}: {e}")
 
+        suite_end = time.time()
+        suite_end_iso = datetime.now().isoformat()
+        suite_duration_ms = (suite_end - suite_start) * 1000
+
         # Aggregate results
         summary = aggregate_scores(scores)
+        summary["timing"] = {
+            "start": suite_start_iso,
+            "end": suite_end_iso,
+            "duration_ms": round(suite_duration_ms, 1),
+        }
 
         # Generate reports
         Path(args.output).mkdir(parents=True, exist_ok=True)
