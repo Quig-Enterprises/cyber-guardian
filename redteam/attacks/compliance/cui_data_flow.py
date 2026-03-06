@@ -28,19 +28,6 @@ class CUIDataFlowAttack(Attack):
     async def execute(self, client) -> list[AttackResult]:
         results = []
 
-        # Authenticate for endpoint access
-        login_ok = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
-        )
-        if not login_ok:
-            results.append(self._make_result(
-                variant="cui_in_cache_headers",
-                status=Status.ERROR,
-                evidence="Login failed — cannot test CUI data flow.",
-                details="Could not authenticate to inspect CUI endpoint headers.",
-            ))
-            return results
-
         # ----------------------------------------------------------------
         # 1. Cache-Control headers on CUI endpoints
         # ----------------------------------------------------------------

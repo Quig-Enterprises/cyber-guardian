@@ -439,7 +439,7 @@ class SystemDiversityAttack(Attack):
             if body_payload:
                 status_code, resp_body, headers = await client.post(
                     path,
-                    data=body_payload,
+                    raw_body=body_payload,
                     headers=extra_headers,
                 )
             else:

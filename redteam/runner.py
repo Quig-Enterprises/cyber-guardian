@@ -37,7 +37,7 @@ Examples:
     group.add_argument("--all", action="store_true", help="Run all attack batteries")
     group.add_argument(
         "--category",
-        choices=["ai", "api", "web"],
+        choices=["ai", "api", "web", "compliance"],
         help="Run attacks in a specific category",
     )
     group.add_argument(
@@ -140,7 +140,7 @@ async def run(args):
         return
 
     # Authenticate
-    test_user = config["auth"]["test_users"]["system_admin"]
+    test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
     async with RedTeamClient(config["target"]["base_url"]) as client:
         if not await client.login(test_user["username"], test_user["password"]):
             logger.error("Authentication failed. Have test users been created?")

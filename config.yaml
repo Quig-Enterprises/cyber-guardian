@@ -3,7 +3,7 @@ project:
   version: "1.0.0"
 
 target:
-  base_url: "http://localhost:8081/eqmon"
+  base_url: "http://localhost:8081"
   api_path: "/api"
 
 database:

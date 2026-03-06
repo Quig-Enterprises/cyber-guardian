@@ -22,9 +22,6 @@ class DeviceAttestationAttack(Attack):
     async def execute(self, client) -> list[AttackResult]:
         results = []
 
-        # Ensure we have an authenticated session for protected-endpoint probes.
-        await client.login()
-
         # ----------------------------------------------------------------
         # 1. unknown_user_agent_access
         # ----------------------------------------------------------------

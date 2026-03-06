@@ -97,12 +97,25 @@ class Config:
         return self._config.get("database", {})
 
 
+def _deep_merge(base: dict, override: dict) -> dict:
+    """Deep-merge override into base, returning a new dict."""
+    merged = base.copy()
+    for key, value in override.items():
+        if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+            merged[key] = _deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
 # Function-based interface for compatibility with existing code
 def load_config(config_path: str | Path = "config.yaml") -> dict:
     """
     Load YAML config file with environment variable interpolation.
 
-    Compatibility function for existing code that uses function-based config loading.
+    If a config.local.yaml exists alongside the main config, it is
+    deep-merged on top so that local overrides (credentials, URLs)
+    take effect without modifying the committed config file.
 
     Args:
         config_path: Path to the YAML config file.
@@ -114,4 +127,13 @@ def load_config(config_path: str | Path = "config.yaml") -> dict:
         FileNotFoundError: If config file does not exist.
     """
     config = Config(config_path)
-    return config._config
+    result = config._config
+
+    # Merge config.local.yaml if it exists alongside the main config
+    local_path = Path(config_path).parent / "config.local.yaml"
+    if local_path.exists():
+        logger.info(f"Merging local config overrides from {local_path}")
+        local_cfg = Config(local_path)
+        result = _deep_merge(result, local_cfg._config)
+
+    return result

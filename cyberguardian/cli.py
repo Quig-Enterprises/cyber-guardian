@@ -48,7 +48,7 @@ Examples:
     # Red Team subcommand
     redteam_parser = subparsers.add_parser("redteam", help="Run red team attacks")
     redteam_parser.add_argument("--all", action="store_true", help="Run all attacks")
-    redteam_parser.add_argument("--category", choices=["ai", "api", "web"], help="Run category")
+    redteam_parser.add_argument("--category", choices=["ai", "api", "web", "compliance"], help="Run category")
     redteam_parser.add_argument("--attack", help="Run specific attack (e.g., ai.jailbreak)")
     redteam_parser.add_argument("--report", choices=["html", "json", "console"], help="Report format")
     redteam_parser.add_argument("--cleanup", action="store_true", help="Clean up test artifacts")
