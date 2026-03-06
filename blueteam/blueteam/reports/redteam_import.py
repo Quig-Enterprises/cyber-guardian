@@ -11,25 +11,29 @@ def import_report(config: dict, report_path: str) -> dict:
     with open(path) as f:
         report = json.load(f)
 
+    # Support both formats:
+    #   1. Wrapped: report["summary"]["total_variants"], report["attacks"][*]["variants"]
+    #   2. Flat:    report["total_variants"], report["findings"]
     summary = report.get("summary", {})
     attacks = report.get("attacks", [])
 
-    total = summary.get("total_variants", 0)
-    defended = summary.get("defended", 0)
-    partial = summary.get("partial", 0)
-    vulnerable = summary.get("vulnerable", 0)
+    total = summary.get("total_variants", 0) or report.get("total_variants", 0)
+    defended = summary.get("defended", 0) or report.get("total_defended", 0)
+    partial = summary.get("partial", 0) or report.get("total_partial", 0)
+    vulnerable = summary.get("vulnerable", 0) or report.get("total_vulnerable", 0)
 
-    # If no summary, calculate from attacks
-    if total == 0 and attacks:
-        for attack in attacks:
-            for variant in attack.get("variants", []):
+    # If still no totals, calculate from attacks/findings
+    if total == 0:
+        findings = attacks or report.get("findings", [])
+        for attack in findings:
+            for variant in attack.get("variants", attack.get("results", [])):
                 total += 1
-                result = variant.get("result", "")
-                if result == "safe":
+                result = variant.get("result", variant.get("status", ""))
+                if result in ("safe", "defended", "DEFENDED"):
                     defended += 1
-                elif result == "partial":
+                elif result in ("partial", "PARTIAL"):
                     partial += 1
-                elif result == "vulnerable":
+                elif result in ("vulnerable", "VULNERABLE"):
                     vulnerable += 1
 
     # Calculate red team score (0-100, higher = better defended)

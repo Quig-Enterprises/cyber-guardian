@@ -25,7 +25,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 REPORT_DIR="$PROJECT_DIR/reports"
 DASHBOARD_REPORT_DIR="/opt/security-red-team/reports"
-BLUETEAM_DIR="/opt/security-blue-team"
+BLUETEAM_DIR="$PROJECT_DIR/blueteam"
 LOG_DIR="$PROJECT_DIR/logs"
 LOCKFILE="/tmp/redteam-runner.lock"
 
@@ -99,16 +99,13 @@ else
     log "WARN: Dashboard report directory not found: $DASHBOARD_REPORT_DIR"
 fi
 
-# Import into blue team posture scoring
-if [ -d "$BLUETEAM_DIR" ] && [ -f "$BLUETEAM_DIR/venv/bin/blueteam" ]; then
-    DB_PASS="${EQMON_AUTH_DB_PASS:-3eK4NNHxLQakuTQK5KcnB3Vz}"
+# Import into blue team posture scoring (blueteam is installed in same venv)
+if command -v blueteam &>/dev/null; then
     log "Importing report into blue team posture scoring..."
-    cd "$BLUETEAM_DIR"
-    source venv/bin/activate
-    EQMON_AUTH_DB_PASS="$DB_PASS" blueteam redteam import "$LATEST_JSON" 2>&1 | tee -a "$LOGFILE"
+    blueteam redteam import "$LATEST_JSON" 2>&1 | tee -a "$LOGFILE"
     log "Blue team import complete"
 else
-    log "WARN: Blue team not found at $BLUETEAM_DIR, skipping import"
+    log "WARN: blueteam CLI not found in venv, skipping import"
 fi
 
 # Cleanup old logs (keep 30 days)

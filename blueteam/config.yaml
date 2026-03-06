@@ -37,7 +37,7 @@ collectors:
       - /opt/eqmon/logs/server_errors.log
   redteam:
     enabled: true
-    reports_dir: /opt/security-red-team/reports
+    reports_dir: /opt/security-red-team/reports  # shared dashboard report dir
 
 correlation:
   window_seconds: 300
