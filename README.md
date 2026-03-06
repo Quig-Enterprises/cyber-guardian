@@ -209,6 +209,30 @@ blueteam:
 
 ---
 
+## Dashboard Registration
+
+If using Project Keystone, register Cyber Guardian as a service on the dashboard:
+
+```sql
+INSERT INTO services (slug, name, category, icon, status, display_order, base_url, min_role, description)
+VALUES (
+    'cyber-guardian',
+    'Cyber Guardian',
+    'Server Security',
+    '🛡️',
+    'online',
+    15,
+    '/security-dashboard/',
+    'admin',
+    'Unified offensive and defensive security framework.
+Red Team: Automated penetration testing with 41+ attack modules (AI, API, Web, compliance).
+Blue Team: SIEM monitoring, log correlation, threat detection, and incident response.
+Compliance: NIST SP 800-171/172 controls, CMMC Level 2 posture scoring, and DFARS reporting.'
+) ON CONFLICT (slug) DO NOTHING;
+```
+
+---
+
 ## Integration: Red Team → Blue Team
 
 Cyber-Guardian provides seamless integration between offensive testing and defensive monitoring:
