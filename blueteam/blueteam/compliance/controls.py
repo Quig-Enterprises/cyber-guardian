@@ -1,5 +1,5 @@
 """Compliance control management — load, query, update."""
-from blueteam.db import get_connection
+from shared import get_connection
 from blueteam.compliance.nist_800_171 import CONTROLS
 
 

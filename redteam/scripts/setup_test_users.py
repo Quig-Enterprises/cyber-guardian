@@ -23,7 +23,7 @@ import psycopg2
 
 # Add project root to path for config import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from redteam.config import load_config
+from shared import load_config
 
 
 # Default test users (also defined in config.yaml for reference)

@@ -1,7 +1,7 @@
 """Generate CMMC assessor-ready compliance reports."""
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-from blueteam.db import get_connection
+from shared import get_connection
 from blueteam.reports.posture import calculate_posture
 
 TEMPLATE_DIR = Path(__file__).parent.parent.parent / "templates"

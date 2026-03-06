@@ -1,6 +1,6 @@
 """Incident lifecycle management — PICERL workflow."""
 import hashlib
-from blueteam.db import get_connection
+from shared import get_connection
 from blueteam.models import SecurityIncident
 
 

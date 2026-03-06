@@ -1,5 +1,5 @@
 """Combined security posture scoring."""
-from blueteam.db import get_connection
+from shared import get_connection
 
 
 def calculate_posture(config: dict) -> dict:

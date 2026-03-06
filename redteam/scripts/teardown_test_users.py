@@ -21,7 +21,7 @@ import psycopg2
 
 # Add project root to path for config import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from redteam.config import load_config
+from shared import load_config
 
 
 def teardown_users(db_config: dict, dry_run: bool = False):

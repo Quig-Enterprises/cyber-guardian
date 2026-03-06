@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 from datetime import datetime, timezone
-from blueteam.db import get_connection
+from shared import get_connection
 
 
 def import_report(config: dict, report_path: str) -> dict:

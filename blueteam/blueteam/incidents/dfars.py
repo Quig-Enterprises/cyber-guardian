@@ -1,5 +1,5 @@
 """DFARS 252.204-7012 reporting workflow — 72-hour CUI breach notification."""
-from blueteam.db import get_connection
+from shared import get_connection
 
 
 def is_dfars_reportable(cui_involved: bool, severity: str) -> bool:

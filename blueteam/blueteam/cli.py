@@ -3,7 +3,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 
-from blueteam.config import load_config
+from shared import load_config
 
 console = Console()
 

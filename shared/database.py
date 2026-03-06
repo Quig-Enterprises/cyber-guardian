@@ -147,3 +147,43 @@ class Database:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+
+
+# Global connection cache for compatibility
+_global_connection: Database | None = None
+
+
+def get_connection(config: dict) -> psycopg2.extensions.connection:
+    """
+    Get or create global database connection.
+
+    Compatibility function for existing blue team code.
+
+    Args:
+        config: Configuration dictionary with 'database' section
+
+    Returns:
+        PostgreSQL connection object
+    """
+    global _global_connection
+
+    if _global_connection is None:
+        db_config = config.get("database", {})
+        _global_connection = Database(
+            host=db_config.get("host", "localhost"),
+            database=db_config.get("name", db_config.get("database", "")),
+            user=db_config.get("user", ""),
+            password=db_config.get("password", ""),
+            port=db_config.get("port", 5432)
+        )
+
+    _global_connection.connect()
+    return _global_connection._connection
+
+
+def close():
+    """Close global database connection."""
+    global _global_connection
+    if _global_connection:
+        _global_connection.close()
+        _global_connection = None

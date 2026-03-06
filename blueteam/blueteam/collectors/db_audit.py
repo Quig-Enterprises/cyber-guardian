@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 from blueteam.collectors.base import BaseCollector
 from blueteam.models import SecurityEvent
-from blueteam.db import get_connection
+from shared import get_connection
 
 # Map audit categories to severity defaults
 SEVERITY_MAP = {

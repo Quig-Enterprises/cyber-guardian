@@ -2,14 +2,18 @@
 Configuration loader for Cyber-Guardian
 
 Supports YAML config files with environment variable substitution.
+Provides both class-based and function-based interfaces for compatibility.
 """
 
 import os
 import re
+import logging
 from pathlib import Path
 from typing import Any, Dict
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 
 class Config:
@@ -40,7 +44,8 @@ class Config:
             var_name = match.group(1)
             value = os.getenv(var_name)
             if value is None:
-                raise ValueError(f"Environment variable not set: {var_name}")
+                logger.warning(f"Environment variable not set: {var_name}")
+                return match.group(0)  # Keep ${VAR} if not found
             return value
 
         return pattern.sub(replacer, text)
@@ -90,3 +95,23 @@ class Config:
     def database(self) -> Dict[str, Any]:
         """Database configuration"""
         return self._config.get("database", {})
+
+
+# Function-based interface for compatibility with existing code
+def load_config(config_path: str | Path = "config.yaml") -> dict:
+    """
+    Load YAML config file with environment variable interpolation.
+
+    Compatibility function for existing code that uses function-based config loading.
+
+    Args:
+        config_path: Path to the YAML config file.
+
+    Returns:
+        Parsed and interpolated configuration dictionary.
+
+    Raises:
+        FileNotFoundError: If config file does not exist.
+    """
+    config = Config(config_path)
+    return config._config
