@@ -3,6 +3,7 @@
 
 import argparse
 import asyncio
+import os
 import sys
 import logging
 import time
@@ -10,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from shared import load_config
+from shared.config import get_skip_attacks, get_execution_mode
 from redteam.client import RedTeamClient
 from redteam.registry import AttackRegistry
 from redteam.scoring import aggregate_scores
@@ -113,7 +115,11 @@ async def run(args):
     # CLI --mode overrides execution.mode in config
     if args.mode is not None:
         config.setdefault("execution", {})["mode"] = args.mode
-    exec_mode = config.get("execution", {}).get("mode", "full")
+    else:
+        env_mode = os.environ.get("CYBER_GUARDIAN_MODE")
+        if env_mode in ("full", "aws"):
+            config.setdefault("execution", {})["mode"] = env_mode
+    exec_mode = get_execution_mode(config)
     logger.info(f"Execution mode: {exec_mode}")
 
     # Discover attacks
@@ -155,7 +161,7 @@ async def run(args):
         return
 
     # In AWS mode, drop attacks that are in the skip list
-    skip_attacks = config.get("execution", {}).get("aws", {}).get("skip_attacks", [])
+    skip_attacks = get_skip_attacks(config)
     if skip_attacks:
         before = len(attacks)
         attacks = [a for a in attacks if a.name not in skip_attacks]
