@@ -1,40 +1,94 @@
+project:
+  name: "Cyber-Guardian"
+  version: "1.0.0"
+
 target:
-  base_url: "http://localhost:8081"
+  base_url: "http://localhost:8081/eqmon"
   api_path: "/api"
-
-auth:
-  test_users:
-    system_admin:
-      username: "redteam-sysadmin@test.com"
-      password: "RedTeam$ysAdmin2026!"
-      role: "system-admin"
-    viewer:
-      username: "redteam-viewer@test.com"
-      password: "RedTeamV!ewer2026!"
-      role: "viewer"
-
-test_data:
-  session_id_prefix: "redteam-"
-  analysis_id: "d381c227-4ae2-442b-bc04-970fecc7ca9e"
-  instance_id: "default"
-
-cleanup:
-  enabled: true
-  delete_messages: true
-  delete_notes: true
-
-reporting:
-  formats: ["console", "json", "html"]
-  output_dir: "reports/"
-
-ai_attacker:
-  enabled: true
-  attacker_model: "qwen2.5:32b"
-  judge_model: "llama3.2:latest"
-  ollama_url: "http://localhost:11434/api/chat"
 
 database:
   host: "localhost"
-  name: "eqmon"
-  user: "eqmon"
-  password: "3eK4NNHxLQakuTQK5KcnB3Vz"
+  database: "eqmon"
+  user: "${DB_USER}"
+  password: "${DB_PASSWORD}"
+
+redteam:
+  enabled: true
+  cleanup: true
+  auth:
+    test_users:
+      system_admin:
+        username: "redteam-sysadmin@test.com"
+        password: "${REDTEAM_SYSADMIN_PASS}"
+        role: "system-admin"
+      company_a_admin:
+        username: "redteam-companya@test.com"
+        password: "${REDTEAM_COMPANYA_PASS}"
+        role: "company-admin"
+        opco_id: "opco-a"
+      company_b_officer:
+        username: "redteam-companyb@test.com"
+        password: "${REDTEAM_COMPANYB_PASS}"
+        role: "vessel-officer"
+        opco_id: "opco-b"
+        vessel_id: "vessel-b1"
+  test_data:
+    session_id_prefix: "redteam-"
+    analysis_id: null  # auto-discover or configure per-run
+  reporting:
+    formats: ["html", "json", "console"]
+    output_dir: "reports/"
+  ai_attacker:
+    enabled: false  # Phase 2
+    model: "claude-sonnet-4-20250514"
+    api_key_env: "ANTHROPIC_API_KEY"
+
+blueteam:
+  enabled: true
+  collectors:
+    audit_db:
+      enabled: true
+      poll_interval: 30
+    system_logs:
+      enabled: true
+      paths:
+        - "/var/log/auth.log"
+        - "/var/log/syslog"
+    application_logs:
+      enabled: true
+      paths:
+        - "/var/log/apache2/access.log"
+        - "/var/log/apache2/error.log"
+  correlator:
+    enabled: true
+    rules_dir: "blueteam/rules/"
+  alerting:
+    enabled: true
+    channels:
+      email:
+        enabled: false
+        smtp_host: "smtp.example.com"
+        from: "alerts@example.com"
+        to: ["security@example.com"]
+      webhook:
+        enabled: false
+        url: "https://hooks.example.com/alerts"
+  compliance:
+    framework: "NIST-800-171-Rev2"
+    tracking_enabled: true
+    evidence_dir: "evidence/"
+  incident:
+    dfars_reporting: true
+    reporting_deadline_hours: 72
+    workflow: "PICERL"  # Prepare, Identify, Contain, Eradicate, Recover, Learn
+
+# Shared settings
+logging:
+  level: "INFO"
+  format: "json"
+  output: "logs/cyber-guardian.log"
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+  dashboard_enabled: true

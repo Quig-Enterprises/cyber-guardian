@@ -1,30 +1,78 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "security-red-team"
-version = "0.1.0"
-description = "Automated security testing framework for EQMON AI chat system"
+name = "cyber-guardian"
+version = "1.0.0"
+description = "Integrated Offensive & Defensive Security for CMMC Compliance"
+readme = "README.md"
 requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Brandon Quig", email = "brandon@quigs.com"}
+]
+keywords = ["security", "pentest", "compliance", "cmmc", "nist"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
 dependencies = [
+    # Core
     "aiohttp>=3.9",
     "pyyaml>=6.0",
-    "rich>=13.0",
+    "pydantic>=2.0",
+    "psycopg2-binary>=2.9",
+
+    # Red Team
+    "pyjwt>=2.8",
     "jinja2>=3.1",
+    "rich>=13.0",
+
+    # Blue Team
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "reportlab>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
-    "pyjwt>=2.8",
-    "psycopg2-binary>=2.9",
-    "bcrypt>=4.0",
+    "black>=24.0",
+    "ruff>=0.3",
 ]
 
 [project.scripts]
-redteam = "redteam.runner:main"
+cyber-guardian = "cyberguardian.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Quig-Enterprises/cyber-guardian"
+Documentation = "https://github.com/Quig-Enterprises/cyber-guardian/docs"
+Repository = "https://github.com/Quig-Enterprises/cyber-guardian"
+Issues = "https://github.com/Quig-Enterprises/cyber-guardian/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cyberguardian*", "redteam*", "blueteam*", "shared*"]
+namespaces = false
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 testpaths = ["tests"]
-markers = [
-    "integration: requires live EQMON server and authenticated test users",
-]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

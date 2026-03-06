@@ -1,19 +1,68 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
 venv/
-.env
-.pytest_cache/
-reports/*.html
-reports/*.json
+env/
+ENV/
+.venv
+
+# IDE
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+*.log
+logs/
+
+# Reports
+reports/*.html
+reports/*.json
+
+# Evidence (git-tracked but sensitive)
+evidence/*.pdf
+evidence/*.docx
+
+# Config overrides
+config.local.yaml
+
+# Environment variables
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+
+# OS
 .DS_Store
-*.pem
-*.key
-secrets.yaml
-*.egg-info/
-dist/
-build/
+Thumbs.db
