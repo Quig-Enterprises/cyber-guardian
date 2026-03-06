@@ -27,6 +27,9 @@ class CSRFAttack(Attack):
         """Run all CSRF variants."""
         results = []
         session_id = f"redteam-csrf-{uuid.uuid4().hex[:8]}"
+        endpoints = self._get_test_endpoints()
+        self._test_endpoint = endpoints[0]
+        self._test_endpoint_2 = endpoints[1] if len(endpoints) > 1 else endpoints[0]
 
         results.append(await self._test_no_origin(client, session_id))
         results.append(await self._test_forged_origin(client, session_id))
@@ -41,7 +44,7 @@ class CSRFAttack(Attack):
             # Send POST without Origin header (simulate cross-origin without browser)
             # Use raw post to control headers exactly
             status_code, body, headers = await client.post(
-                "/api/ai_chat.php",
+                self._test_endpoint,
                 json_body={
                     "action": "send_message",
                     "message": "CSRF test - no origin header",
@@ -85,7 +88,7 @@ class CSRFAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                "/api/ai_bearing_notes.php",
+                self._test_endpoint_2,
                 json_body={
                     "action": "add_note",
                     "note": "CSRF test note - forged origin",
@@ -132,7 +135,7 @@ class CSRFAttack(Attack):
         start = time.monotonic()
         try:
             # First, GET the chat page to see if a CSRF token is issued
-            get_status, get_body, get_headers = await client.get("/api/ai_chat.php",
+            get_status, get_body, get_headers = await client.get(self._test_endpoint,
                 params={"action": "get_messages", "session_id": session_id})
 
             # Check response for common CSRF token patterns
@@ -143,7 +146,7 @@ class CSRFAttack(Attack):
 
             # Also check if POST works without any token
             post_status, post_body, post_headers = await client.post(
-                "/api/ai_chat.php",
+                self._test_endpoint,
                 json_body={
                     "action": "send_message",
                     "message": "CSRF token test",

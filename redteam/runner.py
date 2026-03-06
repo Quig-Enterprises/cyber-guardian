@@ -98,9 +98,9 @@ Examples:
     )
     parser.add_argument(
         "--target",
-        choices=["eqmon", "wordpress"],
+        choices=["eqmon", "wordpress", "generic"],
         default=None,
-        help="Target type: 'eqmon' (default) or 'wordpress'. "
+        help="Target type: 'eqmon' (default), 'wordpress', or 'generic'. "
              "Filters attacks by target_types compatibility.",
     )
     parser.add_argument(
@@ -234,7 +234,6 @@ async def run(args):
     async with client:
         # Authenticate with appropriate method
         if target_type == "wordpress":
-            # Try wp_admin user first, fall back to system_admin
             test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
             wp_user = test_users.get("wp_admin", {})
             username = os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
@@ -244,6 +243,27 @@ async def run(args):
                     logger.warning("WordPress admin login failed — running unauthenticated tests only")
             else:
                 logger.info("No WordPress credentials configured — running unauthenticated tests only")
+        elif target_type == "generic":
+            # Generic targets: try auth if credentials provided, otherwise run unauthenticated
+            test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
+            generic_user = test_users.get("generic_admin", {})
+            username = generic_user.get("username", "")
+            password = generic_user.get("password", "")
+            if username and password and not username.startswith("${"):
+                login_endpoint = config.get("target", {}).get("generic", {}).get("login_endpoint", "/login")
+                login_fields = config.get("target", {}).get("generic", {}).get("login_fields", {})
+                u_field = login_fields.get("username_field", "username")
+                p_field = login_fields.get("password_field", "password")
+                status, body, headers = await client.post(
+                    login_endpoint,
+                    json_body={u_field: username, p_field: password},
+                )
+                if status == 200:
+                    logger.info("Generic target login successful")
+                else:
+                    logger.warning(f"Generic target login returned {status} — running unauthenticated")
+            else:
+                logger.info("No generic credentials configured — running unauthenticated tests")
         else:
             test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
             if not await client.login(test_user["username"], test_user["password"]):

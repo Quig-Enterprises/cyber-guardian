@@ -35,7 +35,7 @@ class SessionAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                "/api/auth/login.php",
+                self._get_login_endpoint(),
                 json_body={
                     "email": "redteam-sysadmin@test.com",
                     "password": "RedTeam$ysAdmin2026!",

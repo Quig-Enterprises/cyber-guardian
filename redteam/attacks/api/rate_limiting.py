@@ -16,7 +16,7 @@ class RateLimitingAttack(Attack):
 
     async def execute(self, client) -> list[AttackResult]:
         results = []
-        test_path = "/api/ai_chat.php"
+        test_path = self._get_test_endpoints()[0]
 
         # Pull throttle overrides for this attack (non-empty only in AWS mode)
         throttle = self._get_throttle("api.rate_limiting")
@@ -199,7 +199,7 @@ class RateLimitingAttack(Attack):
 
     async def cleanup(self, client) -> None:
         """Delete spam notes created during rate limiting tests."""
-        test_path = "/api/ai_chat.php"
+        test_path = self._get_test_endpoints()[0]
         for note_id in getattr(self, "_cleanup_note_ids", []):
             try:
                 await client.delete(

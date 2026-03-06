@@ -30,6 +30,9 @@ class CORSAttack(Attack):
     async def execute(self, client) -> list[AttackResult]:
         """Run all CORS variants."""
         results = []
+        endpoints = self._get_test_endpoints()
+        self._test_endpoint = endpoints[0]
+        self._test_endpoint_2 = endpoints[1] if len(endpoints) > 1 else endpoints[0]
 
         results.append(await self._test_preflight_evil_origin(client))
         results.append(await self._test_get_with_evil_origin(client))
@@ -45,7 +48,7 @@ class CORSAttack(Attack):
             # (OPTIONS is typically handled by the web server, so we test
             # via actual request with Origin header to see response headers)
             status_code, body, headers = await client.post(
-                "/api/ai_chat.php",
+                self._test_endpoint,
                 json_body={"action": "get_messages", "session_id": "redteam-cors-test"},
                 headers={
                     "Origin": "https://evil.com",
@@ -115,7 +118,7 @@ class CORSAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.get(
-                "/api/ai_chat.php",
+                self._test_endpoint,
                 params={"action": "get_messages", "session_id": "redteam-cors-test"},
                 headers={"Origin": "https://evil.com"},
             )
@@ -170,8 +173,8 @@ class CORSAttack(Attack):
         try:
             # Test multiple endpoints for credential exposure
             endpoints = [
-                ("/api/ai_chat.php", {"action": "get_messages", "session_id": "redteam-cors-test"}),
-                ("/api/ai_bearing_notes.php", {"action": "get_notes", "bearing_id": "test"}),
+                (self._test_endpoint, {"action": "get_messages", "session_id": "redteam-cors-test"}),
+                (self._test_endpoint_2, {"action": "get_notes", "bearing_id": "test"}),
             ]
 
             credentials_found = False

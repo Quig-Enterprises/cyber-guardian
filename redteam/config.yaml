@@ -2,6 +2,13 @@ target:
   type: "eqmon"  # "eqmon" or "wordpress"
   base_url: "http://localhost:8081"
   api_path: "/api"
+  generic:
+    test_endpoints:
+      - "/"
+    login_endpoint: "/login"
+    login_fields:
+      username_field: "username"
+      password_field: "password"
   wordpress:
     login_path: "/wp-login.php"
     rest_prefix: "/wp-json"

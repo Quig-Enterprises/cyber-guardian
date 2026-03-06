@@ -51,8 +51,9 @@ class PasswordPolicyAttack(Attack):
             tested = False
 
             # Attempt 1: dedicated password change endpoint
+            login_endpoint = self._get_login_endpoint()
             status_code, body, headers = await client.post(
-                "/api/auth/login.php",
+                login_endpoint,
                 json_body={
                     "action": "change_password",
                     "current_password": "RedTeamV!ewer2026!",
@@ -62,9 +63,16 @@ class PasswordPolicyAttack(Attack):
             )
 
             if status_code == 404 or status_code == 405:
-                # Try admin users endpoint
+                # Try admin users endpoint (target-type aware fallback)
+                target_type = self._get_target_type()
+                if target_type == "wordpress":
+                    admin_endpoint = "/wp-json/wp/v2/users/me"
+                elif target_type == "generic":
+                    admin_endpoint = self._config.get("target", {}).get("generic", {}).get("admin_endpoint", "/api/admin/users")
+                else:
+                    admin_endpoint = "/api/admin/users.php"
                 status_code, body, headers = await client.post(
-                    "/api/admin/users.php",
+                    admin_endpoint,
                     json_body={
                         "action": "change_password",
                         "password": weak_pw,
@@ -101,7 +109,7 @@ class PasswordPolicyAttack(Attack):
                 )
                 # Reset the password back to the original
                 await client.post(
-                    "/api/auth/login.php",
+                    login_endpoint,
                     json_body={
                         "action": "change_password",
                         "current_password": weak_pw,

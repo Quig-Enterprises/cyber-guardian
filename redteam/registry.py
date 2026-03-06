@@ -73,6 +73,7 @@ class AttackRegistry:
                 "category": a.category,
                 "severity": a.severity.value,
                 "description": a.description,
+                "target_types": a.target_types,
             }
             for k, a in sorted(self._attacks.items())
         ]

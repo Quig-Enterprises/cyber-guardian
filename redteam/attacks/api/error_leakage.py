@@ -51,6 +51,12 @@ class ErrorLeakageAttack(Attack):
         "PHP/": "PHP version exposed",
         "nginx": "Web server identity exposed",
         "Apache": "Web server identity exposed",
+
+        # WordPress-specific
+        "wp-config": "WordPress configuration file reference exposed",
+        "wp_options": "WordPress options table name exposed",
+        "wp_users": "WordPress users table name exposed",
+        "wp-content": "WordPress content path exposed",
     }
 
     def _scan_for_leakage(self, body: str, headers: dict) -> list[str]:
@@ -69,7 +75,7 @@ class ErrorLeakageAttack(Attack):
 
     async def execute(self, client) -> list[AttackResult]:
         results = []
-        test_path = "/api/ai_chat.php"
+        test_path = self._get_test_endpoints()[0]
 
         # 1. Trigger PDOException: send analysis_id with format that breaks SQL
         # A single quote should cause a SQL parsing error if not parameterized.

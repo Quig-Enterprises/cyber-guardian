@@ -69,6 +69,9 @@ class XSSAttack(Attack):
         """Run all XSS variants against chat and note endpoints."""
         results = []
         session_id = f"redteam-xss-{uuid.uuid4().hex[:8]}"
+        endpoints = self._get_test_endpoints()
+        self._test_path = endpoints[0]
+        self._note_path = endpoints[1] if len(endpoints) > 1 else endpoints[0]
 
         for variant_name, payload, description, target in self.VARIANTS:
             start = time.monotonic()
@@ -100,7 +103,7 @@ class XSSAttack(Attack):
         """Inject XSS payload via chat message, then GET and check response."""
         # POST the payload as a chat message
         status_code, body, headers = await client.post(
-            "/api/ai_chat.php",
+            self._test_path,
             json_body={
                 "action": "send_message",
                 "message": payload,
@@ -110,7 +113,7 @@ class XSSAttack(Attack):
 
         # GET the messages back to check if payload is stored unsanitized
         get_status, get_body, get_headers = await client.get(
-            "/api/ai_chat.php",
+            self._test_path,
             params={"action": "get_messages", "session_id": session_id},
         )
 
@@ -124,7 +127,7 @@ class XSSAttack(Attack):
         """Inject XSS payload via bearing note, then GET and check response."""
         # POST the payload as a bearing note
         status_code, body, headers = await client.post(
-            "/api/ai_bearing_notes.php",
+            self._note_path,
             json_body={
                 "action": "add_note",
                 "note": payload,
@@ -134,7 +137,7 @@ class XSSAttack(Attack):
 
         # GET the notes back
         get_status, get_body, get_headers = await client.get(
-            "/api/ai_bearing_notes.php",
+            self._note_path,
             params={"action": "get_notes", "bearing_id": "redteam-xss-test"},
         )
 
@@ -188,7 +191,7 @@ class XSSAttack(Attack):
     async def cleanup(self, client) -> None:
         """Clean up test chat messages and notes."""
         try:
-            await client.post("/api/ai_chat.php", json_body={
+            await client.post(self._test_path, json_body={
                 "action": "delete_session",
                 "session_id_prefix": "redteam-xss-",
             })

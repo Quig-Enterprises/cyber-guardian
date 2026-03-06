@@ -93,6 +93,38 @@ class Attack(ABC):
             return []
         return self._config.get("execution", {}).get("aws", {}).get("blocked_ips", [])
 
+    def _get_target_type(self) -> str:
+        """Return the active target type from config."""
+        return self._config.get("target", {}).get("type", "eqmon")
+
+    def _get_test_endpoints(self) -> list[str]:
+        """Return test endpoints based on target type.
+
+        WordPress and generic targets read from config; eqmon returns defaults.
+        """
+        target_type = self._get_target_type()
+        if target_type == "wordpress":
+            wp = self._config.get("target", {}).get("wordpress", {})
+            return [
+                wp.get("rest_prefix", "/wp-json") + "/wp/v2/posts",
+                wp.get("login_path", "/wp-login.php"),
+            ]
+        elif target_type == "generic":
+            generic = self._config.get("target", {}).get("generic", {})
+            return generic.get("test_endpoints", ["/"])
+        else:
+            return ["/api/ai_chat.php"]
+
+    def _get_login_endpoint(self) -> str:
+        """Return the login endpoint based on target type."""
+        target_type = self._get_target_type()
+        if target_type == "wordpress":
+            return self._config.get("target", {}).get("wordpress", {}).get("login_path", "/wp-login.php")
+        elif target_type == "generic":
+            return self._config.get("target", {}).get("generic", {}).get("login_endpoint", "/login")
+        else:
+            return "/api/auth/login.php"
+
     @abstractmethod
     async def execute(self, client) -> list[AttackResult]:
         """Run all variants of this attack. Returns a list of results."""

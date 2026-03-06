@@ -14,7 +14,7 @@ class InputValidationAttack(Attack):
 
     async def execute(self, client) -> list[AttackResult]:
         results = []
-        test_path = "/api/ai_chat.php"
+        test_path = self._get_test_endpoints()[0]
         session_id = f"redteam-input-{uuid.uuid4().hex[:8]}"
 
         # 1. Oversized message: 1MB of "A" characters

@@ -9,8 +9,6 @@ from redteam.base import Attack, AttackResult, Severity, Status
 # Timeout threshold (seconds) above which a response is considered excessive
 EXCESSIVE_TIMEOUT_SEC = 60.0
 
-TEST_PATH = "/api/ai_chat.php"
-
 
 class DosResilienceAttack(Attack):
     name = "api.dos_resilience"
@@ -33,6 +31,7 @@ class DosResilienceAttack(Attack):
             )]
 
         results = []
+        self._test_path = self._get_test_endpoints()[0]
 
         results.append(await self._test_long_prompt(client))
         results.append(await self._test_deeply_nested_json(client))
@@ -58,7 +57,7 @@ class DosResilienceAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                TEST_PATH,
+                self._test_path,
                 json_body={
                     "action": "send_message",
                     "message": message,
@@ -148,7 +147,7 @@ class DosResilienceAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                TEST_PATH,
+                self._test_path,
                 json_body=payload,
             )
             duration_ms = (time.monotonic() - start) * 1000
@@ -228,7 +227,7 @@ class DosResilienceAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                TEST_PATH,
+                self._test_path,
                 json_body=big_payload,
             )
             duration_ms = (time.monotonic() - start) * 1000
@@ -322,7 +321,7 @@ class DosResilienceAttack(Attack):
         start = time.monotonic()
         try:
             status_code, body, headers = await client.post(
-                TEST_PATH,
+                self._test_path,
                 json_body={
                     "action": "send_message",
                     "message": message,
@@ -414,7 +413,7 @@ class DosResilienceAttack(Attack):
             t0 = time.monotonic()
             try:
                 status_code, body, _headers = await client.post(
-                    TEST_PATH,
+                    self._test_path,
                     json_body={
                         "action": "send_message",
                         "message": f"Rapid fire test message {idx}",
