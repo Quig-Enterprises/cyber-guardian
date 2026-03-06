@@ -15,8 +15,8 @@ Cyber-Guardian is a unified red team (offensive) and blue team (defensive) secur
 ### Key Features
 
 **Red Team (Offensive Security):**
-- ✅ 31 attack modules, 156 test variants
-- ✅ AI, API, and web security testing
+- ✅ 52 attack modules, 280+ test variants
+- ✅ AI, API, web, and compliance security testing
 - ✅ Automated vulnerability scoring
 - ✅ HTML/JSON/Console reporting
 - ✅ Phase 2 ready: AI-powered attack generation
@@ -88,7 +88,7 @@ cyber-guardian dashboard
 ```
 cyber-guardian/
 ├── redteam/          # Offensive Security Module
-│   ├── attacks/      # 31 attack modules
+│   ├── attacks/      # 52 attack modules
 │   ├── evaluators/   # Result evaluation
 │   ├── reporters/    # Report generation
 │   └── cleanup/      # Artifact cleanup
@@ -116,7 +116,7 @@ cyber-guardian/
 
 ## Red Team Attack Catalog
 
-### AI Attacks (15 modules, 75+ variants)
+### AI Attacks (14 modules, 75+ variants)
 - **Jailbreak:** DAN, role-play, instruction override
 - **Prompt Injection:** Direct/indirect injection, delimiter attacks
 - **System Prompt Extraction:** Progressive extraction techniques
@@ -125,7 +125,7 @@ cyber-guardian/
 - **Hallucination:** Force fabricated responses
 - **Multi-Turn Manipulation:** Gradual topic shifting
 
-### API Attacks (15 modules, 60+ variants)
+### API Attacks (20 modules, 100+ variants)
 - **Auth Bypass:** JWT manipulation, token forgery
 - **IDOR:** Cross-tenant/company/vessel access
 - **Authorization Boundaries:** Role escalation, privilege testing
@@ -133,12 +133,31 @@ cyber-guardian/
 - **Input Validation:** Oversized/malformed inputs
 - **Rate Limiting:** Flood testing
 - **Error Leakage:** Information disclosure
+- **Replay Attacks:** Token replay, session replay after logout (800-172 3.5.1e)
+- **Lateral Movement:** Cross-domain access, tenant escape (800-172 3.13.4e)
+- **Session Predictability:** Token entropy, cookie security analysis (800-172 3.13.2e)
 
-### Web Attacks (5 modules, 20+ variants)
+### Web Attacks (5 modules, 25+ variants)
 - **XSS:** Stored/reflected cross-site scripting
 - **CSRF:** Cross-site request forgery
 - **CORS:** CORS misconfiguration exploitation
 - **Session:** Cookie security testing
+- **Deception Detection:** Honeypot/honeytoken presence verification (800-172 3.13.3e)
+
+### Compliance Attacks (13 modules, 70+ variants)
+- **Dual Authorization Bypass:** Two-person control testing (800-172 3.1.1e)
+- **Network Segmentation:** CUI isolation validation (800-172 3.13.4e)
+- **Anomaly Detection Evasion:** Behavioral monitoring coverage (800-172 3.14.2e)
+- **CUI Retention:** Data persistence in logs/caches (800-172 3.14.5e)
+- **Device Attestation:** Comply-to-connect validation (800-172 3.5.3e)
+- **Supply Chain Dependencies:** CVE audit, SRI checks (800-172 3.11.6e)
+- **System Diversity:** Component homogeneity scoring (800-172 3.13.1e)
+- **Software Integrity:** Code signing, CSP verification (800-172 3.14.1e)
+- **System Refresh:** Non-persistence validation (800-172 3.14.4e)
+- **Audit Log Tamper:** Log protection verification (800-171 3.3.8)
+- **MFA Absence:** Multi-factor authentication gaps
+- **Encryption at Rest:** Data-at-rest encryption validation
+- **CUI Data Flow:** Cross-boundary data flow tracking
 
 ---
 
@@ -225,7 +244,7 @@ VALUES (
     '/security-dashboard/',
     'admin',
     'Unified offensive and defensive security framework.
-Red Team: Automated penetration testing with 41+ attack modules (AI, API, Web, compliance).
+Red Team: Automated penetration testing with 52 attack modules (AI, API, Web, compliance).
 Blue Team: SIEM monitoring, log correlation, threat detection, and incident response.
 Compliance: NIST SP 800-171/172 controls, CMMC Level 2 posture scoring, and DFARS reporting.'
 ) ON CONFLICT (slug) DO NOTHING;
