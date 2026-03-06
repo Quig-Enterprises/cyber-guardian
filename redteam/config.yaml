@@ -1,0 +1,40 @@
+target:
+  base_url: "http://localhost:8081"
+  api_path: "/api"
+
+auth:
+  test_users:
+    system_admin:
+      username: "redteam-sysadmin@test.com"
+      password: "RedTeam$ysAdmin2026!"
+      role: "system-admin"
+    viewer:
+      username: "redteam-viewer@test.com"
+      password: "RedTeamV!ewer2026!"
+      role: "viewer"
+
+test_data:
+  session_id_prefix: "redteam-"
+  analysis_id: "d381c227-4ae2-442b-bc04-970fecc7ca9e"
+  instance_id: "default"
+
+cleanup:
+  enabled: true
+  delete_messages: true
+  delete_notes: true
+
+reporting:
+  formats: ["console", "json", "html"]
+  output_dir: "reports/"
+
+ai_attacker:
+  enabled: true
+  attacker_model: "qwen2.5:32b"
+  judge_model: "llama3.2:latest"
+  ollama_url: "http://localhost:11434/api/chat"
+
+database:
+  host: "localhost"
+  name: "eqmon"
+  user: "eqmon"
+  password: "3eK4NNHxLQakuTQK5KcnB3Vz"
