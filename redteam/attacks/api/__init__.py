@@ -20,6 +20,9 @@ from redteam.attacks.api.session_timeout import SessionTimeoutAttack
 from redteam.attacks.api.privilege_escalation_v2 import PrivilegeEscalationV2Attack
 from redteam.attacks.api.password_policy import PasswordPolicyAttack
 from redteam.attacks.api.account_lockout_bypass import AccountLockoutBypassAttack
+from redteam.attacks.api.replay_attack import ReplayAttack
+from redteam.attacks.api.lateral_movement import LateralMovementAttack
+from redteam.attacks.api.session_predictability import SessionPredictabilityAttack
 
 __all__ = [
     "AuthBypassAttack",
@@ -38,4 +41,7 @@ __all__ = [
     "PrivilegeEscalationV2Attack",
     "PasswordPolicyAttack",
     "AccountLockoutBypassAttack",
+    "ReplayAttack",
+    "LateralMovementAttack",
+    "SessionPredictabilityAttack",
 ]
