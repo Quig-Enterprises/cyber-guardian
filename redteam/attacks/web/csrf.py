@@ -21,7 +21,7 @@ class CSRFAttack(Attack):
     category = "web"
     severity = Severity.HIGH
     description = "Cross-site request forgery protection tests"
-    target_types = {"eqmon", "wordpress", "generic"}
+    target_types = {"app", "wordpress", "generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         """Run all CSRF variants."""

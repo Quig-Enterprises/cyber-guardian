@@ -26,6 +26,7 @@ class CrescendoAttack(Attack):
         "Multi-turn escalation sequences that build context gradually before "
         "attempting extraction, jailbreak, or instruction override"
     )
+    target_types = {"ai"}
 
     # Each sequence: (name, description, messages, eval_start_turn, eval_type)
     # eval_start_turn: index (0-based) at which evaluation begins

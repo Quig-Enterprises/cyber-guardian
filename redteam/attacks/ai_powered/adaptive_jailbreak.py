@@ -50,6 +50,7 @@ class AdaptiveJailbreakAttack(AiPoweredAttack):
         "Adaptive jailbreak using LLM-generated prompts that learn from "
         "each failed attempt to craft increasingly sophisticated attacks"
     )
+    target_types = {"ai"}
 
     max_attempts: int = 15
     attack_goals: list[str] = [

@@ -45,7 +45,7 @@ Examples:
     group.add_argument("--all", action="store_true", help="Run all attack batteries")
     group.add_argument(
         "--category",
-        choices=["ai", "api", "web", "compliance", "wordpress"],
+        choices=["ai", "api", "web", "compliance", "wordpress", "cve"],
         help="Run attacks in a specific category",
     )
     group.add_argument(
@@ -98,10 +98,10 @@ Examples:
     )
     parser.add_argument(
         "--target",
-        choices=["eqmon", "wordpress", "generic"],
+        type=str,
         default=None,
-        help="Target type: 'eqmon' (default), 'wordpress', or 'generic'. "
-             "Filters attacks by target_types compatibility.",
+        help="Target type(s): 'app' (default), 'ai', 'wordpress', or 'generic'. "
+             "Comma-separated for multi-target, e.g. 'app,ai'.",
     )
     parser.add_argument(
         "--plugin",
@@ -110,6 +110,11 @@ Examples:
         metavar="SLUG",
         help="WordPress plugin slug to audit (implies --target wordpress). "
              "Can be specified multiple times.",
+    )
+    parser.add_argument(
+        "--cve-sync",
+        action="store_true",
+        help="Sync CVE data sources (KEV, ExploitDB, cvelistV5) before running",
     )
     parser.add_argument(
         "-v", "--verbose",
@@ -151,10 +156,24 @@ async def run(args):
                 existing.append(slug)
         wp_cfg["plugins"] = existing
 
-    # Determine target type (CLI > config > default)
-    target_type = args.target or config.get("target", {}).get("type", "eqmon")
-    config.setdefault("target", {})["type"] = target_type
-    logger.info(f"Target type: {target_type}")
+    # Determine target type(s) (CLI > config > default)
+    target_raw = args.target or config.get("target", {}).get("type", "app")
+    target_types = set(t.strip() for t in target_raw.split(","))
+    config.setdefault("target", {})["type"] = target_raw
+    logger.info(f"Target type(s): {', '.join(sorted(target_types))}")
+
+    # CVE data sync (if requested)
+    if getattr(args, 'cve_sync', False):
+        try:
+            from redteam.cve.sync import CVESyncManager
+            logger.info("Syncing CVE data sources...")
+            sync_mgr = CVESyncManager(config)
+            await sync_mgr.sync_all()
+            logger.info("CVE data sync complete")
+        except ImportError:
+            logger.warning("CVE sync module not available — skipping")
+        except Exception as e:
+            logger.warning(f"CVE data sync failed (non-fatal): {e}")
 
     # Discover attacks
     registry = AttackRegistry()
@@ -165,7 +184,7 @@ async def run(args):
     if args.list:
         all_attacks = registry.get_all()
         if args.target:
-            all_attacks = _filter_by_target(all_attacks, target_type)
+            all_attacks = _filter_by_target(all_attacks, target_types)
         attacks_info = [
             {
                 "key": f"{a.category}.{a.name.split('.')[-1] if '.' in a.name else a.name}",
@@ -208,11 +227,11 @@ async def run(args):
         return
 
     # Filter attacks by target type compatibility
-    attacks = _filter_by_target(attacks, target_type)
+    attacks = _filter_by_target(attacks, target_types)
     if not attacks:
-        logger.warning(f"No attacks compatible with target type '{target_type}'")
+        logger.warning(f"No attacks compatible with target type(s) '{target_raw}'")
         return
-    logger.info(f"Running {len(attacks)} attack(s) for target '{target_type}'")
+    logger.info(f"Running {len(attacks)} attack(s) for target(s) '{target_raw}'")
 
     # In AWS mode, drop attacks that are in the skip list
     skip_attacks = get_skip_attacks(config)
@@ -225,7 +244,7 @@ async def run(args):
 
     # Create client and authenticate based on target type
     base_url = config["target"]["base_url"]
-    if target_type == "wordpress":
+    if "wordpress" in target_types:
         wp_cfg = config.get("target", {}).get("wordpress", {})
         client = WordPressClient(base_url, wp_config=wp_cfg)
     else:
@@ -233,7 +252,7 @@ async def run(args):
 
     async with client:
         # Authenticate with appropriate method
-        if target_type == "wordpress":
+        if "wordpress" in target_types:
             test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
             wp_user = test_users.get("wp_admin", {})
             username = os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
@@ -243,7 +262,7 @@ async def run(args):
                     logger.warning("WordPress admin login failed — running unauthenticated tests only")
             else:
                 logger.info("No WordPress credentials configured — running unauthenticated tests only")
-        elif target_type == "generic":
+        elif "generic" in target_types:
             # Generic targets: try auth if credentials provided, otherwise run unauthenticated
             test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
             generic_user = test_users.get("generic_admin", {})
@@ -264,7 +283,7 @@ async def run(args):
                     logger.warning(f"Generic target login returned {status} — running unauthenticated")
             else:
                 logger.info("No generic credentials configured — running unauthenticated tests")
-        else:
+        elif "app" in target_types or "ai" in target_types:
             test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
             if not await client.login(test_user["username"], test_user["password"]):
                 logger.error("Authentication failed. Have test users been created?")
@@ -334,16 +353,16 @@ async def run(args):
             logger.warning(f"Cleanup failed (non-fatal): {e}")
 
 
-def _filter_by_target(attacks: list, target_type: str) -> list:
+def _filter_by_target(attacks: list, target_types: set[str]) -> list:
     """Filter attacks by target type compatibility.
 
     An attack is included if:
-    - target_type is in the attack's target_types, OR
+    - ANY of the requested target_types is in the attack's target_types, OR
     - "generic" is in the attack's target_types
     """
     filtered = []
     for a in attacks:
-        if target_type in a.target_types or "generic" in a.target_types:
+        if target_types & a.target_types or "generic" in a.target_types:
             filtered.append(a)
     return filtered
 

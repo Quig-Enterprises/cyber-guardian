@@ -10,7 +10,7 @@ class InputValidationAttack(Attack):
     category = "api"
     severity = Severity.MEDIUM
     description = "Malformed input handling: oversized payloads, null bytes, type confusion"
-    target_types = {"eqmon", "wordpress", "generic"}
+    target_types = {"app", "wordpress", "generic"}
 
     async def execute(self, client) -> list[AttackResult]:
         results = []

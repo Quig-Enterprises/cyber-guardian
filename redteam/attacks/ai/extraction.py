@@ -18,6 +18,7 @@ class ExtractionAttack(Attack):
     category = "ai"
     severity = Severity.CRITICAL
     description = "Attempts to extract the AI system prompt through various social engineering techniques"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

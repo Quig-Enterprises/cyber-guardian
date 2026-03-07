@@ -20,6 +20,7 @@ class BoundaryAttack(Attack):
     category = "ai"
     severity = Severity.MEDIUM
     description = "Tests gray-area domain boundaries where correct AI behavior is ambiguous"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

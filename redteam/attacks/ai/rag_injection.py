@@ -19,6 +19,7 @@ class RagInjectionAttack(Attack):
     category = "ai"
     severity = Severity.CRITICAL
     description = "Indirect prompt injection via RAG context surface — attacker-controlled data treated as trusted instructions"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

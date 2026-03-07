@@ -22,6 +22,7 @@ class OutputFormatAttack(Attack):
         "Attempts to extract system prompt contents by constraining output "
         "to structured formats (JSON, CSV, YAML, markdown, code blocks)"
     )
+    target_types = {"ai"}
 
     VARIANTS = [
         (

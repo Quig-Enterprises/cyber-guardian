@@ -19,6 +19,7 @@ class JailbreakAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Attempts to override AI identity and behavioral constraints via jailbreak prompts"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

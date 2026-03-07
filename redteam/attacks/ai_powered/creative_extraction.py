@@ -58,6 +58,7 @@ class CreativeExtractionAttack(AiPoweredAttack):
         "Creative system prompt extraction using LLM-generated strategies "
         "that adapt based on partial leaks and refusal analysis"
     )
+    target_types = {"ai"}
 
     max_attempts: int = 20
 

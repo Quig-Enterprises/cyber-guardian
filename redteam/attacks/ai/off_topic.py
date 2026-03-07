@@ -18,6 +18,7 @@ class OffTopicAttack(Attack):
     category = "ai"
     severity = Severity.MEDIUM
     description = "Attempts to elicit responses outside the AI's designated domain"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

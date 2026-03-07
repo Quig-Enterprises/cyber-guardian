@@ -38,6 +38,7 @@ class DataLeakageAttack(Attack):
     category = "ai"
     severity = Severity.CRITICAL
     description = "Probes for cross-tenant data, infrastructure details, and user information disclosure"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

@@ -31,6 +31,7 @@ class ContextManipulationAttack(Attack):
         "Session isolation and context window attacks: history poisoning, "
         "summary injection, token overflow, fake conversation history, and session confusion"
     )
+    target_types = {"ai"}
 
     # Multi-turn sequences: (name, description, [(message, evaluate_this_turn), ...])
     # evaluate_this_turn=True means this turn's response is assessed for attack success

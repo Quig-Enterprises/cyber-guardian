@@ -20,6 +20,7 @@ class EncodingAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Attempts to bypass AI content filters using encoding and obfuscation techniques"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

@@ -21,6 +21,7 @@ class ManipulationAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Multi-turn manipulation sequences using gradual topic drift, authority escalation, and refusal fatigue"
+    target_types = {"ai"}
 
     # Each variant is a tuple of (name, description, message_sequence)
     SEQUENCES = [

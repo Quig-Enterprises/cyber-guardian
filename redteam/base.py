@@ -72,7 +72,7 @@ class Attack(ABC):
     category: str = "unknown"
     severity: Severity = Severity.INFO
     description: str = ""
-    target_types: set[str] = {"eqmon"}
+    target_types: set[str] = {"app"}
 
     # Set by runner before execute() is called.
     _config: dict = {}
@@ -95,12 +95,12 @@ class Attack(ABC):
 
     def _get_target_type(self) -> str:
         """Return the active target type from config."""
-        return self._config.get("target", {}).get("type", "eqmon")
+        return self._config.get("target", {}).get("type", "app")
 
     def _get_test_endpoints(self) -> list[str]:
         """Return test endpoints based on target type.
 
-        WordPress and generic targets read from config; eqmon returns defaults.
+        WordPress and generic targets read from config; app returns defaults.
         """
         target_type = self._get_target_type()
         if target_type == "wordpress":

@@ -18,6 +18,7 @@ class PersonaAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Attempts to override AI identity and extract configuration via persona and roleplay prompts"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

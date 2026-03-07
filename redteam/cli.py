@@ -86,7 +86,9 @@ async def execute_attacks(args, config):
 
     # Determine target type
     target = config.get("target", {})
-    target_type = getattr(args, "target", None) or target.get("type", "eqmon")
+    target_raw = getattr(args, "target", None) or target.get("type", "app")
+    target_types = set(t.strip() for t in target_raw.split(","))
+    target_type = target_raw  # keep for backward-compat logging
     base_url = target.get("base_url", "")
 
     # Handle --plugin flag
@@ -99,17 +101,17 @@ async def execute_attacks(args, config):
                 existing.append(slug)
         wp_cfg["plugins"] = existing
 
-    # Filter attacks by target type
+    # Filter attacks by target type(s)
     attacks = [
         a for a in attacks
-        if target_type in a.target_types or "generic" in a.target_types
+        if target_types & a.target_types or "generic" in a.target_types
     ]
     if not attacks:
         logger.warning(f"No attacks compatible with target type '{target_type}'")
         return []
 
     # Create appropriate client
-    if target_type == "wordpress":
+    if "wordpress" in target_types:
         wp_cfg = target.get("wordpress", {})
         client = WordPressClient(base_url, wp_config=wp_cfg)
     else:
@@ -117,7 +119,7 @@ async def execute_attacks(args, config):
 
     async with client:
         # Authenticate based on target type
-        if target_type == "wordpress":
+        if "wordpress" in target_types:
             auth = config.get("redteam", {}).get("auth", {})
             test_users = auth.get("test_users", {})
             wp_user = test_users.get("wp_admin", {})
@@ -127,7 +129,7 @@ async def execute_attacks(args, config):
                 await client.wp_login(username, password)
             else:
                 logger.info("No WordPress credentials — running unauthenticated tests only")
-        else:
+        elif "app" in target_types or "ai" in target_types:
             auth = config.get("redteam", {}).get("auth", {})
             test_users = auth.get("test_users", {})
             if test_users:

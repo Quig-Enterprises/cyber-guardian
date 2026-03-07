@@ -19,6 +19,7 @@ class HallucinationAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Attempts to force fabricated standards, manufacturers, and threshold values"
+    target_types = {"ai"}
 
     VARIANTS = [
         (

@@ -1,5 +1,5 @@
 target:
-  type: "eqmon"  # "eqmon" or "wordpress"
+  type: "app"  # Valid: app, ai, wordpress, generic (comma-separated for multi-target)
   base_url: "http://localhost:8081"
   api_path: "/api"
   generic:
@@ -76,6 +76,34 @@ execution:
       wordpress.plugin_audit:
         max_ajax_probes: 20
         delay_ms: 200
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  api_keys:
+    nvd: "${CVE_NVD_API_KEY}"
+    wpscan: "${CVE_WPSCAN_TOKEN}"
+    vulners: "${CVE_VULNERS_KEY}"
+    github: "${GITHUB_TOKEN}"
+  sources:
+    nvd: true
+    wpvulnerability: true
+    osv: true
+    wpscan: true
+    vulners: true
+    github_advisory: true
+    cvelistv5: true
+    kev: true
+    exploitdb: true
+  cache:
+    memory_max_entries: 500
+    memory_ttl_seconds: 1800
+    disk_ttl_seconds: 86400
+  sync:
+    auto_warn_stale: true
+    cvelistv5_max_age_hours: 24
+    kev_max_age_hours: 168
+    exploitdb_max_age_hours: 168
 
 database:
   host: "localhost"

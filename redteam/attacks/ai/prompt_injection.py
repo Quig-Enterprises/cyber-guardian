@@ -18,6 +18,7 @@ class PromptInjectionAttack(Attack):
     category = "ai"
     severity = Severity.HIGH
     description = "Injects fake system prompts and instruction delimiters to override AI behavior"
+    target_types = {"ai"}
 
     VARIANTS = [
         (
