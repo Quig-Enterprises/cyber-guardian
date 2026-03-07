@@ -93,12 +93,14 @@ class CodebaseSecurityScanner:
                     "recommendation": "Scan uploaded files with ClamAV or similar before moving to permanent location"
                 },
                 {
-                    "pattern": r'\$_FILES\[[\'"]([^\'"]+)[\'"]\]',
+                    # Only flag $_FILES access when there's no nonce check in surrounding context
+                    "pattern": r'\$_FILES\[[\'"]([^\'"]+)[\'"]\]\s*\[[\'"](tmp_name|name|size|type)[\'\"]\]',
                     "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus)',
+                    "requires_nonce": r'(?:check_ajax_referer|wp_verify_nonce|verify_nonce)',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-434",
-                    "description": "File upload handling without malware scanning",
-                    "recommendation": "Implement malware scanning for all uploaded files"
+                    "description": "File upload handling without nonce verification or malware scanning",
+                    "recommendation": "Verify nonce before handling uploads; implement malware scanning for all uploaded files"
                 },
                 {
                     "pattern": r'wp_handle_upload\s*\([^)]*\)',
@@ -111,24 +113,18 @@ class CodebaseSecurityScanner:
             ],
             "sql_injection": [
                 {
-                    "pattern": r'\$wpdb->query\s*\(\s*["\'][^"\']*\{\$|"\s*\.\s*\$',
+                    # Match $wpdb->method( ... string concat ... ) — requires $wpdb context
+                    "pattern": r'\$wpdb\s*->\s*(?:query|get_results|get_row|get_var|get_col|update|delete|insert)\s*\([^)]*(?:"\s*\.\s*\$|\$[a-zA-Z_]\w*\s*\.\s*"|\{\$)',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-89",
-                    "description": "Possible SQL injection via string concatenation",
+                    "description": "Possible SQL injection: $wpdb method called with string concatenation instead of prepare()",
                     "recommendation": "Use $wpdb->prepare() with placeholders instead of string concatenation"
-                },
-                {
-                    "pattern": r'\$wpdb->get_results\s*\(\s*["\'][^"\']*\{\$|"\s*\.\s*\$',
-                    "severity": Severity.CRITICAL,
-                    "cwe": "CWE-89",
-                    "description": "Possible SQL injection via string concatenation",
-                    "recommendation": "Use $wpdb->prepare() with placeholders"
                 },
                 {
                     "pattern": r'mysql_query\s*\([^)]*\$',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-89",
-                    "description": "Deprecated mysql_query() with user input",
+                    "description": "Deprecated mysql_query() with variable input",
                     "recommendation": "Use PDO or mysqli with prepared statements"
                 }
             ],
@@ -180,18 +176,28 @@ class CodebaseSecurityScanner:
             ],
             "weak_crypto": [
                 {
-                    "pattern": r'\bmd5\s*\(',
-                    "severity": Severity.MEDIUM,
+                    # MD5/SHA1 used for passwords or tokens — HIGH severity
+                    "pattern": r'(?:password|token|secret|auth|session_id|nonce)\s*=\s*(?:md5|sha1)\s*\(',
+                    "severity": Severity.HIGH,
                     "cwe": "CWE-327",
-                    "description": "Weak cryptographic hash function (MD5)",
-                    "recommendation": "Use password_hash() for passwords or hash('sha256', ...) for other hashing needs"
+                    "description": "Weak hash function used for security-sensitive value (password/token/session)",
+                    "recommendation": "Use password_hash() for passwords; use hash('sha256', ...) or random_bytes() for tokens"
                 },
                 {
-                    "pattern": r'\bsha1\s*\(',
-                    "severity": Severity.MEDIUM,
+                    # MD5 assigned to cache/key variable — LOW, informational only
+                    "pattern": r'\bmd5\s*\(',
+                    "severity": Severity.LOW,
                     "cwe": "CWE-327",
-                    "description": "Weak cryptographic hash function (SHA1)",
-                    "recommendation": "Use password_hash() for passwords or hash('sha256', ...) for other hashing needs"
+                    "description": "MD5 hash function detected (review if used for security or just as cache key)",
+                    "recommendation": "Ensure MD5 is not used for passwords or security tokens; it is acceptable for cache keys"
+                },
+                {
+                    # SHA1 — flag HIBP pattern as informational, others as LOW
+                    "pattern": r'\bsha1\s*\(',
+                    "severity": Severity.LOW,
+                    "cwe": "CWE-327",
+                    "description": "SHA1 hash function detected (acceptable for HIBP API; not for passwords)",
+                    "recommendation": "Ensure SHA1 is only used for HIBP breach lookups or non-security purposes; use password_hash() for passwords"
                 }
             ],
             "credentials": [
@@ -242,8 +248,9 @@ class CodebaseSecurityScanner:
         logger.info(f"Scanning {len(php_files)} PHP files in {project_name}...")
 
         for php_file in php_files:
-            # Skip vendor directories and node_modules
-            if '/vendor/' in str(php_file) or '/node_modules/' in str(php_file):
+            # Skip vendor directories, node_modules, and dev-only files
+            skip_dirs = ['/vendor/', '/node_modules/', '/dev/']
+            if any(d in str(php_file) for d in skip_dirs):
                 continue
 
             result.files_scanned += 1
@@ -281,15 +288,19 @@ class CodebaseSecurityScanner:
                 for line_num, line in enumerate(lines, 1):
                     match = re.search(pattern, line)
                     if match:
-                        # For file upload patterns, check if scanning is present in context
-                        if "requires_scan" in pattern_config:
-                            # Check surrounding lines for malware scanning
-                            context_start = max(0, line_num - 20)
-                            context_end = min(len(lines), line_num + 20)
-                            context = "\n".join(lines[context_start:context_end])
+                        # Check surrounding context (100-line window) for suppression patterns
+                        context_start = max(0, line_num - 50)
+                        context_end = min(len(lines), line_num + 50)
+                        context = "\n".join(lines[context_start:context_end])
 
+                        # Suppress if required scan tool is present in context
+                        if "requires_scan" in pattern_config:
                             if re.search(pattern_config["requires_scan"], context, re.IGNORECASE):
-                                # Malware scanning found in context, skip this issue
+                                continue
+
+                        # Suppress if nonce/permission check is present in context
+                        if "requires_nonce" in pattern_config:
+                            if re.search(pattern_config["requires_nonce"], context, re.IGNORECASE):
                                 continue
 
                         issue = SecurityIssue(
