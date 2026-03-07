@@ -73,6 +73,10 @@ class WPCoreCVEAttack(Attack):
 
         # Each CVE becomes an AttackResult
         for cve in cves:
+            # Store finding in shared state for verification
+            if hasattr(self, '_state'):
+                self._state.store_cve_finding("wordpress", version, cve)
+
             risk = cve.risk_score
             if risk >= 4.0:
                 status = Status.VULNERABLE

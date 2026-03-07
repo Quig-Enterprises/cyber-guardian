@@ -89,6 +89,10 @@ class WPThemeCVEAttack(Attack):
             return results
 
         for cve in cves:
+            # Store finding in shared state for verification
+            if hasattr(self, '_state'):
+                self._state.store_cve_finding(f"wp-theme-{slug}", version, cve)
+
             risk = cve.risk_score
             if risk >= 4.0:
                 status_val = Status.VULNERABLE

@@ -104,6 +104,30 @@ cve:
     cvelistv5_max_age_hours: 24
     kev_max_age_hours: 168
     exploitdb_max_age_hours: 168
+  verification:
+    enabled: true
+    # Mode: "blueteam" (read actual files), "probe" (HTTP only), "both" (try blueteam first)
+    mode: "both"  # RECOMMENDED: "both" for definitive answers with fallback
+    # Config endpoints to probe (in order of preference)
+      nginx:
+        - "/admin/nginx/config"
+        - "/admin/config"
+        - "/nginx.conf"
+      php:
+        - "/phpinfo.php"
+        - "/?phpinfo=1"
+        - "/admin/phpinfo.php"
+    # Verification aggressiveness
+    aggressiveness: "low"  # "low"|"medium"|"high"
+    # low: Only check exposed configs
+    # medium: Attempt common misconfigurations
+    # high: Include directory traversal probes (risky)
+    # CVE-specific verification (enable/disable individual checks)
+    specific_cves:
+      CVE-2019-11043: true
+      CVE-2024-4577: true
+      CVE-2016-10033: true
+      CVE-2013-4547: true
 
 database:
   host: "localhost"

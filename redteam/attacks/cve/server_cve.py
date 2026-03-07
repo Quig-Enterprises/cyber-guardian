@@ -134,6 +134,10 @@ class ServerCVEAttack(Attack):
                 continue
 
             for cve in cves:
+                # Store finding in shared state for verification
+                if hasattr(self, '_state'):
+                    self._state.store_cve_finding(software_name, version, cve)
+
                 risk = cve.risk_score
                 if risk >= 4.0:
                     status_val = Status.VULNERABLE

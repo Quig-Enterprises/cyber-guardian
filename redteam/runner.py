@@ -20,6 +20,7 @@ from redteam.reporters.console import ConsoleReporter
 from redteam.reporters.json_report import JsonReporter
 from redteam.reporters.html import HtmlReporter
 from redteam.cleanup.db import DatabaseCleaner
+from redteam.state import ScanState
 
 logger = logging.getLogger("redteam")
 
@@ -293,9 +294,14 @@ async def run(args):
         suite_start = time.time()
         suite_start_iso = datetime.now().isoformat()
         scores = []
+
+        # Create shared state for cross-attack communication
+        scan_state = ScanState()
+
         for attack in attacks:
             logger.info(f"Running: {attack.name} ({attack.category})")
             attack._config = config  # make execution config available inside attack
+            attack._state = scan_state  # pass shared state to attacks
             attack_start = time.time()
             try:
                 results = await attack.execute(client)
