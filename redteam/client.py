@@ -48,7 +48,8 @@ class RedTeamClient:
         self._authenticated = False
 
     async def __aenter__(self):
-        self._session = aiohttp.ClientSession(timeout=self.timeout)
+        connector = aiohttp.TCPConnector(ssl=False)
+        self._session = aiohttp.ClientSession(timeout=self.timeout, connector=connector)
         return self
 
     async def __aexit__(self, *args):
