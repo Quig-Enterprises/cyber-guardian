@@ -27,6 +27,19 @@ CREDENTIAL_PATTERNS = [
     re.compile(r'(?:db_pass|db_password|database_password)\s*[=:]\s*["\']?.{3,}', re.IGNORECASE),
 ]
 
+# Known false positive patterns for credential detection
+CREDENTIAL_FP_PATTERNS = [
+    re.compile(r'passwd:\s+files', re.IGNORECASE),       # nsswitch.conf
+    re.compile(r'%\(cf\w+\)s', re.IGNORECASE),           # fail2ban template vars
+    re.compile(r'%\(\w+\)s', re.IGNORECASE),             # Python string template vars
+    re.compile(r"&apos;", re.IGNORECASE),                 # XML entity (ImageMagick)
+    re.compile(r'password\s*[=:]\s*["\']?\s*$'),          # Empty password values
+    re.compile(r'password\s*[=:]\s*["\']?\$\{'),          # Shell variable substitution
+    re.compile(r'password\s*[=:]\s*["\']?None', re.I),    # Python None
+    re.compile(r'password\s*[=:]\s*["\']?null', re.I),    # null/placeholder
+    re.compile(r'password\s*[=:]\s*["\']?%s', re.I),      # Format string placeholders
+]
+
 # Directories to scan for hardcoded credentials.
 CONFIG_SCAN_DIRS = [
     "/etc",
@@ -41,7 +54,8 @@ CONFIG_EXTENSIONS = {
 }
 
 # Extensions / paths to skip.
-SKIP_PATTERNS = {"node_modules", "__pycache__", ".git", "vendor", ".pyc"}
+SKIP_PATTERNS = {"node_modules", "__pycache__", ".git", "vendor", ".pyc",
+                  "venv", ".venv", "env", "site-packages"}
 
 
 class PCIAuthControlsAttack(Attack):
@@ -363,6 +377,9 @@ class PCIAuthControlsAttack(Attack):
                                             # Exclude comments and empty values
                                             stripped = line.strip()
                                             if stripped.startswith("#") or stripped.startswith("//"):
+                                                continue
+                                            # Exclude known false positive patterns
+                                            if any(fp.search(stripped) for fp in CREDENTIAL_FP_PATTERNS):
                                                 continue
                                             finding = f"{fpath}:{line_no}: {stripped[:120]}"
                                             hardcoded_findings.append(finding)

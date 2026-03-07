@@ -85,16 +85,22 @@ class PCIDataProtectionAttack(Attack):
                 pass
 
         try:
+            skip_dirs = {"vendor", "node_modules", ".git", "__pycache__",
+                         ".cache", "venv", ".venv", "env", "site-packages"}
             for log_dir in log_dirs:
                 if not os.path.isdir(log_dir):
                     continue
-                for dirpath, _, filenames in os.walk(log_dir):
+                for dirpath, dirnames, filenames in os.walk(log_dir):
+                    dirnames[:] = [d for d in dirnames if d not in skip_dirs]
                     for fname in filenames:
                         # Only check text-based log files
                         if not any(fname.endswith(ext)
-                                   for ext in (".log", ".txt", ".out", ".err", "")):
+                                   for ext in (".log", ".txt", ".out", ".err")):
                             # Check extensionless files too if in /var/log
-                            if dirpath != "/var/log":
+                            if dirpath.startswith("/var/log"):
+                                if "." in fname:
+                                    continue
+                            else:
                                 continue
 
                         fpath = os.path.join(dirpath, fname)
