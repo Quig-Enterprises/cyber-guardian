@@ -113,6 +113,51 @@ Examples:
              "Can be specified multiple times.",
     )
     parser.add_argument(
+        "--url",
+        type=str,
+        default=None,
+        metavar="URL",
+        help="Target base URL. Overrides config.yaml target.base_url. "
+             "Example: --url http://sandbox.quigs.com",
+    )
+    parser.add_argument(
+        "--profile",
+        choices=["wordpress"],
+        default=None,
+        help="Scan profile: 'wordpress' runs all WordPress-relevant attacks "
+             "across categories and sets target type automatically.",
+    )
+    parser.add_argument(
+        "--path",
+        type=str,
+        default=None,
+        metavar="DIR",
+        help="Local source directory for static PHP analysis. "
+             "Can be combined with --url for static + live scanning.",
+    )
+    parser.add_argument(
+        "--wp-user",
+        type=str,
+        default=None,
+        metavar="USERNAME",
+        help="WordPress admin username (overrides config/env at runtime).",
+    )
+    parser.add_argument(
+        "--wp-pass",
+        type=str,
+        default=None,
+        metavar="PASSWORD",
+        help="WordPress admin password (overrides config/env at runtime).",
+    )
+    parser.add_argument(
+        "--origin-ip",
+        type=str,
+        default=None,
+        metavar="IP",
+        help="Connect directly to this IP instead of resolving the hostname "
+             "(bypasses Cloudflare/CDN). Sets Host header to the hostname from base_url.",
+    )
+    parser.add_argument(
         "--cve-sync",
         action="store_true",
         help="Sync CVE data sources (KEV, ExploitDB, cvelistV5) before running",
@@ -147,6 +192,11 @@ async def run(args):
     exec_mode = get_execution_mode(config)
     logger.info(f"Execution mode: {exec_mode}")
 
+    # --profile wordpress: set target type and expand categories
+    if args.profile == "wordpress":
+        args.target = args.target or "wordpress"
+        logger.info("Profile: wordpress — targeting wordpress + generic attack categories")
+
     # --plugin implies --target wordpress and adds slugs to config
     if args.plugin:
         args.target = "wordpress"
@@ -157,10 +207,35 @@ async def run(args):
                 existing.append(slug)
         wp_cfg["plugins"] = existing
 
+    # --url overrides config target.base_url
+    if args.url:
+        config.setdefault("target", {})["base_url"] = args.url
+        logger.info(f"Target URL override: {args.url}")
+
+    # --path enables static source scanning
+    if args.path:
+        config.setdefault("target", {})["source_path"] = args.path
+        logger.info(f"Static source path: {args.path}")
+
+    # --wp-user / --wp-pass override credentials at runtime
+    if args.wp_user:
+        config.setdefault("auth", {}).setdefault("test_users", {}).setdefault("wp_admin", {})["username"] = args.wp_user
+    if args.wp_pass:
+        config.setdefault("auth", {}).setdefault("test_users", {}).setdefault("wp_admin", {})["password"] = args.wp_pass
+
+    # --origin-ip: store for client creation below
+    if args.origin_ip:
+        config.setdefault("target", {})["origin_ip"] = args.origin_ip
+
     # Determine target type(s) (CLI > config > default)
     target_raw = args.target or config.get("target", {}).get("type", "app")
+    # --path without --url or --target adds "static" to target types
+    if args.path and not args.url and not args.target:
+        target_raw = "static"
     target_types = set(t.strip() for t in target_raw.split(","))
-    config.setdefault("target", {})["type"] = target_raw
+    if args.path:
+        target_types.add("static")
+    config.setdefault("target", {})["type"] = ",".join(sorted(target_types))
     logger.info(f"Target type(s): {', '.join(sorted(target_types))}")
 
     # CVE data sync (if requested)
@@ -243,21 +318,50 @@ async def run(args):
         if skipped:
             logger.info(f"AWS mode: skipping {skipped} attack(s): {skip_attacks}")
 
+    # Static-only mode: no HTTP client needed
+    if target_types == {"static"}:
+        scores = []
+        for attack in attacks:
+            attack._config = config
+            try:
+                results = await attack.execute(None)
+                score = attack.score(results)
+                scores.append(score)
+            except Exception as e:
+                logger.error(f"  -> Error running {attack.name}: {e}")
+        summary = aggregate_scores(scores)
+        Path(args.output).mkdir(parents=True, exist_ok=True)
+        for fmt in args.report:
+            if fmt == "console":
+                ConsoleReporter().print_report(summary)
+            elif fmt == "json":
+                path = JsonReporter().write_report(summary, args.output)
+                logger.info(f"JSON report: {path}")
+            elif fmt == "html":
+                path = HtmlReporter().write_report(summary, args.output)
+                logger.info(f"HTML report: {path}")
+        return
+
     # Create client and authenticate based on target type
     base_url = config["target"]["base_url"]
+    origin_ip = config.get("target", {}).get("origin_ip")
+    if origin_ip:
+        logger.info(f"Origin-direct mode: connecting to {origin_ip} with Host header from {base_url}")
     if "wordpress" in target_types:
         wp_cfg = config.get("target", {}).get("wordpress", {})
-        client = WordPressClient(base_url, wp_config=wp_cfg)
+        client = WordPressClient(base_url, wp_config=wp_cfg, origin_ip=origin_ip)
     else:
-        client = RedTeamClient(base_url)
+        client = RedTeamClient(base_url, origin_ip=origin_ip)
 
     async with client:
         # Authenticate with appropriate method
         if "wordpress" in target_types:
             test_users = config.get("redteam", {}).get("auth", {}).get("test_users", {})
             wp_user = test_users.get("wp_admin", {})
-            username = os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
-            password = os.environ.get("WP_ADMIN_PASS", wp_user.get("password", ""))
+            # --wp-user/--wp-pass override env vars, which override config
+            cli_user = config.get("auth", {}).get("test_users", {}).get("wp_admin", {})
+            username = cli_user.get("username") or os.environ.get("WP_ADMIN_USER", wp_user.get("username", ""))
+            password = cli_user.get("password") or os.environ.get("WP_ADMIN_PASS", wp_user.get("password", ""))
             if username and password and not username.startswith("${"):
                 if not await client.wp_login(username, password):
                     logger.warning("WordPress admin login failed — running unauthenticated tests only")

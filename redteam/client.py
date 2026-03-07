@@ -39,8 +39,20 @@ class ChatResponse:
 class RedTeamClient:
     """HTTP client for testing EQMON API endpoints."""
 
-    def __init__(self, base_url: str, timeout: int = 180):
-        self.base_url = base_url.rstrip("/")
+    def __init__(self, base_url: str, timeout: int = 180, origin_ip: str = None):
+        from urllib.parse import urlparse, urlunparse
+        self._origin_ip = origin_ip
+        self._host_header: Optional[str] = None
+
+        if origin_ip:
+            parsed = urlparse(base_url.rstrip("/"))
+            self._host_header = parsed.hostname
+            port = parsed.port
+            netloc = origin_ip if not port else f"{origin_ip}:{port}"
+            self.base_url = urlunparse(parsed._replace(netloc=netloc))
+        else:
+            self.base_url = base_url.rstrip("/")
+
         self.timeout = aiohttp.ClientTimeout(total=timeout)
         self._session: Optional[aiohttp.ClientSession] = None
         self._cookies: dict = {}
@@ -85,7 +97,9 @@ class RedTeamClient:
     async def get(self, path: str, params: dict = None, headers: dict = None, cookies: dict = None) -> tuple[int, str, dict]:
         """Send GET request. Returns (status_code, body, headers)."""
         url = f"{self.base_url}{path}"
-        req_headers = headers or {}
+        req_headers = dict(headers or {})
+        if self._host_header and "Host" not in req_headers:
+            req_headers["Host"] = self._host_header
         req_cookies = cookies if cookies is not None else self._cookies
         start = time.monotonic()
         async with self._session.get(url, params=params, headers=req_headers, cookies=req_cookies) as resp:
@@ -97,7 +111,9 @@ class RedTeamClient:
     async def post(self, path: str, json_body: dict = None, headers: dict = None, cookies: dict = None, raw_body: str = None) -> tuple[int, str, dict]:
         """Send POST request. Returns (status_code, body, headers)."""
         url = f"{self.base_url}{path}"
-        req_headers = headers or {}
+        req_headers = dict(headers or {})
+        if self._host_header and "Host" not in req_headers:
+            req_headers["Host"] = self._host_header
         req_cookies = cookies if cookies is not None else self._cookies
         start = time.monotonic()
         kwargs = {"headers": req_headers, "cookies": req_cookies}
@@ -116,7 +132,9 @@ class RedTeamClient:
     async def delete(self, path: str, params: dict = None, headers: dict = None, cookies: dict = None) -> tuple[int, str, dict]:
         """Send DELETE request."""
         url = f"{self.base_url}{path}"
-        req_headers = headers or {}
+        req_headers = dict(headers or {})
+        if self._host_header and "Host" not in req_headers:
+            req_headers["Host"] = self._host_header
         req_cookies = cookies if cookies is not None else self._cookies
         start = time.monotonic()
         async with self._session.delete(url, params=params, headers=req_headers, cookies=req_cookies) as resp:

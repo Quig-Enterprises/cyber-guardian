@@ -5,6 +5,8 @@ project:
 target:
   base_url: "http://localhost:8081"
   api_path: "/api"
+  origin_ip: null     # Set to an IP to bypass DNS/CDN (e.g. "1.2.3.4"); sets Host header automatically
+  source_path: null   # Local directory for static PHP source analysis (used with --path)
 
 database:
   host: "localhost"

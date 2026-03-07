@@ -21,8 +21,8 @@ class WordPressClient(RedTeamClient):
     - AJAX POST helpers (authenticated + unauthenticated)
     """
 
-    def __init__(self, base_url: str, wp_config: dict = None, timeout: int = 180):
-        super().__init__(base_url, timeout)
+    def __init__(self, base_url: str, wp_config: dict = None, timeout: int = 180, origin_ip: str = None):
+        super().__init__(base_url, timeout, origin_ip=origin_ip)
         cfg = wp_config or {}
         self.login_path = cfg.get("login_path", "/wp-login.php")
         self.rest_prefix = cfg.get("rest_prefix", "/wp-json")

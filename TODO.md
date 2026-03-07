@@ -4,7 +4,7 @@
 
 ### Remote Domain Scanning via Direct Origin IP
 
-**Status:** NOT STARTED
+**Status:** COMPLETE
 **Priority:** MEDIUM
 
 **Description:**
@@ -153,7 +153,7 @@ target:
 
 ### Multi-Target Versatility (CLI Target Override, Profiles, Static Scan)
 
-**Status:** NOT STARTED
+**Status:** COMPLETE
 **Priority:** HIGH
 
 **Description:**
