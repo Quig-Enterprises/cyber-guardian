@@ -54,6 +54,15 @@ TOTAL=$(jq -r '.summary.total_issues' "$LATEST_JSON")
 # Save current counts
 echo "$CRITICAL $HIGH $MEDIUM $TOTAL" > "$STATE_DIR/latest-counts.txt"
 
+# Track individual issues (not just counts)
+log "Tracking individual vulnerabilities..."
+python3 "$PROJECT_DIR/blueteam/api/issue_tracker.py" "$LATEST_JSON" > "$STATE_DIR/tracker-output.txt" 2>&1
+
+# Extract tracker results
+NEW_ISSUES=$(grep "^New issues:" "$STATE_DIR/tracker-output.txt" | awk '{print $3}')
+FIXED_ISSUES=$(grep "^Fixed issues:" "$STATE_DIR/tracker-output.txt" | awk '{print $3}')
+PERSISTENT_ISSUES=$(grep "^Persistent issues:" "$STATE_DIR/tracker-output.txt" | awk '{print $3}')
+
 # Check for changes from previous scan
 if [ -f "$STATE_DIR/previous-counts.txt" ]; then
     read PREV_CRITICAL PREV_HIGH PREV_MEDIUM PREV_TOTAL < "$STATE_DIR/previous-counts.txt"
@@ -64,6 +73,15 @@ if [ -f "$STATE_DIR/previous-counts.txt" ]; then
 
     log "Scan complete: $TOTAL issues ($CRITICAL CRITICAL, $HIGH HIGH, $MEDIUM MEDIUM)"
 
+    # Report on individual issue changes
+    if [ -n "$NEW_ISSUES" ] && [ "$NEW_ISSUES" -gt 0 ]; then
+        log "${YELLOW}NEW: $NEW_ISSUES vulnerabilities appeared${NC}"
+    fi
+
+    if [ -n "$FIXED_ISSUES" ] && [ "$FIXED_ISSUES" -gt 0 ]; then
+        log "${GREEN}FIXED: $FIXED_ISSUES vulnerabilities resolved ✓${NC}"
+    fi
+
     # Alert if severity increased
     if [ $CRITICAL_DIFF -gt 0 ] || [ $HIGH_DIFF -gt 0 ]; then
         log "${RED}ALERT: Severity increased!${NC}"
@@ -73,7 +91,7 @@ if [ -f "$STATE_DIR/previous-counts.txt" ]; then
         # TODO: Send email/Slack notification here
         # Example: send-alert.sh "Security scan: +$CRITICAL_DIFF CRITICAL, +$HIGH_DIFF HIGH issues"
     elif [ $TOTAL_DIFF -lt 0 ]; then
-        log "${GREEN}IMPROVEMENT: $((TOTAL_DIFF * -1)) issues resolved${NC}"
+        log "${GREEN}IMPROVEMENT: $((TOTAL_DIFF * -1)) total issues resolved${NC}"
     fi
 else
     log "Scan complete: $TOTAL issues ($CRITICAL CRITICAL, $HIGH HIGH, $MEDIUM MEDIUM)"
@@ -82,6 +100,14 @@ fi
 
 # Update previous counts for next run
 cp "$STATE_DIR/latest-counts.txt" "$STATE_DIR/previous-counts.txt"
+
+# Generate mitigation TODOs and dashboard (once daily at midnight)
+HOUR=$(date +%H)
+if [ "$HOUR" = "00" ]; then
+    log "Generating mitigation TODOs and dashboard..."
+    python3 "$PROJECT_DIR/scripts/generate-mitigation-todos.py" >> "$STATE_DIR/todo-generation.log" 2>&1
+    log "TODO generation complete"
+fi
 
 # Cleanup old reports (keep last 168 hours = 1 week)
 find "$REPORTS_DIR" -name "codebase-security-scan-*.json" -mtime +7 -delete 2>/dev/null || true
