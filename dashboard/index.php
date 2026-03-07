@@ -18,7 +18,7 @@ if (!$session) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Dashboard - Artemis</title>
-    <link rel="stylesheet" href="css/security.css?v=20260307c">
+    <link rel="stylesheet" href="css/security.css?v=20260307d">
 </head>
 <body>
     <div class="dashboard-container">
@@ -683,6 +683,6 @@ if (!$session) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260307g"></script>
+    <script src="js/security.js?v=20260307h"></script>
 </body>
 </html>

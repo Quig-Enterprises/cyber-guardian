@@ -467,6 +467,7 @@
                 familyMap[fid] = {
                     name: c.family,
                     family_id: fid,
+                    frameworks: {},
                     implemented: 0,
                     partially_implemented: 0,
                     not_assessed: 0,
@@ -476,6 +477,7 @@
                     total: 0
                 };
             }
+            familyMap[fid].frameworks[c.framework || 'nist_800_171'] = true;
             var status = c.status;
             if (familyMap[fid][status] !== undefined) familyMap[fid][status]++;
             familyMap[fid].total++;
@@ -547,7 +549,14 @@
             row.appendChild(tdIcon);
 
             var tdName = document.createElement('td');
-            tdName.textContent = fam.name + ' (' + fid + ')';
+            var fwLabels = { nist_800_171: 'CMMC/NIST', hipaa: 'HIPAA', pci_dss_v4: 'PCI DSS' };
+            tdName.appendChild(document.createTextNode(fam.name + ' (' + fid + ') '));
+            Object.keys(fam.frameworks || {}).forEach(function (fw) {
+                var badge = document.createElement('span');
+                badge.className = 'fw-badge fw-' + fw;
+                badge.textContent = fwLabels[fw] || fw;
+                tdName.appendChild(badge);
+            });
             row.appendChild(tdName);
 
             var fields = ['implemented', 'partially_implemented', 'not_assessed', 'not_applicable', 'total'];

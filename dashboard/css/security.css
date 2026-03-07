@@ -827,6 +827,21 @@ a:hover {
     color: var(--text-secondary);
 }
 
+/* ---- Framework Badges ---- */
+.fw-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 4px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    vertical-align: middle;
+}
+.fw-nist_800_171 { background: rgba(0,180,255,0.15); color: #00b4ff; }
+.fw-hipaa { background: rgba(0,220,130,0.15); color: #00dc82; }
+.fw-pci_dss_v4 { background: rgba(255,170,0,0.15); color: #ffaa00; }
+
 /* ---- Badges ---- */
 
 .badge {
