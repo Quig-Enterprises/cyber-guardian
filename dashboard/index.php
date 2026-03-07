@@ -7,10 +7,10 @@
 // Session is validated by nginx auth_request against Keystone before this runs.
 // User identity is injected as HTTP headers by nginx from Keystone's auth response.
 $session = [
-    'sub'   => (int) ($_SERVER['HTTP_X_USER_ID'] ?? 0),
-    'name'  => $_SERVER['HTTP_X_USER_NAME'] ?? 'User',
-    'email' => $_SERVER['HTTP_X_USER_EMAIL'] ?? '',
-    'super' => ($_SERVER['HTTP_X_USER_SUPER'] ?? '0') === '1',
+    'sub'   => (int) ($_SERVER['HTTP_X_AUTH_USER_ID'] ?? 0),
+    'name'  => $_SERVER['HTTP_X_AUTH_USER'] ?? 'User',
+    'email' => '',
+    'super' => ($_SERVER['HTTP_X_AUTH_SUPER'] ?? '0') === '1',
 ];
 if (!$session['sub']) {
     header('Location: /admin/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
