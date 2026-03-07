@@ -45,7 +45,7 @@ Examples:
     group.add_argument("--all", action="store_true", help="Run all attack batteries")
     group.add_argument(
         "--category",
-        choices=["ai", "api", "web", "compliance", "wordpress", "cve"],
+        choices=["ai", "api", "web", "compliance", "wordpress", "cve", "malware"],
         help="Run attacks in a specific category",
     )
     group.add_argument(
