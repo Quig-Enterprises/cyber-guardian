@@ -5,10 +5,56 @@ import hashlib
 import json
 import logging
 import time
+from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+
+class CVECacheEncoder(json.JSONEncoder):
+    """Custom JSON encoder for CVERecord dataclasses and enums."""
+
+    def default(self, obj):
+        if is_dataclass(obj):
+            # Convert dataclass to dict, handling nested objects
+            result = {}
+            for key, value in asdict(obj).items():
+                if hasattr(value, 'value'):  # Enum
+                    result[key] = value.value if hasattr(value.value, '__str__') else str(value)
+                else:
+                    result[key] = value
+            result['__dataclass__'] = obj.__class__.__name__
+            return result
+        elif hasattr(obj, 'value'):  # Enum
+            return obj.value
+        return super().default(obj)
+
+
+def cve_cache_decoder(dct):
+    """JSON decoder hook to reconstruct CVERecord and ExploitRef objects."""
+    if '__dataclass__' in dct:
+        from redteam.cve.models import CVERecord, ExploitRef, ExploitMaturity
+
+        classname = dct.pop('__dataclass__')
+
+        if classname == 'CVERecord':
+            # Reconstruct ExploitMaturity enum
+            if 'exploit_maturity' in dct and isinstance(dct['exploit_maturity'], str):
+                dct['exploit_maturity'] = ExploitMaturity(dct['exploit_maturity'])
+
+            # Reconstruct ExploitRef objects
+            if 'exploit_refs' in dct and isinstance(dct['exploit_refs'], list):
+                dct['exploit_refs'] = [
+                    ExploitRef(**ref) if isinstance(ref, dict) else ref
+                    for ref in dct['exploit_refs']
+                ]
+
+            return CVERecord(**dct)
+        elif classname == 'ExploitRef':
+            return ExploitRef(**dct)
+
+    return dct
 
 
 class CVECache:
@@ -60,7 +106,10 @@ class CVECache:
         if disk_path.exists():
             try:
                 async with self._disk_lock:
-                    data = json.loads(disk_path.read_text(encoding="utf-8"))
+                    data = json.loads(
+                        disk_path.read_text(encoding="utf-8"),
+                        object_hook=cve_cache_decoder
+                    )
                 if time.time() - data.get("ts", 0) < self._disk_ttl:
                     value = data["value"]
                     # Promote to memory
@@ -86,7 +135,7 @@ class CVECache:
                 disk_path.parent.mkdir(parents=True, exist_ok=True)
                 data = {"value": value, "ts": time.time()}
                 disk_path.write_text(
-                    json.dumps(data, default=str), encoding="utf-8"
+                    json.dumps(data, cls=CVECacheEncoder), encoding="utf-8"
                 )
         except OSError as exc:
             logger.debug("Disk cache write error for %s: %s", key, exc)

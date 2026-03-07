@@ -112,19 +112,16 @@ bash scripts/run-nightly-scan.sh
 
 ## Known Issues
 
-### Bug: CVE Display Formatting Error
+### ~~Bug: CVE Display Formatting Error~~ (FIXED 2026-03-06)
 
-**Issue:** When using table output (non-JSON), some CVE lookups encounter AttributeError:
-```
-AttributeError: 'str' object has no attribute 'cvss_v31_score'
-```
+**Issue:** ~~When using table output (non-JSON), some CVE lookups encountered AttributeError.~~
 
-**Workaround:** Use `--json` flag for reliable output:
-```bash
-python3 -m redteam.cve lookup "wordpress 6.4" --json | python3 -m json.tool
-```
+**Fix Applied:** Updated cache serialization to properly handle CVERecord dataclasses:
+- Added custom JSON encoder/decoder in `redteam/cve/cache.py`
+- Cache now stores structured data instead of string repr()
+- Fixed defensive attribute access in `redteam/cve/__main__.py`
 
-**Status:** Bug exists in upstream code from latest commit (7139854). Scanner is functional, JSON output works correctly.
+**Status:** ✅ Fixed - table output now works correctly for all queries.
 
 ---
 

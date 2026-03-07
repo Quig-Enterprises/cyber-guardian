@@ -144,20 +144,36 @@ async def cmd_lookup(config, args):
     print("-" * 110)
 
     for r in records:
-        cvss = f"{r.cvss_v31_score:.1f}" if r.cvss_v31_score else "  -  "
-        risk = f"{r.risk_score:.1f}"
-        kev = "YES" if r.in_kev else " - "
-        exploits = str(len(r.exploit_refs)) if r.exploit_refs else "  -  "
-        desc = r.description[:55] + "..." if len(r.description) > 58 else r.description
+        # Handle both CVERecord objects and dict/string results
+        if isinstance(r, str):
+            # Extract CVE ID from string representation if present
+            import re
+            match = re.search(r"cve_id='([^']+)'", r)
+            cve_id = match.group(1) if match else r[:20]
+            print(f"{cve_id:<20} {'  -  ':>5} {'  -  ':>5} {'unknown':<10} {' - ':>3} {'  -  ':>8}  (cached, re-run with --force)")
+            continue
+
+        # Safe attribute access with defaults
+        cvss_val = getattr(r, 'cvss_v31_score', None)
+        cvss = f"{cvss_val:.1f}" if cvss_val is not None else "  -  "
+        risk_val = getattr(r, 'risk_score', None)
+        risk = f"{risk_val:.1f}" if risk_val is not None else "  -  "
+        kev = "YES" if getattr(r, 'in_kev', False) else " - "
+        exploit_refs = getattr(r, 'exploit_refs', [])
+        exploits = str(len(exploit_refs)) if exploit_refs else "  -  "
+        description = getattr(r, 'description', '')
+        desc = description[:55] + "..." if len(description) > 58 else description
         desc = desc.replace("\n", " ")
-        print(f"{r.cve_id:<20} {cvss:>5} {risk:>5} {r.severity:<10} {kev:>3} {exploits:>8}  {desc}")
+        cve_id = getattr(r, 'cve_id', str(r))
+        severity = getattr(r, 'severity', 'unknown')
+        print(f"{cve_id:<20} {cvss:>5} {risk:>5} {severity:<10} {kev:>3} {exploits:>8}  {desc}")
 
     # Summary
     print()
-    kev_count = sum(1 for r in records if r.in_kev)
-    exploit_count = sum(1 for r in records if r.exploit_refs)
-    critical = sum(1 for r in records if r.severity == "critical")
-    high = sum(1 for r in records if r.severity == "high")
+    kev_count = sum(1 for r in records if getattr(r, 'in_kev', False))
+    exploit_count = sum(1 for r in records if getattr(r, 'exploit_refs', []))
+    critical = sum(1 for r in records if getattr(r, 'severity', '') == "critical")
+    high = sum(1 for r in records if getattr(r, 'severity', '') == "high")
     print(f"Summary: {len(records)} CVEs ({critical} critical, {high} high), "
           f"{kev_count} in CISA KEV, {exploit_count} with known exploits")
 
