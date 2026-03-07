@@ -1,5 +1,7 @@
 <?php
-// Load dashboard .env (admin credentials for alfred_admin DB)
+// Load dashboard .env for credentials (DB_USER, DB_PASS, DB_NAME)
+// DB_HOST is always 127.0.0.1 on alfred — Postgres listens on all interfaces
+// and the shared admin/.env uses 172.200.1.1 (Docker bridge) for Keystone.
 foreach ([
     __DIR__ . '/../../admin/.env',
     $_SERVER['DOCUMENT_ROOT'] . '/admin/.env',
@@ -17,7 +19,9 @@ foreach ([
 function getSecurityDb(): PDO {
     static $pdo = null;
     if ($pdo === null) {
-        $host = $_ENV['DB_HOST'] ?? 'localhost';
+        // Always use 127.0.0.1 — PHP-FPM runs on the host and Postgres is local.
+        // (admin/.env uses 172.200.1.1 for Keystone/Docker, which we don't use here.)
+        $host = '127.0.0.1';
         $user = $_ENV['DB_USER'] ?? 'alfred_admin';
         $pass = $_ENV['DB_PASS'] ?? '';
         $db   = $_ENV['DB_NAME'] ?? 'alfred_admin';
