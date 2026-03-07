@@ -1,0 +1,44 @@
+target:
+  type: "generic"
+  base_url: "https://finance.quigs.com"
+  generic:
+    test_endpoints:
+      - "/"
+      - "/api/health"
+    login_endpoint: "/login"
+
+auth:
+  test_users: {}
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  verification:
+    enabled: true
+    mode: "both"  # Try blue team (filesystem) first, fall back to HTTP probing
+    aggressiveness: "low"  # Safe for production
+    config_endpoints:
+      nginx:
+        - "/admin/nginx/config"
+        - "/nginx-status"
+      php:
+        - "/phpinfo.php"
+        - "/info.php"
+    specific_cves:
+      CVE-2019-11043: true
+      CVE-2024-4577: true
+      CVE-2016-10033: true
+      CVE-2013-4547: true
+
+reporting:
+  formats: ["console", "json"]
+  output_dir: "reports/"
+
+cleanup:
+  enabled: false
+
+database:
+  host: "localhost"
+  name: "eqmon"
+  user: "eqmon"
+  password: "test"

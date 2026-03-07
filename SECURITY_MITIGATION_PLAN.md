@@ -333,13 +333,13 @@ Update pattern to require database function context:
 
 ### Week 4-6 (March 29 - April 18):
 - [ ] Phase 3: Review remaining high-priority CxQ plugins
-- [ ] Implement automated weekly security scans
+- [x] Implement automated security scans - **COMPLETE** (hourly scans active)
 - [ ] Document security best practices for development
 
 ### Ongoing:
 - [ ] Monitor third-party plugin security advisories
-- [ ] Run weekly security scans
-- [ ] Update ClamAV virus definitions daily
+- [x] **Automated hourly security scans** - **ACTIVE** (installed 2026-03-07)
+- [x] Update ClamAV virus definitions daily - **AUTOMATED** (freshclam service)
 - [ ] Review new code for security issues before deployment
 
 ---
@@ -348,8 +348,8 @@ Update pattern to require database function context:
 
 ### Infrastructure:
 - [x] ClamAV installation on alfred server (~500MB-1GB RAM)
-- [ ] Scheduled cron job for weekly security scans
-- [ ] Log storage for security scan results (~100MB/month)
+- [x] **Scheduled cron job for hourly security scans** - **ACTIVE**
+- [x] Log storage for security scan results (~440MB/week, auto-cleaned)
 
 ### Personnel:
 - Developer time: ~40 hours (spread over 6 weeks)
