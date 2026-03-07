@@ -3,8 +3,9 @@
 // DB_HOST is always 127.0.0.1 on alfred — Postgres listens on all interfaces
 // and the shared admin/.env uses 172.200.1.1 (Docker bridge) for Keystone.
 foreach ([
-    __DIR__ . '/../../admin/.env',
+    __DIR__ . '/../../../admin/.env',
     $_SERVER['DOCUMENT_ROOT'] . '/admin/.env',
+    '/opt/artemis/www/admin/.env',
 ] as $_envFile) {
     if (file_exists($_envFile)) {
         foreach (file($_envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $_line) {
