@@ -9,7 +9,8 @@ if (!$userId) {
 }
 
 try {
-    $reportFiles = glob('/opt/security-red-team/reports/redteam-report-*.json');
+    $reportsDir = '/opt/claude-workspace/projects/cyber-guardian/reports';
+    $reportFiles = glob("{$reportsDir}/redteam-report-*.json");
     if (empty($reportFiles)) {
         echo json_encode(['error' => 'No red team reports found']);
         exit;
@@ -21,7 +22,7 @@ try {
     $requestedReport = $_GET['report'] ?? null;
     if ($requestedReport) {
         $safeName = basename($requestedReport);
-        $reportPath = "/opt/security-red-team/reports/{$safeName}";
+        $reportPath = "{$reportsDir}/{$safeName}";
         if (!file_exists($reportPath)) {
             http_response_code(404);
             echo json_encode(['error' => 'Report not found']);
