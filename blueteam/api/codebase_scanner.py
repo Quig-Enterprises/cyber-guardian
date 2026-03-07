@@ -87,10 +87,10 @@ class CodebaseSecurityScanner:
             "xss_js": [
                 {
                     "pattern": r'\.innerHTML\s*=\s*(?![\'"]\s*[\'"]|\'\'|"")',
-                    # Safe: empty string assignment, or element is textarea (entity decode pattern),
-                    # or sanitization present in context
-                    "safe_pattern": r'\.innerHTML\s*=\s*(?:\'\'|"")',
-                    "safe_context_pattern": r'(?:escapeHtml|DOMPurify\.sanitize|sanitizeHtml|esc_html|createElement\s*\(\s*[\'"]textarea[\'"])',
+                    # Safe: empty string, purely static string literal (no $ interpolation or variables),
+                    # textarea entity-decode pattern, or sanitization function present in context
+                    "safe_pattern": r'(?:\.innerHTML\s*=\s*(?:\'\'|""|\'[^\'$`]*\'|"[^"$`]*")|\.innerHTML\s*=\s*`[^`$]*`)',
+                    "safe_context_pattern": r'(?:escapeHtml|escHtml|escAttr|DOMPurify\.sanitize|sanitizeHtml|esc_html|esc\(|createElement\s*\(\s*[\'"]textarea[\'"])',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-79",
                     "description": "Potential XSS via innerHTML assignment",
