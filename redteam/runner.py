@@ -21,6 +21,7 @@ from redteam.reporters.json_report import JsonReporter
 from redteam.reporters.html import HtmlReporter
 from redteam.cleanup.db import DatabaseCleaner
 from redteam.state import ScanState
+from redteam.compliance_bridge import generate_compliance_report, write_compliance_report
 
 logger = logging.getLogger("redteam")
 
@@ -166,6 +167,18 @@ Examples:
         "-v", "--verbose",
         action="store_true",
         help="Enable verbose (DEBUG) logging",
+    )
+    parser.add_argument(
+        "--compliance",
+        action="store_true",
+        help="Generate compliance assessment report mapping attack results to framework controls (NIST 800-171, PCI DSS 4.0, HIPAA)",
+    )
+    parser.add_argument(
+        "--compliance-framework",
+        choices=["nist_800_171", "pci_dss_v4", "hipaa"],
+        nargs="+",
+        default=None,
+        help="Limit compliance assessment to specific framework(s). Default: all frameworks.",
     )
 
     return parser.parse_args()
@@ -340,6 +353,20 @@ async def run(args):
             elif fmt == "html":
                 path = HtmlReporter().write_report(summary, args.output)
                 logger.info(f"HTML report: {path}")
+        # Compliance assessment (if requested)
+        if getattr(args, 'compliance', False):
+            logger.info("Generating compliance assessment...")
+            compliance_report = generate_compliance_report(
+                scores, frameworks=args.compliance_framework
+            )
+            compliance_path = write_compliance_report(compliance_report, args.output)
+            logger.info(f"Compliance assessment: {compliance_path}")
+            # Print summary to console
+            for fw, stats in compliance_report["summary"].items():
+                logger.info(
+                    f"  {fw}: {stats['met']} met, {stats['not_met']} not met, "
+                    f"{stats['partially_met']} partial, {stats['not_assessed']} not assessed"
+                )
         return
 
     # Create client and authenticate based on target type
@@ -452,6 +479,20 @@ async def run(args):
             elif fmt == "html":
                 path = HtmlReporter().write_report(summary, args.output)
                 logger.info(f"HTML report: {path}")
+        # Compliance assessment (if requested)
+        if getattr(args, 'compliance', False):
+            logger.info("Generating compliance assessment...")
+            compliance_report = generate_compliance_report(
+                scores, frameworks=args.compliance_framework
+            )
+            compliance_path = write_compliance_report(compliance_report, args.output)
+            logger.info(f"Compliance assessment: {compliance_path}")
+            # Print summary to console
+            for fw, stats in compliance_report["summary"].items():
+                logger.info(
+                    f"  {fw}: {stats['met']} met, {stats['not_met']} not met, "
+                    f"{stats['partially_met']} partial, {stats['not_assessed']} not assessed"
+                )
 
     # Global cleanup
     if not args.no_cleanup and config.get("cleanup", {}).get("enabled", True):
