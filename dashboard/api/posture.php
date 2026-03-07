@@ -22,8 +22,10 @@ try {
     $stmt = $pdo->query('SELECT score_id, scored_at, overall_score, compliance_score, redteam_score, monitoring_score, incident_score, malware_score, details, redteam_report_id FROM blueteam.posture_scores ORDER BY scored_at DESC LIMIT 30');
     $history = $stmt->fetchAll();
 
-    if (!empty($history)) {
-        $latest = $history[0];
+    $latest = !empty($history) ? $history[0] : null;
+    $hasFullScores = $latest && $latest['overall_score'] !== null && $latest['compliance_score'] !== null;
+
+    if ($hasFullScores) {
         $current = [
             'overall' => (float) $latest['overall_score'],
             'compliance' => (float) $latest['compliance_score'],
@@ -46,16 +48,18 @@ try {
         $controlsImplemented = ($statusCounts['implemented'] ?? 0);
         $complianceScore = $controlsTotal > 0 ? round(($controlsImplemented / $controlsTotal) * 100, 2) : 0;
 
-        // Red team score
-        $redteamScore = 0;
-        $reportFiles = glob('/opt/security-red-team/reports/redteam-report-*.json');
-        if (!empty($reportFiles)) {
-            rsort($reportFiles);
-            $reportData = json_decode(file_get_contents($reportFiles[0]), true);
-            if ($reportData && isset($reportData['total_defended'], $reportData['total_variants'])) {
-                $totalVariants = (int) $reportData['total_variants'];
-                if ($totalVariants > 0) {
-                    $redteamScore = round(((int) $reportData['total_defended'] / $totalVariants) * 100, 2);
+        // Red team score — use latest DB row if available, else scan report files
+        $redteamScore = ($latest && $latest['redteam_score'] !== null) ? (float) $latest['redteam_score'] : 0;
+        if ($redteamScore == 0) {
+            $reportFiles = glob('/opt/claude-workspace/projects/cyber-guardian/reports/redteam-report-*.json');
+            if (!empty($reportFiles)) {
+                rsort($reportFiles);
+                $reportData = json_decode(file_get_contents($reportFiles[0]), true);
+                if ($reportData && isset($reportData['total_defended'], $reportData['total_variants'])) {
+                    $totalVariants = (int) $reportData['total_variants'];
+                    if ($totalVariants > 0) {
+                        $redteamScore = round(((int) $reportData['total_defended'] / $totalVariants) * 100, 2);
+                    }
                 }
             }
         }

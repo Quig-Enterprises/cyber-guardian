@@ -69,7 +69,7 @@ try {
     // All controls for expandable detail
     $stmt = $pdo->query("
         SELECT control_id, family, family_id, status, requirement, implementation_notes,
-               evidence_type, responsible_party, last_assessed, assessor_notes, cmmc_level
+               evidence_type, responsible_party, last_assessed, assessor_notes, cmmc_level, framework
         FROM blueteam.compliance_controls
         ORDER BY split_part(control_id, '.', 1)::int,
                split_part(control_id, '.', 2)::int,

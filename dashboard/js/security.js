@@ -18,6 +18,7 @@
     var refreshTimer = null;
     var complianceCache = null;
     var activeFilter = null;
+    var activeFramework = null;
     var redteamCache = null;
     var activeRtFilter = null;
     var activeRtCategoryFilter = null;
@@ -417,7 +418,7 @@
     function fetchCompliance() {
         apiFetch('compliance.php').then(function (data) {
             complianceCache = data;
-            renderCompliance(data, activeFilter);
+            renderCompliance(data, activeFilter, activeFramework);
             if (data.cmmc) renderCmmcLevels(data.cmmc);
         }).catch(function (err) {
             document.getElementById('compliance-body').textContent = '';
@@ -432,17 +433,20 @@
         });
     }
 
-    function renderCompliance(data, filterLevel) {
+    function renderCompliance(data, filterLevel, filterFramework) {
         var controls = data.controls || [];
 
-        // Apply CMMC level filter if set
-        if (filterLevel === 'other') {
+        // Apply framework filter if set
+        if (filterFramework) {
             controls = controls.filter(function (c) {
-                return !c.cmmc_level;
+                return c.framework === filterFramework;
             });
-        } else if (filterLevel) {
+        }
+
+        // Apply CMMC level filter if set (only relevant for nist_800_171)
+        if (filterLevel) {
             controls = controls.filter(function (c) {
-                return (parseInt(c.cmmc_level, 10) || 2) <= filterLevel;
+                return c.framework === 'nist_800_171' && (parseInt(c.cmmc_level, 10) || 2) <= filterLevel;
             });
         }
 
@@ -489,21 +493,27 @@
 
         // Filter banner
         var banner = document.getElementById('compliance-filter-banner');
-        if (filterLevel === 'other') {
-            setText('filter-banner-text', 'Showing controls without CMMC level (' + controls.length + ' controls)');
+        var frameworkNames = { nist_800_171: 'CMMC / NIST 800-171', hipaa: 'HIPAA', pci_dss_v4: 'PCI DSS v4' };
+        if (filterFramework) {
+            setText('filter-banner-text', 'Showing ' + frameworkNames[filterFramework] + ' controls (' + controls.length + ' controls)');
             banner.style.display = 'flex';
         } else if (filterLevel) {
-            var levelNames = { 1: 'Level 1 — Foundational', 2: 'Level 2 — Advanced', 3: 'Level 3 — Expert' };
-            setText('filter-banner-text', 'Showing CMMC ' + levelNames[filterLevel] + ' controls (' + controls.length + ' controls)');
+            var levelNames = { 1: 'CMMC Level 1 — Foundational', 2: 'CMMC Level 2 — Advanced', 3: 'CMMC Level 3 — Expert' };
+            setText('filter-banner-text', 'Showing ' + levelNames[filterLevel] + ' controls (' + controls.length + ' controls)');
             banner.style.display = 'flex';
         } else {
             banner.style.display = 'none';
         }
 
-        // Sync CMMC filter button highlights
+        // Sync filter button highlights
         document.querySelectorAll('.cmmc-filter-btn').forEach(function (btn) {
-            var val = btn.getAttribute('data-cmmc-filter');
-            btn.classList.toggle('active', val === String(filterLevel));
+            var cmmcVal = btn.getAttribute('data-cmmc-filter');
+            var fwVal = btn.getAttribute('data-framework-filter');
+            if (cmmcVal) {
+                btn.classList.toggle('active', cmmcVal === String(filterLevel));
+            } else if (fwVal) {
+                btn.classList.toggle('active', fwVal === filterFramework);
+            }
         });
 
         // Build family table
@@ -656,6 +666,7 @@
 
     function filterComplianceByLevel(level) {
         activeFilter = level;
+        activeFramework = null;
 
         // Highlight the active CMMC card
         document.querySelectorAll('.cmmc-card').forEach(function (card) {
@@ -668,12 +679,13 @@
         // Force re-render with filter (compliance tab may already be loaded)
         if (complianceCache) {
             tabDataLoaded['compliance'] = true;
-            renderCompliance(complianceCache, level);
+            renderCompliance(complianceCache, level, null);
         }
     }
 
     function clearComplianceFilter() {
         activeFilter = null;
+        activeFramework = null;
         document.querySelectorAll('.cmmc-card').forEach(function (card) {
             card.classList.remove('active-filter');
         });
@@ -2009,19 +2021,37 @@
             });
         }
 
-        // CMMC filter button click handlers (Compliance tab)
+        // Compliance filter button click handlers (Framework + CMMC level)
         document.querySelectorAll('.cmmc-filter-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                var val = this.getAttribute('data-cmmc-filter');
-                var level = val === 'other' ? 'other' : parseInt(val, 10);
-                if (activeFilter === level) {
-                    clearComplianceFilter();
-                } else {
-                    activeFilter = level;
-                    document.querySelectorAll('.cmmc-card').forEach(function (card) {
-                        card.classList.remove('active-filter');
-                    });
-                    if (complianceCache) renderCompliance(complianceCache, level);
+                var cmmcVal = this.getAttribute('data-cmmc-filter');
+                var fwVal = this.getAttribute('data-framework-filter');
+
+                if (fwVal) {
+                    // Framework filter
+                    if (activeFramework === fwVal) {
+                        clearComplianceFilter();
+                    } else {
+                        activeFramework = fwVal;
+                        activeFilter = null;
+                        document.querySelectorAll('.cmmc-card').forEach(function (card) {
+                            card.classList.remove('active-filter');
+                        });
+                        if (complianceCache) renderCompliance(complianceCache, null, fwVal);
+                    }
+                } else if (cmmcVal) {
+                    // CMMC level filter
+                    var level = parseInt(cmmcVal, 10);
+                    if (activeFilter === level) {
+                        clearComplianceFilter();
+                    } else {
+                        activeFilter = level;
+                        activeFramework = null;
+                        document.querySelectorAll('.cmmc-card').forEach(function (card) {
+                            card.classList.remove('active-filter');
+                        });
+                        if (complianceCache) renderCompliance(complianceCache, level, null);
+                    }
                 }
             });
         });
@@ -2038,16 +2068,18 @@
     window.addEventListener('popstate', function () {
         var hash = window.location.hash || '#posture';
         switchTab(hash);
-        // Clear CMMC filter when navigating back to posture
+        // Clear filters when navigating back to posture
         if (hash === '#posture' || hash === '') {
             activeFilter = null;
+            activeFramework = null;
             document.querySelectorAll('.cmmc-card').forEach(function (card) {
                 card.classList.remove('active-filter');
             });
         }
         // Re-render compliance without filter when navigating back to compliance tab directly
-        if (hash === '#compliance' && activeFilter && complianceCache) {
+        if (hash === '#compliance' && (activeFilter || activeFramework) && complianceCache) {
             activeFilter = null;
+            activeFramework = null;
             document.querySelectorAll('.cmmc-card').forEach(function (card) {
                 card.classList.remove('active-filter');
             });

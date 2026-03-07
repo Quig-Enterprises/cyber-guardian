@@ -344,11 +344,14 @@ if (!$session) {
                 <button class="filter-clear-btn" id="filter-clear-btn">Clear Filter</button>
             </div>
             <div class="cmmc-filter-bar">
-                <span class="cmmc-filter-label">CMMC LEVEL</span>
-                <button class="cmmc-filter-btn" data-cmmc-filter="1">Level 1</button>
-                <button class="cmmc-filter-btn" data-cmmc-filter="2">Level 2</button>
-                <button class="cmmc-filter-btn" data-cmmc-filter="3">Level 3</button>
-                <button class="cmmc-filter-btn" data-cmmc-filter="other">Other</button>
+                <span class="cmmc-filter-label">FRAMEWORK</span>
+                <button class="cmmc-filter-btn" data-framework-filter="nist_800_171">CMMC / NIST</button>
+                <button class="cmmc-filter-btn" data-framework-filter="hipaa">HIPAA</button>
+                <button class="cmmc-filter-btn" data-framework-filter="pci_dss_v4">PCI DSS</button>
+                <span class="cmmc-filter-label" style="margin-left:12px;">CMMC LEVEL</span>
+                <button class="cmmc-filter-btn" data-cmmc-filter="1">CMMC Level 1</button>
+                <button class="cmmc-filter-btn" data-cmmc-filter="2">CMMC Level 2</button>
+                <button class="cmmc-filter-btn" data-cmmc-filter="3">CMMC Level 3</button>
             </div>
             <div id="compliance-summary" class="compliance-summary">
                 <div class="summary-pill pill-implemented" title="Controls fully implemented and verified"><span class="pill-num" id="comp-implemented">0</span> Implemented</div>
