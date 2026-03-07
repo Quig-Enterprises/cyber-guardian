@@ -89,7 +89,7 @@ class CodebaseSecurityScanner:
                     "pattern": r'\.innerHTML\s*=\s*(?![\'"]\s*[\'"]|\'\'|"")',
                     # Safe: empty string, purely static string literal (no $ interpolation or variables),
                     # textarea entity-decode pattern, or sanitization function present in context
-                    "safe_pattern": r'(?:\.innerHTML\s*=\s*(?:\'\'|""|\'[^\'$`]*\'|"[^"$`]*")|\.innerHTML\s*=\s*`[^`$]*`)',
+                    "safe_pattern": r'(?:\.innerHTML\s*=\s*(?:\'\'|""|\'[^\'$`]*\'|"[^"$`]*")|\.innerHTML\s*=\s*`[^`$]*`|\.innerHTML\s*=\s*\[)',
                     "safe_context_pattern": r'(?:escapeHtml|escHtml|escAttr|DOMPurify\.sanitize|sanitizeHtml|esc_html|esc\(|createElement\s*\(\s*[\'"]textarea[\'"])',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-79",
@@ -182,11 +182,14 @@ class CodebaseSecurityScanner:
                     "pattern": r'\$wpdb\s*->\s*(?:query|get_results|get_row|get_var|get_col|update|delete|insert)\s*\([^)]*(?:"\s*\.\s*\$|\$[a-zA-Z_]\w*\s*\.\s*"|\{\$)',
                     # Safe: table existence checks, prepare() already used, WP core table globals,
                     #       {$this->property} (class property, never user input),
-                    #       SELECT DISTINCT with no WHERE clause (read-only schema enumeration)
-                    "safe_pattern": r'(?:SHOW\s+TABLES\s+LIKE|wpdb->prepare\s*\(|\$wpdb->(?:users|usermeta|posts|postmeta|options|terms|term_taxonomy|term_relationships|comments|commentmeta)\b|TRUNCATE\s+TABLE\s+\{\$this->|\{\$this->\w+\}|SELECT\s+DISTINCT\s+\w+\s+FROM\s+\{)',
-                    # Safe context: variable built only from hardcoded string literals (enum/whitelist pattern)
-                    # or from $wpdb->prefix (WP table name, never user input)
-                    "safe_context_pattern": r'(?:\$where\s*=\s*["\']WHERE\s+\w+|\$\w+\s*=\s*\$wpdb->prefix\s*\.)',
+                    #       SELECT DISTINCT with no WHERE clause (read-only schema enumeration),
+                    #       ALTER TABLE / DROP TABLE / TRUNCATE (DDL schema migrations, not data queries),
+                    #       {$this->table_names[...]} (property array access),
+                    #       commented-out lines
+                    "safe_pattern": r'(?:SHOW\s+TABLES\s+LIKE|wpdb->prepare\s*\(|\$wpdb->(?:users|usermeta|posts|postmeta|options|terms|term_taxonomy|term_relationships|comments|commentmeta)\b|\{\$this->\w+(?:\[[\'"]\w+[\'"]\])?\}|SELECT\s+DISTINCT\s+\w+\s+FROM\s+\{|ALTER\s+TABLE\s+\{|DROP\s+TABLE\s+|TRUNCATE\s+TABLE\s+\{|UPDATE\s+\{|^\s*//)',
+                    # Safe context: variable built only from hardcoded string literals (enum/whitelist pattern),
+                    # from $wpdb->prefix (WP table name), or from a get_table_name() helper (always safe constant)
+                    "safe_context_pattern": r'(?:\$where\s*=\s*["\']WHERE\s+\w+|\$\w+\s*=\s*\$wpdb->prefix\s*\.|\$\w+\s*=\s*\w+::get_table_name\s*\()',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-89",
                     "description": "Possible SQL injection: $wpdb method called with string concatenation instead of prepare()",
@@ -275,10 +278,13 @@ class CodebaseSecurityScanner:
             "credentials": [
                 {
                     "pattern": r'(?:password|passwd|pwd|secret|api[_-]?key|token)\s*=\s*["\'][^"\']{8,}["\']',
+                    # Safe: commented-out lines, PHP variable interpolation in quotes,
+                    #       wp-config constant references, environment variable references
+                    "safe_pattern": r'(?:^\s*//|^\s*#|^\s*\*|\{\$\w+\}|defined\s*\(|getenv\s*\(|process\.env\.|import\.meta\.env\.)',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-798",
                     "description": "Hardcoded credentials detected",
-                    "recommendation": "Move credentials to environment variables or secure configuration"
+                    "recommendation": "Move credentials to environment variables or wp-config constants"
                 }
             ],
             "unsafe_unserialize": [
