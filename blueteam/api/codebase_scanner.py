@@ -79,6 +79,69 @@ class CodebaseSecurityScanner:
     def __init__(self):
         """Initialize scanner with security patterns."""
         self.patterns = self._init_security_patterns()
+        self.js_patterns = self._init_js_patterns()
+
+    def _init_js_patterns(self) -> Dict[str, List[Dict[str, Any]]]:
+        """Initialize regex patterns for JavaScript/TypeScript security issues."""
+        return {
+            "xss_js": [
+                {
+                    "pattern": r'\.innerHTML\s*=\s*(?![\'"]\s*[\'"]|\'\'|"")',
+                    # Safe: empty string assignment, or element is textarea (entity decode pattern),
+                    # or sanitization present in context
+                    "safe_pattern": r'\.innerHTML\s*=\s*(?:\'\'|"")',
+                    "safe_context_pattern": r'(?:escapeHtml|DOMPurify\.sanitize|sanitizeHtml|esc_html|createElement\s*\(\s*[\'"]textarea[\'"])',
+                    "severity": Severity.HIGH,
+                    "cwe": "CWE-79",
+                    "description": "Potential XSS via innerHTML assignment",
+                    "recommendation": "Use textContent or DOMPurify.sanitize() before assigning to innerHTML"
+                },
+                {
+                    "pattern": r'document\.write\s*\(',
+                    "severity": Severity.HIGH,
+                    "cwe": "CWE-79",
+                    "description": "document.write() can introduce XSS",
+                    "recommendation": "Use DOM manipulation methods (createElement, appendChild) instead"
+                },
+                {
+                    "pattern": r'eval\s*\(',
+                    "safe_pattern": r'//.*eval\s*\(|/\*.*eval',
+                    "severity": Severity.HIGH,
+                    "cwe": "CWE-95",
+                    "description": "eval() executes arbitrary code",
+                    "recommendation": "Avoid eval(); use JSON.parse() for data or explicit function calls"
+                },
+            ],
+            "credentials_js": [
+                {
+                    "pattern": r'(?:apiKey|api_key|apiSecret|secret|password|passwd|token|AUTH_TOKEN)\s*[:=]\s*["\'][^"\']{8,}["\']',
+                    "safe_pattern": r'(?:process\.env\.|import\.meta\.env\.|YOUR_|REPLACE_|EXAMPLE_|placeholder)',
+                    "severity": Severity.CRITICAL,
+                    "cwe": "CWE-798",
+                    "description": "Hardcoded credential or API key detected",
+                    "recommendation": "Move secrets to environment variables (process.env / import.meta.env)"
+                },
+            ],
+            "dangerous_functions_js": [
+                {
+                    "pattern": r'dangerouslySetInnerHTML\s*=\s*\{\s*\{?\s*__html\s*:',
+                    "safe_pattern": r'DOMPurify\.sanitize|sanitize\(',
+                    "severity": Severity.HIGH,
+                    "cwe": "CWE-79",
+                    "description": "dangerouslySetInnerHTML without sanitization",
+                    "recommendation": "Sanitize content with DOMPurify before passing to dangerouslySetInnerHTML"
+                },
+            ],
+            "insecure_comms_js": [
+                {
+                    "pattern": r'postMessage\s*\([^,)]+,\s*["\*]["\*]',
+                    "severity": Severity.MEDIUM,
+                    "cwe": "CWE-346",
+                    "description": "postMessage with wildcard targetOrigin ('*')",
+                    "recommendation": "Specify exact target origin instead of '*'"
+                },
+            ],
+        }
 
     def _init_security_patterns(self) -> Dict[str, List[Dict[str, Any]]]:
         """Initialize regex patterns for security issues."""
@@ -251,19 +314,33 @@ class CodebaseSecurityScanner:
             files_scanned=0
         )
 
-        # Find all PHP files
+        skip_dirs = ['/vendor/', '/node_modules/', '/dev/', '/.git/', '/dist/', '/build/']
+
+        # Scan PHP files
         php_files = list(Path(project_path).rglob("*.php"))
-
         logger.info(f"Scanning {len(php_files)} PHP files in {project_name}...")
-
         for php_file in php_files:
-            # Skip vendor directories, node_modules, and dev-only files
-            skip_dirs = ['/vendor/', '/node_modules/', '/dev/']
             if any(d in str(php_file) for d in skip_dirs):
                 continue
-
             result.files_scanned += 1
-            issues = self._scan_file(str(php_file))
+            issues = self._scan_file(str(php_file), self.patterns)
+            result.issues.extend(issues)
+
+        # Scan JS/TS files
+        js_globs = ["*.js", "*.ts", "*.jsx", "*.tsx"]
+        js_files = []
+        for pattern in js_globs:
+            js_files.extend(Path(project_path).rglob(pattern))
+        logger.info(f"Scanning {len(js_files)} JS/TS files in {project_name}...")
+        for js_file in js_files:
+            if any(d in str(js_file) for d in skip_dirs):
+                continue
+            # Skip minified/bundled files
+            name = js_file.name
+            if any(x in name for x in ['.min.', '.bundle.', '.chunk.']):
+                continue
+            result.files_scanned += 1
+            issues = self._scan_file(str(js_file), self.js_patterns)
             result.issues.extend(issues)
 
         result.scan_duration_ms = (time.time() - start_time) * 1000
@@ -271,16 +348,19 @@ class CodebaseSecurityScanner:
 
         return result
 
-    def _scan_file(self, file_path: str) -> List[SecurityIssue]:
+    def _scan_file(self, file_path: str, patterns: Dict[str, List[Dict[str, Any]]] = None) -> List[SecurityIssue]:
         """Scan a single file for security issues.
 
         Args:
             file_path: Path to file to scan
+            patterns: Pattern dict to use (defaults to PHP patterns)
 
         Returns:
             List of SecurityIssue objects
         """
         issues = []
+        if patterns is None:
+            patterns = self.patterns
 
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -290,8 +370,8 @@ class CodebaseSecurityScanner:
             return issues
 
         # Check each pattern category
-        for category, patterns in self.patterns.items():
-            for pattern_config in patterns:
+        for category, pattern_list in patterns.items():
+            for pattern_config in pattern_list:
                 pattern = pattern_config["pattern"]
 
                 for line_num, line in enumerate(lines, 1):
