@@ -1,5 +1,76 @@
 # Cyber-Guardian TODO
 
+## Scanner Improvements (Red Team Reassessment 2026-03-07)
+
+Findings from reassessment of red team scan results. These items reduce false positives and improve scan accuracy.
+
+### HSTS Header Detection Fix
+
+**Status:** PENDING
+**Priority:** HIGH
+**Finding:** Scanner reports HSTS missing, but the header IS present (`max-age=63072000; includeSubDomains; preload`). Scanner may be checking the wrong response or not following redirects.
+
+**Fix:**
+- [ ] Ensure HSTS check follows redirects to the final HTTPS response
+- [ ] Check both the initial response and redirect target for `Strict-Transport-Security`
+- [ ] Verify scanner handles nginx `add_header` in both `server` and `location` blocks
+
+### Session Cookie Flag Detection Fix
+
+**Status:** PENDING
+**Priority:** HIGH
+**Finding:** Scanner reports missing Secure/HttpOnly/SameSite flags on session cookies, but cookies ARE set with `Secure; HttpOnly; SameSite=Strict`. Scanner may be reading stale data or checking the wrong cookie.
+
+**Fix:**
+- [ ] Verify scanner reads `Set-Cookie` headers from authenticated responses (not just initial page load)
+- [ ] Parse all cookie attributes including `SameSite`
+- [ ] Check PHP session cookie (`artemis_session`) specifically, not generic cookies
+
+### MFA Detection - Check Correct Database
+
+**Status:** PENDING
+**Priority:** MEDIUM
+**Finding:** Scanner reports no MFA columns in database, but `mfa_totp_secret` and `mfa_totp_enabled` columns exist in `artemis_admin.users`. Scanner likely checked the wrong database or wrong table.
+
+**Fix:**
+- [ ] Configure scanner to check the correct database (`artemis_admin`) for auth-related tables
+- [ ] Look for MFA columns in the `users` table specifically
+- [ ] Also check for WebAuthn/passkey tables (`user_credentials` or similar)
+
+### Database Port Exposure - Localhost Check
+
+**Status:** PENDING
+**Priority:** MEDIUM
+**Finding:** Scanner reports PostgreSQL port exposed, but it only listens on `127.0.0.1:5432` (not `0.0.0.0`). This is not a network exposure.
+
+**Fix:**
+- [ ] Check `listen_addresses` in PostgreSQL config before flagging port exposure
+- [ ] Distinguish between localhost-only (`127.0.0.1`) and network-exposed (`0.0.0.0` or specific IP) listeners
+- [ ] Only flag as vulnerable if DB is listening on a non-loopback interface
+
+### Key Permission Verification
+
+**Status:** PENDING
+**Priority:** LOW
+**Finding:** Scanner reports SSL key permissions too open, but keys are already `640 (-rw-r-----)` owned by `root:www-data`. Scanner may be using stale cached data.
+
+**Fix:**
+- [ ] Re-check file permissions at scan time (don't cache between runs)
+- [ ] Accept `640` with appropriate group ownership as secure (not just `600`)
+
+### Backup Encryption Detection
+
+**Status:** PENDING
+**Priority:** LOW
+**Finding:** Scanner correctly identifies unencrypted backups in `/var/backups/eqmon`. This is a true positive for eqmon, but scanner should distinguish backup encryption from disk encryption.
+
+**Fix:**
+- [ ] Separate "backup encryption" finding from "disk encryption at rest" finding
+- [ ] Check for GPG-encrypted backup files (`.gpg`, `.enc` extensions)
+- [ ] Check for encrypted backup pipelines (pg_dump piped to gpg)
+
+---
+
 ## Features
 
 ### Remote Domain Scanning via Direct Origin IP
