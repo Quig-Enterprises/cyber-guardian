@@ -1,11 +1,21 @@
 """Alert channels — deliver incident notifications."""
 import json
 import logging
+import os
 import smtplib
 import syslog
 from abc import ABC, abstractmethod
 from email.mime.text import MIMEText
 from blueteam.models import SecurityIncident
+
+# Marker file written by nightly-scan.sh (and manual red team runs)
+# to tag alerts as triggered by internal security testing.
+SCAN_MARKER_PATH = "/tmp/cyber-guardian-scan-active.marker"
+
+
+def is_internal_scan_active() -> bool:
+    """Check if a Cyber-Guardian scan is currently running."""
+    return os.path.exists(SCAN_MARKER_PATH)
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +49,9 @@ class SyslogChannel(BaseChannel):
     def send(self, incident: SecurityIncident) -> bool:
         priority = self.SEVERITY_MAP.get(incident.severity, syslog.LOG_WARNING)
         cui_tag = " [CUI]" if incident.cui_involved else ""
+        scan_tag = " [INTERNAL_SCAN]" if is_internal_scan_active() else ""
         msg = (
-            f"SECURITY_INCIDENT{cui_tag} severity={incident.severity} "
+            f"SECURITY_INCIDENT{scan_tag}{cui_tag} severity={incident.severity} "
             f"rule={incident.detected_by} title=\"{incident.title}\" "
             f"nist={','.join(incident.nist_controls)}"
         )
@@ -63,9 +74,22 @@ class EmailChannel(BaseChannel):
         if not self._recipients:
             return False
 
+        internal_scan = is_internal_scan_active()
+        scan_tag = "[INTERNAL SCAN] " if internal_scan else ""
         cui_tag = "[CUI INCIDENT] " if incident.cui_involved else ""
-        subject = f"{cui_tag}[{incident.severity.upper()}] {incident.title}"
+        subject = f"{scan_tag}{cui_tag}[{incident.severity.upper()}] {incident.title}"
+
+        scan_notice = ""
+        if internal_scan:
+            scan_notice = (
+                "\n*** THIS ALERT WAS TRIGGERED BY AN INTERNAL SECURITY SCAN ***\n"
+                "Cyber-Guardian automated testing is currently running.\n"
+                "This activity is expected and authorized.\n"
+                f"Marker: {SCAN_MARKER_PATH}\n\n"
+            )
+
         body = (
+            f"{scan_notice}"
             f"Security Incident Detected\n"
             f"{'=' * 40}\n"
             f"Title: {incident.title}\n"

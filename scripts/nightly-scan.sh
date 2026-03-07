@@ -8,11 +8,18 @@ set -euo pipefail
 PROJECT_DIR="/opt/claude-workspace/projects/cyber-guardian"
 REPORT_DIR="${PROJECT_DIR}/reports/nightly"
 LOG_DIR="${PROJECT_DIR}/logs"
+MARKER_FILE="/tmp/cyber-guardian-scan-active.marker"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 DATE=$(date +%Y-%m-%d)
 LOG_FILE="${LOG_DIR}/nightly-${DATE}.log"
 
 mkdir -p "${REPORT_DIR}" "${LOG_DIR}"
+
+# Clean up scan marker on exit (normal or error)
+cleanup_marker() {
+    rm -f "${MARKER_FILE}"
+}
+trap cleanup_marker EXIT
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "${LOG_FILE}"
@@ -22,6 +29,10 @@ cd "${PROJECT_DIR}"
 export PYTHONPATH="${PROJECT_DIR}"
 
 log "=== Cyber-Guardian Nightly Scan Starting ==="
+
+# Set scan-active marker so blue team alerts are tagged as internal testing
+echo "{\"source\": \"cyber-guardian-nightly\", \"started\": \"$(date -Iseconds)\", \"pid\": $$}" > "${MARKER_FILE}"
+log "Scan marker set: ${MARKER_FILE}"
 
 # Phase 1: Sync CVE data
 log "Phase 1: Syncing CVE data sources..."
