@@ -19,6 +19,8 @@
     var complianceCache = null;
     var activeFilter = null;
     var activeFramework = null;
+    var incidentsCache = null;
+    var activeIncidentSeverity = null;
     var redteamCache = null;
     var activeRtFilter = null;
     var activeRtCategoryFilter = null;
@@ -209,14 +211,14 @@
 
         // Sub-scores
         ['compliance', 'redteam', 'incident', 'monitoring'].forEach(function (f) {
-            setText('score-' + f, Math.round(c[f] || 0));
+            setText('score-' + f, Math.round(c[f] || 0) + '%');
         });
 
         // Malware score
         if (c.malware != null) {
             var malwareEl = document.getElementById('score-malware');
             if (malwareEl) {
-                malwareEl.textContent = Math.round(c.malware);
+                malwareEl.textContent = Math.round(c.malware) + '%';
                 malwareEl.className = 'score-card-value ' + scoreColorClass(c.malware);
             }
         }
@@ -734,7 +736,16 @@
 
     function fetchIncidents() {
         apiFetch('incidents.php').then(function (data) {
-            renderIncidents(data);
+            incidentsCache = data;
+            renderIncidents(data, activeIncidentSeverity);
+            if (activeIncidentSeverity) {
+                var banner = document.getElementById('incident-filter-banner');
+                var bannerText = document.getElementById('incident-filter-text');
+                if (banner && bannerText) {
+                    bannerText.textContent = 'Filtered: ' + activeIncidentSeverity.toUpperCase() + ' incidents';
+                    banner.style.display = 'flex';
+                }
+            }
         }).catch(function (err) {
             var tbody = document.getElementById('incidents-body');
             tbody.textContent = '';
@@ -749,8 +760,29 @@
         });
     }
 
-    function renderIncidents(data) {
-        var incidents = data.incidents || [];
+    function filterIncidentsBySeverity(severity) {
+        activeIncidentSeverity = severity;
+        if (incidentsCache) renderIncidents(incidentsCache, severity);
+        var banner = document.getElementById('incident-filter-banner');
+        var bannerText = document.getElementById('incident-filter-text');
+        if (banner && bannerText) {
+            bannerText.textContent = 'Filtered: ' + severity.toUpperCase() + ' incidents';
+            banner.style.display = 'flex';
+        }
+    }
+
+    function clearIncidentFilter() {
+        activeIncidentSeverity = null;
+        if (incidentsCache) renderIncidents(incidentsCache, null);
+        var banner = document.getElementById('incident-filter-banner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    function renderIncidents(data, severityFilter) {
+        var allIncidents = data.incidents || [];
+        var incidents = severityFilter
+            ? allIncidents.filter(function (i) { return (i.severity || '').toLowerCase() === severityFilter; })
+            : allIncidents;
         var dfars = data.dfars || {};
 
         // DFARS countdown banner
@@ -1586,6 +1618,7 @@
     };
     window.closeScoreModal = closeScoreModal;
     window.openScoreModal = openScoreModal;
+    window.clearIncidentFilter = clearIncidentFilter;
 
     function scrollToDetections() {
         var el = document.getElementById('active-detections-card');
@@ -2016,6 +2049,34 @@
             tab.addEventListener('click', function (e) {
                 e.preventDefault();
                 switchTab(this.getAttribute('href'), true);
+            });
+        });
+
+        // Score card links (posture -> tab navigation)
+        document.querySelectorAll('.score-card-link').forEach(function (card) {
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                switchTab(this.getAttribute('href'), true);
+            });
+        });
+
+        // Incident severity tile links (posture -> incidents tab with filter)
+        document.querySelectorAll('.incident-link').forEach(function (tile) {
+            tile.addEventListener('click', function (e) {
+                e.preventDefault();
+                var severity = this.getAttribute('data-inc-severity');
+                activeIncidentSeverity = severity;
+                switchTab('#incidents', true);
+                // Apply filter after tab data loads (may need brief delay if first load)
+                if (incidentsCache) {
+                    renderIncidents(incidentsCache, severity);
+                    var banner = document.getElementById('incident-filter-banner');
+                    var bannerText = document.getElementById('incident-filter-text');
+                    if (banner && bannerText) {
+                        bannerText.textContent = 'Filtered: ' + severity.toUpperCase() + ' incidents';
+                        banner.style.display = 'flex';
+                    }
+                }
             });
         });
 

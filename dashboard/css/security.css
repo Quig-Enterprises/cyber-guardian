@@ -435,6 +435,17 @@ a:hover {
 .score-card:hover {
     background: var(--bg-card-hover);
 }
+a.score-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+a.score-card-link:hover {
+    border-left-width: 4px;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
 
 .score-card-compliance { border-left-color: var(--primary-cyan); }
 .score-card-redteam    { border-left-color: #ff6b35; }
@@ -647,6 +658,18 @@ a:hover {
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.05);
+}
+a.incident-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+a.incident-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .incident-num {

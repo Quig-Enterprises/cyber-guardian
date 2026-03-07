@@ -23,7 +23,7 @@ if (!$session['sub']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Dashboard - Artemis</title>
-    <link rel="stylesheet" href="css/security.css?v=20260307d">
+    <link rel="stylesheet" href="css/security.css?v=20260307e">
 </head>
 <body>
     <div class="dashboard-container">
@@ -233,31 +233,31 @@ if (!$session['sub']) {
                     </div>
                 </div>
                 <div class="score-cards" id="score-cards">
-                    <div class="score-card score-card-compliance" title="Compliance score (0–100): percentage of NIST 800-171 controls marked Implemented or Partially Implemented, weighted at 30% of overall posture">
+                    <a href="#compliance" class="score-card score-card-compliance score-card-link" title="Compliance score (0–100): percentage of NIST 800-171 controls marked Implemented or Partially Implemented, weighted at 30% of overall posture — click to view Compliance tab">
                         <div class="score-card-value" id="score-compliance">--</div>
                         <div class="score-card-label">Compliance</div>
                         <div class="score-card-weight">30%</div>
-                    </div>
-                    <div class="score-card score-card-redteam" title="Red Team score (0–100): percentage of simulated attack scenarios successfully defended, weighted at 25% of overall posture">
+                    </a>
+                    <a href="#redteam" class="score-card score-card-redteam score-card-link" title="Red Team score (0–100): percentage of simulated attack scenarios successfully defended, weighted at 25% of overall posture — click to view Red Team tab">
                         <div class="score-card-value" id="score-redteam">--</div>
                         <div class="score-card-label">Red Team</div>
                         <div class="score-card-weight">25%</div>
-                    </div>
-                    <div class="score-card score-card-incident" title="Incident score (0–100): based on open incident count and severity. 100 = no open incidents. Weighted at 20% of overall posture">
+                    </a>
+                    <a href="#incidents" class="score-card score-card-incident score-card-link" title="Incident score (0–100): based on open incident count and severity. 100 = no open incidents. Weighted at 20% of overall posture — click to view Incidents tab">
                         <div class="score-card-value" id="score-incident">--</div>
                         <div class="score-card-label">Incident</div>
                         <div class="score-card-weight">20%</div>
-                    </div>
-                    <div class="score-card score-card-monitoring" title="Monitoring score (0–100): reflects coverage and freshness of active monitoring and alerting. Weighted at 15% of overall posture">
+                    </a>
+                    <a href="#incidents" class="score-card score-card-monitoring score-card-link" title="Monitoring score (0–100): reflects coverage and freshness of active monitoring and alerting. Weighted at 15% of overall posture — click to view Incidents tab">
                         <div class="score-card-value" id="score-monitoring">--</div>
                         <div class="score-card-label">Monitoring</div>
                         <div class="score-card-weight">15%</div>
-                    </div>
-                    <div class="score-card score-card-malware" title="Malware Defense score (0–100): based on scanner coverage, scan recency, and active detection count. Weighted at 10% of overall posture">
+                    </a>
+                    <a href="#malware" class="score-card score-card-malware score-card-link" title="Malware Defense score (0–100): based on scanner coverage, scan recency, and active detection count. Weighted at 10% of overall posture — click to view Malware tab">
                         <div class="score-card-value" id="score-malware">--</div>
                         <div class="score-card-label">Malware</div>
                         <div class="score-card-weight">10%</div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
@@ -318,10 +318,10 @@ if (!$session['sub']) {
                     <div class="card">
                         <div class="card-header"><h2>Active Incidents</h2></div>
                         <div class="incidents-summary" id="incidents-summary">
-                            <div class="incident-count incident-critical" title="Number of currently open Critical severity security incidents"><span class="incident-num" id="inc-critical">0</span><span class="incident-sev">CRITICAL</span></div>
-                            <div class="incident-count incident-high" title="Number of currently open High severity security incidents"><span class="incident-num" id="inc-high">0</span><span class="incident-sev">HIGH</span></div>
-                            <div class="incident-count incident-medium" title="Number of currently open Medium severity security incidents"><span class="incident-num" id="inc-medium">0</span><span class="incident-sev">MEDIUM</span></div>
-                            <div class="incident-count incident-low" title="Number of currently open Low severity security incidents"><span class="incident-num" id="inc-low">0</span><span class="incident-sev">LOW</span></div>
+                            <a href="#incidents" class="incident-count incident-critical incident-link" data-inc-severity="critical" title="Click to view open Critical incidents"><span class="incident-num" id="inc-critical">0</span><span class="incident-sev">CRITICAL</span></a>
+                            <a href="#incidents" class="incident-count incident-high incident-link" data-inc-severity="high" title="Click to view open High incidents"><span class="incident-num" id="inc-high">0</span><span class="incident-sev">HIGH</span></a>
+                            <a href="#incidents" class="incident-count incident-medium incident-link" data-inc-severity="medium" title="Click to view open Medium incidents"><span class="incident-num" id="inc-medium">0</span><span class="incident-sev">MEDIUM</span></a>
+                            <a href="#incidents" class="incident-count incident-low incident-link" data-inc-severity="low" title="Click to view open Low incidents"><span class="incident-num" id="inc-low">0</span><span class="incident-sev">LOW</span></a>
                         </div>
                     </div>
                 </div>
@@ -387,6 +387,10 @@ if (!$session['sub']) {
 
         <!-- Tab 3: Incidents -->
         <div id="tab-incidents" class="tab-content">
+            <div id="incident-filter-banner" class="filter-banner" style="display:none;">
+                <span id="incident-filter-text"></span>
+                <button class="filter-clear-btn" onclick="clearIncidentFilter()">Clear Filter</button>
+            </div>
             <div id="dfars-countdown" class="dfars-countdown" style="display:none;">
                 <span class="dfars-icon">&#9888;</span>
                 <span id="dfars-countdown-text">DFARS reporting deadline approaching</span>
@@ -688,6 +692,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260307h"></script>
+    <script src="js/security.js?v=20260307i"></script>
 </body>
 </html>
