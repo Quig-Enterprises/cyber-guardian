@@ -5,6 +5,7 @@ from redteam.attacks.cve.wp_plugin_cve import WPPluginCVEAttack
 from redteam.attacks.cve.wp_theme_cve import WPThemeCVEAttack
 from redteam.attacks.cve.server_cve import ServerCVEAttack
 from redteam.attacks.cve.dependency_cve import DependencyCVEAttack
+from redteam.attacks.cve.dependency_freshness import DependencyFreshnessAttack
 
 __all__ = [
     "WPCoreCVEAttack",
@@ -12,4 +13,5 @@ __all__ = [
     "WPThemeCVEAttack",
     "ServerCVEAttack",
     "DependencyCVEAttack",
+    "DependencyFreshnessAttack",
 ]

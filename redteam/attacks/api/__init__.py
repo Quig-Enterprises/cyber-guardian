@@ -23,6 +23,8 @@ from redteam.attacks.api.account_lockout_bypass import AccountLockoutBypassAttac
 from redteam.attacks.api.replay_attack import ReplayAttack
 from redteam.attacks.api.lateral_movement import LateralMovementAttack
 from redteam.attacks.api.session_predictability import SessionPredictabilityAttack
+from redteam.attacks.api.excessive_data import ExcessiveDataAttack
+from redteam.attacks.api.mass_assignment import MassAssignmentAttack
 
 __all__ = [
     "AuthBypassAttack",
@@ -44,4 +46,6 @@ __all__ = [
     "ReplayAttack",
     "LateralMovementAttack",
     "SessionPredictabilityAttack",
+    "ExcessiveDataAttack",
+    "MassAssignmentAttack",
 ]

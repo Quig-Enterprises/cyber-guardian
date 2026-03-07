@@ -8,6 +8,8 @@ from redteam.attacks.web.http_methods import HTTPMethodsAttack
 from redteam.attacks.web.server_fingerprint import ServerFingerprintAttack
 from redteam.attacks.web.open_redirect import OpenRedirectAttack
 from redteam.attacks.web.tls_security import TLSSecurityAttack
+from redteam.attacks.web.certificate import CertificateAttack
+from redteam.attacks.web.sri import SRIAttack
 
 __all__ = [
     "DeceptionDetectionAttack",
@@ -18,4 +20,6 @@ __all__ = [
     "ServerFingerprintAttack",
     "OpenRedirectAttack",
     "TLSSecurityAttack",
+    "CertificateAttack",
+    "SRIAttack",
 ]

@@ -64,6 +64,28 @@ execution:
         concurrent_streams: 2
         note_count: 10
         delay_ms: 200
+      # Exposure/secrets probing throttle
+      exposure.backup_files:
+        delay_ms: 100
+      exposure.sensitive_paths:
+        delay_ms: 100
+      secrets.env_exposure:
+        delay_ms: 100
+      secrets.git_history:
+        max_commits: 20
+      dns.subdomain_takeover:
+        delay_ms: 200
+        max_subdomains: 5
+      cloud.s3_buckets:
+        max_buckets: 20
+      cloud.security_groups:
+        max_groups: 50
+      api.mass_assignment:
+        delay_ms: 200
+      api.excessive_data:
+        delay_ms: 100
+      infrastructure.file_permissions:
+        timeout_seconds: 30
 
     # IPs/CIDRs that must never appear in attack payloads
     blocked_ips:
