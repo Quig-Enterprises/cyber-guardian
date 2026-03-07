@@ -108,6 +108,14 @@ else
     log "WARN: blueteam CLI not found in venv, skipping import"
 fi
 
+# Post-scan notifications
+NOTIFY_SCRIPT="/opt/artemis/www/security-dashboard/api/process-scan.php"
+if [ -f "$NOTIFY_SCRIPT" ]; then
+    log "Processing post-scan notifications..."
+    php "$NOTIFY_SCRIPT" "$DASHBOARD_REPORT_DIR/$(basename "$LATEST_JSON")" 2>&1 | tee -a "$LOGFILE"
+    log "Notification processing complete"
+fi
+
 # Cleanup old logs (keep 30 days)
 find "$LOG_DIR" -name "redteam-*.log" -mtime +30 -delete 2>/dev/null || true
 
