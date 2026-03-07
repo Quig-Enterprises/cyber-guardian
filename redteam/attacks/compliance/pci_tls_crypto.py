@@ -284,9 +284,15 @@ class PCITLSCryptoAttack(Attack):
             conn = self._connect_tls(host, port, ctx)
             if conn:
                 cipher_name = conn.cipher()[0] if conn.cipher() else ""
+                # TLS 1.3 ciphers always use ephemeral key exchange (ECDHE)
+                # even though the cipher name doesn't include "ECDHE"
+                tls_version = conn.version() or ""
                 conn.close()
-                has_pfs = any(kex in cipher_name.upper()
-                             for kex in ("ECDHE", "DHE", "X25519", "X448"))
+                is_tls13 = "TLSv1.3" in tls_version
+                has_pfs = is_tls13 or any(
+                    kex in cipher_name.upper()
+                    for kex in ("ECDHE", "DHE", "X25519", "X448")
+                )
                 if has_pfs:
                     pfs_status = Status.DEFENDED
                     detail = (

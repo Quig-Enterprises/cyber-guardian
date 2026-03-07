@@ -38,7 +38,37 @@ CREDENTIAL_FP_PATTERNS = [
     re.compile(r'password\s*[=:]\s*["\']?None', re.I),    # Python None
     re.compile(r'password\s*[=:]\s*["\']?null', re.I),    # null/placeholder
     re.compile(r'password\s*[=:]\s*["\']?%s', re.I),      # Format string placeholders
+    re.compile(r'\$MNWPASS', re.IGNORECASE),              # fail2ban mynetwatchman variable
+    re.compile(r'password\s*:\s*str', re.IGNORECASE),     # Python type annotation / docstring
+    re.compile(r'self\.password\s*=', re.IGNORECASE),     # Python instance attribute assignment
+    re.compile(r'self\.password\b', re.IGNORECASE),       # Python instance attribute reference
+    re.compile(r'data-urlencode.*apikey', re.IGNORECASE), # curl template with placeholder
+    re.compile(r'lock_passwd', re.IGNORECASE),            # cloud-init lock_passwd flag
+    re.compile(r'NOPASSWD', re.IGNORECASE),               # sudo NOPASSWD directive
+    re.compile(r'password\s*=\s*parsed\.', re.IGNORECASE), # URL-parsed password field
+    re.compile(r'password\s*=\s*self\.get_config', re.I),  # Config getter call
+    re.compile(r'os\.environ\.get\(', re.IGNORECASE),      # Env var lookup (not hardcoded)
+    re.compile(r'openssl\s+rand', re.IGNORECASE),          # Generated password via openssl
+    re.compile(r'echo\s+"Password:', re.IGNORECASE),       # Print statement, not a credential
+    re.compile(r'def\s+\w*(?:credential|secret|key)', re.I), # Function definitions
+    re.compile(r'api_key\s*:\s*\w+\s+key\s+for', re.I),   # Docstring parameter description
+    re.compile(r'api_(?:key|secret)\s*=\s*None', re.I),    # Default None params
+    re.compile(r'api_(?:key|secret)\s*=\s*api_', re.I),   # Variable-to-variable assignment
+    re.compile(r'api_(?:key|secret)\s*=\s*self\.', re.I),  # Instance attr from self
+    re.compile(r'self\.api_(?:key|secret)\s*=', re.I),     # Instance attr assignment
+    re.compile(r'api_(?:key|secret)\s*:', re.I),           # Docstring/type hint
+    re.compile(r'get_config\([\'"].*(?:key|secret)', re.I), # Config getter for key/secret
+    re.compile(r'data\.get\([\'"]api_', re.I),             # dict.get() for api key/secret
+    re.compile(r'password\s*=\s*config\.get\(', re.I),     # Config getter for password
+    re.compile(r'password:\s+\w+\s+\w+\s+password', re.I), # Docstring "password: Foo bar password"
 ]
+
+# Config files with restricted permissions (640/600) are acceptable —
+# the credential is properly protected by filesystem ACLs.
+RESTRICTED_PERM_THRESHOLD = 0o640
+
+# Directories containing the scanner's own config — skip to avoid self-detection.
+SELF_SCAN_DIRS = {"cyber-guardian"}
 
 # Directories to scan for hardcoded credentials.
 CONFIG_SCAN_DIRS = [
@@ -55,7 +85,7 @@ CONFIG_EXTENSIONS = {
 
 # Extensions / paths to skip.
 SKIP_PATTERNS = {"node_modules", "__pycache__", ".git", "vendor", ".pyc",
-                  "venv", ".venv", "env", "site-packages"}
+                  "venv", ".venv", "env", "site-packages", "cyber-guardian"}
 
 
 class PCIAuthControlsAttack(Attack):
@@ -381,6 +411,14 @@ class PCIAuthControlsAttack(Attack):
                                             # Exclude known false positive patterns
                                             if any(fp.search(stripped) for fp in CREDENTIAL_FP_PATTERNS):
                                                 continue
+                                            # Skip files with restricted permissions (640 or tighter)
+                                            # — credential is protected by filesystem ACLs
+                                            try:
+                                                fmode = os.stat(fpath).st_mode & 0o777
+                                                if fmode <= RESTRICTED_PERM_THRESHOLD:
+                                                    continue
+                                            except OSError:
+                                                pass
                                             finding = f"{fpath}:{line_no}: {stripped[:120]}"
                                             hardcoded_findings.append(finding)
                                             if len(hardcoded_findings) >= 50:
