@@ -5,11 +5,11 @@ Updated: 2026-03-07 — MFA backend integration complete.
 
 ---
 
-## 1. Multi-Factor Authentication (MFA) — IMPLEMENTED (Backend)
+## 1. Multi-Factor Authentication (MFA) — COMPLETE
 
 **Findings:** `compliance.hipaa_session_auth/mfa_ephi_access`, `compliance.pci_auth_controls/mfa_all_cde_access`
 **Severity:** CRITICAL (PCI DSS 4.0 Req 8.4.2) / HIGH (HIPAA 164.312(d))
-**Status:** Backend complete. Frontend MFA challenge page needed.
+**Status:** COMPLETE. Backend + Frontend implemented.
 
 ### Approach: Reuse existing Artemis MFA infrastructure
 
@@ -31,12 +31,13 @@ authenticates against `artemis_admin`.
   - Full audit logging via AuditLogger
 - No new database tables needed — uses existing artemis_admin schema
 
-**Phase 2: Frontend (1 day)**
-- Login page: add conditional MFA step after email/password returns `mfa_required`
-  - Display TOTP code input field
-  - "Use recovery code instead" link
+**Phase 2: Frontend — COMPLETE**
+- Login page: added conditional MFA step after email/password returns `mfa_required`
+  - TOTP code input field (6-digit, centered, spaced)
+  - "Use recovery code instead" link with toggle
   - "Remember this device for 7 days" checkbox
-- Account settings: link to Artemis MFA setup page for enrollment/management
+  - "Back to login" link to return to email/password form
+- Account settings: link to Artemis MFA setup page for enrollment/management (existing)
 
 **Phase 3: Enforcement (already available via Artemis)**
 - Grace period enforcement already exists in `artemis_admin` (MfaEnforcement class)
@@ -48,7 +49,7 @@ authenticates against `artemis_admin`.
 - `api/auth/login.php` — MFA check after password verification
 - `api/auth/mfa-verify.php` — NEW (TOTP + recovery code verification)
 
-**Estimated remaining effort:** 1 day (frontend MFA challenge page)
+**Estimated remaining effort:** 0 days — COMPLETE
 
 ---
 
@@ -205,12 +206,12 @@ authenticates against `artemis_admin`.
 
 | Item | Effort | Priority | Status | Dependencies |
 |------|--------|----------|--------|-------------|
-| **MFA** | ~~4-6 days~~ 1 day remaining | P2a (highest) | Backend DONE | None |
+| **MFA** | COMPLETE | P2a (highest) | DONE | None |
 | **Encryption at Rest** | 3-4 days | P2b | Planned | None |
 | **CUI Marking** | 1.5 days | P2c | Planned | None |
 | **Dual Authorization** | 4-6 days | P2d | Planned | MFA (approvers should have MFA) |
 | **Break-Glass** | 2 days | P2e | Planned | MFA, Dual Auth |
 
-**Recommended order:** ~~MFA~~ (done) → Encryption → CUI Marking → Dual Auth → Break-Glass
+**Recommended order:** ~~MFA~~ (COMPLETE) → Encryption → CUI Marking → Dual Auth → Break-Glass
 
-Total estimated remaining effort: **12-15.5 days** (was 15-20, MFA backend saved 3-5 days by reusing Artemis).
+Total estimated remaining effort: **11-14.5 days** (was 15-20, MFA backend saved 3-5 days by reusing Artemis).
