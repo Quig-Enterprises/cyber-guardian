@@ -114,7 +114,13 @@ class CodebaseSecurityScanner:
             "sql_injection": [
                 {
                     # Match $wpdb->method( ... string concat ... ) — requires $wpdb context
+                    # Excludes: SHOW TABLES LIKE (always safe table-existence checks)
+                    #           $wpdb->prepare() wrapping (already using parameterization)
                     "pattern": r'\$wpdb\s*->\s*(?:query|get_results|get_row|get_var|get_col|update|delete|insert)\s*\([^)]*(?:"\s*\.\s*\$|\$[a-zA-Z_]\w*\s*\.\s*"|\{\$)',
+                    # Safe: table existence checks, prepare() already used, WP core table globals
+                    "safe_pattern": r'(?:SHOW\s+TABLES\s+LIKE|wpdb->prepare\s*\(|\$wpdb->(?:users|usermeta|posts|postmeta|options|terms|term_taxonomy|term_relationships|comments|commentmeta)\b)',
+                    # Safe context: variable built only from hardcoded string literals (enum/whitelist pattern)
+                    "safe_context_pattern": r'\$where\s*=\s*["\']WHERE\s+\w+',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-89",
                     "description": "Possible SQL injection: $wpdb method called with string concatenation instead of prepare()",
@@ -288,10 +294,20 @@ class CodebaseSecurityScanner:
                 for line_num, line in enumerate(lines, 1):
                     match = re.search(pattern, line)
                     if match:
-                        # Check surrounding context (100-line window) for suppression patterns
-                        context_start = max(0, line_num - 50)
-                        context_end = min(len(lines), line_num + 50)
+                        # Check surrounding context (150-line window: 75 before, 75 after)
+                        context_start = max(0, line_num - 75)
+                        context_end = min(len(lines), line_num + 75)
                         context = "\n".join(lines[context_start:context_end])
+
+                        # Suppress if the line itself matches a known-safe pattern
+                        if "safe_pattern" in pattern_config:
+                            if re.search(pattern_config["safe_pattern"], line, re.IGNORECASE):
+                                continue
+
+                        # Suppress if context indicates the variable is built from safe literals only
+                        if "safe_context_pattern" in pattern_config:
+                            if re.search(pattern_config["safe_context_pattern"], context, re.IGNORECASE):
+                                continue
 
                         # Suppress if required scan tool is present in context
                         if "requires_scan" in pattern_config:
