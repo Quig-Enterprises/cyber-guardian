@@ -117,10 +117,13 @@ class CodebaseSecurityScanner:
                     # Excludes: SHOW TABLES LIKE (always safe table-existence checks)
                     #           $wpdb->prepare() wrapping (already using parameterization)
                     "pattern": r'\$wpdb\s*->\s*(?:query|get_results|get_row|get_var|get_col|update|delete|insert)\s*\([^)]*(?:"\s*\.\s*\$|\$[a-zA-Z_]\w*\s*\.\s*"|\{\$)',
-                    # Safe: table existence checks, prepare() already used, WP core table globals
-                    "safe_pattern": r'(?:SHOW\s+TABLES\s+LIKE|wpdb->prepare\s*\(|\$wpdb->(?:users|usermeta|posts|postmeta|options|terms|term_taxonomy|term_relationships|comments|commentmeta)\b)',
+                    # Safe: table existence checks, prepare() already used, WP core table globals,
+                    #       {$this->property} (class property, never user input),
+                    #       SELECT DISTINCT with no WHERE clause (read-only schema enumeration)
+                    "safe_pattern": r'(?:SHOW\s+TABLES\s+LIKE|wpdb->prepare\s*\(|\$wpdb->(?:users|usermeta|posts|postmeta|options|terms|term_taxonomy|term_relationships|comments|commentmeta)\b|TRUNCATE\s+TABLE\s+\{\$this->|\{\$this->\w+\}|SELECT\s+DISTINCT\s+\w+\s+FROM\s+\{)',
                     # Safe context: variable built only from hardcoded string literals (enum/whitelist pattern)
-                    "safe_context_pattern": r'\$where\s*=\s*["\']WHERE\s+\w+',
+                    # or from $wpdb->prefix (WP table name, never user input)
+                    "safe_context_pattern": r'(?:\$where\s*=\s*["\']WHERE\s+\w+|\$\w+\s*=\s*\$wpdb->prefix\s*\.)',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-89",
                     "description": "Possible SQL injection: $wpdb method called with string concatenation instead of prepare()",
