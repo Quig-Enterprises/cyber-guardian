@@ -586,7 +586,14 @@
                     var cid = ctrl.control_id || '';
                     var lvl = String(ctrl.cmmc_level || '');
                     var fid = ctrl.family_id || '';
-                    tdId.textContent = (fid && lvl) ? fid + '.L' + lvl + '-' + cid : cid;
+                    var ctrlFw = ctrl.framework || 'nist_800_171';
+                    if (ctrlFw === 'hipaa') {
+                        tdId.textContent = '\u00A7' + cid;
+                    } else if (ctrlFw === 'pci_dss_v4') {
+                        tdId.textContent = 'Req ' + cid;
+                    } else {
+                        tdId.textContent = (fid && lvl) ? fid + '.L' + lvl + '-' + cid : cid;
+                    }
                     var farMap = {
                         '3.1.1':'b.1.i','3.1.2':'b.1.ii','3.1.20':'b.1.iii','3.1.22':'b.1.iv',
                         '3.5.1':'b.1.v','3.5.2':'b.1.vi','3.8.3':'b.1.vii','3.10.1':'b.1.viii',
@@ -594,7 +601,11 @@
                         '3.13.1':'b.1.x','3.13.5':'b.1.xi','3.14.1':'b.1.xii',
                         '3.14.2':'b.1.xiii','3.14.4':'b.1.xiv','3.14.5':'b.1.xv'
                     };
-                    if (lvl === '1' && farMap[cid]) {
+                    if (ctrlFw === 'hipaa') {
+                        tdId.title = 'HIPAA Security Rule \u00A7' + cid;
+                    } else if (ctrlFw === 'pci_dss_v4') {
+                        tdId.title = 'PCI DSS v4.0 Requirement ' + cid;
+                    } else if (lvl === '1' && farMap[cid]) {
                         tdId.title = 'FAR 52.204-21 ' + farMap[cid] + ' / NIST SP 800-171 \u00A7' + cid;
                     } else if (lvl === '3' && cid.indexOf('e') !== -1) {
                         tdId.title = 'NIST SP 800-172 \u00A7' + cid;
