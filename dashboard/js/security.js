@@ -1620,6 +1620,69 @@
     window.openScoreModal = openScoreModal;
     window.clearIncidentFilter = clearIncidentFilter;
 
+    // ---- Monitoring Score Modal ----
+
+    function openMonitoringModal() {
+        var modal = document.getElementById('monitoring-score-modal');
+        modal.style.display = 'flex';
+        var body = document.getElementById('monitoring-modal-body');
+        var score = 80; // current hardcoded baseline
+
+        body.innerHTML =
+            '<div class="score-formula-summary">' +
+                '<div class="score-formula-result score-yellow">' + score + '<span class="score-formula-denom">/100</span></div>' +
+                '<div class="score-formula-label">Current Score</div>' +
+            '</div>' +
+
+            '<p class="score-formula-desc">The Monitoring score reflects the <strong>coverage and freshness</strong> of active security monitoring on this system. It is currently set to a <strong>baseline of 80/100</strong> pending automated log ingestion.</p>' +
+
+            '<table class="score-factors-table">' +
+            '<thead><tr><th>Factor</th><th>Status</th><th>Impact</th></tr></thead>' +
+            '<tbody>' +
+                '<tr class="factor-active">' +
+                    '<td>Nginx access log ingestion</td>' +
+                    '<td><span class="score-factor-zero">Configured &mdash; /var/log/nginx/access.log</span></td>' +
+                    '<td>+10 pts when active</td>' +
+                '</tr>' +
+                '<tr class="factor-active">' +
+                    '<td>Auth log ingestion</td>' +
+                    '<td><span class="score-factor-zero">Configured &mdash; /var/log/auth.log</span></td>' +
+                    '<td>+5 pts when active</td>' +
+                '</tr>' +
+                '<tr class="factor-active">' +
+                    '<td>Red team audit DB polling</td>' +
+                    '<td><span class="score-factor-zero">Configured &mdash; 30s interval</span></td>' +
+                    '<td>+5 pts when active</td>' +
+                '</tr>' +
+                '<tr class="factor-clear">' +
+                    '<td>Blueteam correlator</td>' +
+                    '<td><span class="score-factor-bad">Not yet running</span></td>' +
+                    '<td>&minus;10 pts (currently applied)</td>' +
+                '</tr>' +
+                '<tr class="factor-clear">' +
+                    '<td>Alert delivery confirmed</td>' +
+                    '<td><span class="score-factor-bad">No alerts sent in last 30 days</span></td>' +
+                    '<td>&minus;10 pts (currently applied)</td>' +
+                '</tr>' +
+            '</tbody>' +
+            '</table>' +
+
+            '<div class="score-improve-section">' +
+                '<h4>How to improve this score</h4>' +
+                '<ul class="score-improve-list">' +
+                    '<li>Run the blueteam correlator: <code>python3 -m cyberguardian blueteam start</code></li>' +
+                    '<li>Configure alert delivery (email or syslog) in <code>config.yaml</code></li>' +
+                    '<li>Verify log paths are readable by the service user</li>' +
+                    '<li>Score will auto-update once the correlator reports active coverage</li>' +
+                '</ul>' +
+            '</div>';
+    }
+
+    window.openMonitoringModal = function() { openMonitoringModal(); };
+    window.closeMonitoringModal = function() {
+        document.getElementById('monitoring-score-modal').style.display = 'none';
+    };
+
     function scrollToDetections() {
         var el = document.getElementById('active-detections-card');
         if (el) {

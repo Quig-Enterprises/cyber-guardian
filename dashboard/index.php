@@ -23,7 +23,7 @@ if (!$session['sub']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Dashboard - Artemis</title>
-    <link rel="stylesheet" href="css/security.css?v=20260307e">
+    <link rel="stylesheet" href="css/security.css?v=20260307f">
 </head>
 <body>
     <div class="dashboard-container">
@@ -248,9 +248,9 @@ if (!$session['sub']) {
                         <div class="score-card-label">Incident</div>
                         <div class="score-card-weight">20%</div>
                     </a>
-                    <a href="#incidents" class="score-card score-card-monitoring score-card-link" title="Monitoring score (0–100): reflects coverage and freshness of active monitoring and alerting. Weighted at 15% of overall posture — click to view Incidents tab">
+                    <a href="#" class="score-card score-card-monitoring score-card-link" onclick="openMonitoringModal(); return false;" title="Monitoring score (0–100): reflects coverage and freshness of active monitoring and alerting. Weighted at 15% of overall posture — click to see how this is calculated">
                         <div class="score-card-value" id="score-monitoring">--</div>
-                        <div class="score-card-label">Monitoring</div>
+                        <div class="score-card-label">Monitoring <span class="card-hint">&#9432;</span></div>
                         <div class="score-card-weight">15%</div>
                     </a>
                     <a href="#malware" class="score-card score-card-malware score-card-link" title="Malware Defense score (0–100): based on scanner coverage, scan recency, and active detection count. Weighted at 10% of overall posture — click to view Malware tab">
@@ -661,6 +661,17 @@ if (!$session['sub']) {
 
     </div>
 
+    <!-- Monitoring Score Explanation Modal -->
+    <div class="score-modal-overlay" id="monitoring-score-modal" style="display:none;" onclick="if(event.target===this)closeMonitoringModal()">
+        <div class="score-modal">
+            <div class="score-modal-header">
+                <h3>Monitoring Score — How It's Calculated</h3>
+                <button class="score-modal-close" onclick="closeMonitoringModal()">&#x2715;</button>
+            </div>
+            <div class="score-modal-body" id="monitoring-modal-body"></div>
+        </div>
+    </div>
+
     <!-- Malware Score Breakdown Modal -->
     <div class="score-modal-overlay" id="malware-score-modal" style="display:none;" onclick="closeScorekModal(event)">
         <div class="score-modal">
@@ -692,6 +703,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260307i"></script>
+    <script src="js/security.js?v=20260307j"></script>
 </body>
 </html>
