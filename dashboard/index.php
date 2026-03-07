@@ -4,7 +4,7 @@
  * Cybersecurity posture, compliance, incident, and red team overview
  */
 
-require_once __DIR__ . '/../admin/lib/middleware.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/lib/middleware.php';
 
 $session = Session::getCurrent();
 if (!$session) {
