@@ -1,43 +1,54 @@
 # P2 Compliance Roadmap — Implementation Plans
 
 Generated: 2026-03-07 from red team scan findings.
+Updated: 2026-03-07 — MFA backend integration complete.
 
 ---
 
-## 1. Multi-Factor Authentication (MFA)
+## 1. Multi-Factor Authentication (MFA) — IMPLEMENTED (Backend)
 
 **Findings:** `compliance.hipaa_session_auth/mfa_ephi_access`, `compliance.pci_auth_controls/mfa_all_cde_access`
 **Severity:** CRITICAL (PCI DSS 4.0 Req 8.4.2) / HIGH (HIPAA 164.312(d))
+**Status:** Backend complete. Frontend MFA challenge page needed.
 
-### Approach: TOTP-based MFA
+### Approach: Reuse existing Artemis MFA infrastructure
 
-**Phase 1: Backend (2-3 days)**
-- Add `user_mfa` table: `user_id`, `totp_secret` (encrypted), `backup_codes`, `enabled_at`, `verified`
-- Integrate PHP TOTP library (`robthree/twofactorauth` via Composer)
-- Add MFA enrollment API: `/api/auth/mfa-setup.php` (generate secret, return QR code URI)
-- Add MFA verification API: `/api/auth/mfa-verify.php` (validate 6-digit code)
-- Modify login flow in `/api/auth/login.php`:
-  - If MFA enabled: return `{"mfa_required": true, "mfa_token": "..."}` instead of JWT
-  - Client must POST to `/api/auth/mfa-verify.php` with `mfa_token` + `code` to get JWT
-- Add backup codes (10 one-time codes) generated at enrollment
+Instead of building a new MFA system, eqmon integrates with the existing Artemis MFA stack
+(TOTP + WebAuthn + recovery codes + enforcement + grace periods) since eqmon already
+authenticates against `artemis_admin`.
 
-**Phase 2: Frontend (1-2 days)**
-- MFA setup page in admin: QR code display, manual key entry, verify first code
-- Login page: conditional MFA step after email/password
-- Account settings: enable/disable MFA, regenerate backup codes
+**Phase 1: Backend — COMPLETE**
+- Added `spomky-labs/otphp` to eqmon composer (same library as Artemis)
+- Modified `api/auth/login.php`:
+  - After password verification, checks `mfa_totp_enabled` and `webauthn_credentials` in artemis_admin
+  - If MFA enabled: returns `{"mfa_required": true, "mfa_methods": [...], "mfa_token": "..."}`
+  - Challenge stored in `artemis_admin.mfa_challenges` (shared with Artemis, 5-min expiry)
+  - Supports trusted device cookie (`eqmon_trusted_device`) to skip MFA for 7 days
+- Created `api/auth/mfa-verify.php`:
+  - Validates challenge token + TOTP code (or recovery code) against artemis_admin
+  - On success: creates eqmon session (JWT cookie) with full user context
+  - Supports "remember this device" with trusted_devices table
+  - Full audit logging via AuditLogger
+- No new database tables needed — uses existing artemis_admin schema
 
-**Phase 3: Enforcement (1 day)**
-- Add `mfa_required` flag to roles (system-admin, company-admin = mandatory)
-- Grace period: 7 days for existing users to enroll after enforcement enabled
-- Audit log all MFA events (setup, verify, backup code use, disable)
+**Phase 2: Frontend (1 day)**
+- Login page: add conditional MFA step after email/password returns `mfa_required`
+  - Display TOTP code input field
+  - "Use recovery code instead" link
+  - "Remember this device for 7 days" checkbox
+- Account settings: link to Artemis MFA setup page for enrollment/management
 
-**Files to modify:**
-- `lib/session.php` — MFA state in JWT claims
-- `api/auth/login.php` — MFA challenge flow
-- `api/auth/mfa-setup.php` — NEW
-- `api/auth/mfa-verify.php` — NEW
-- `admin/settings.php` — MFA policy config
-- `migrations/` — user_mfa table
+**Phase 3: Enforcement (already available via Artemis)**
+- Grace period enforcement already exists in `artemis_admin` (MfaEnforcement class)
+- Admin can set grace periods per-user via Artemis admin panel
+- Audit logging integrated in both login and mfa-verify endpoints
+
+**Files modified:**
+- `composer.json` — added `spomky-labs/otphp`
+- `api/auth/login.php` — MFA check after password verification
+- `api/auth/mfa-verify.php` — NEW (TOTP + recovery code verification)
+
+**Estimated remaining effort:** 1 day (frontend MFA challenge page)
 
 ---
 
@@ -192,14 +203,14 @@ Generated: 2026-03-07 from red team scan findings.
 
 ## Implementation Priority & Timeline
 
-| Item | Effort | Priority | Dependencies |
-|------|--------|----------|-------------|
-| **MFA** | 4-6 days | P2a (highest) | None |
-| **Encryption at Rest** | 3-4 days | P2b | None |
-| **CUI Marking** | 1.5 days | P2c | None |
-| **Dual Authorization** | 4-6 days | P2d | MFA (approvers should have MFA) |
-| **Break-Glass** | 2 days | P2e | MFA, Dual Auth |
+| Item | Effort | Priority | Status | Dependencies |
+|------|--------|----------|--------|-------------|
+| **MFA** | ~~4-6 days~~ 1 day remaining | P2a (highest) | Backend DONE | None |
+| **Encryption at Rest** | 3-4 days | P2b | Planned | None |
+| **CUI Marking** | 1.5 days | P2c | Planned | None |
+| **Dual Authorization** | 4-6 days | P2d | Planned | MFA (approvers should have MFA) |
+| **Break-Glass** | 2 days | P2e | Planned | MFA, Dual Auth |
 
-**Recommended order:** MFA → Encryption → CUI Marking → Dual Auth → Break-Glass
+**Recommended order:** ~~MFA~~ (done) → Encryption → CUI Marking → Dual Auth → Break-Glass
 
-Total estimated effort: **15-20 days** of development work.
+Total estimated remaining effort: **12-15.5 days** (was 15-20, MFA backend saved 3-5 days by reusing Artemis).

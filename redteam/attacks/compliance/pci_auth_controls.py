@@ -247,9 +247,9 @@ class PCIAuthControlsAttack(Attack):
 
                 # Check PHP session config if accessible
                 session_maxlife = None
-                for php_ini in ["/etc/php/8.3/fpm/php.ini", "/etc/php/8.2/fpm/php.ini",
-                                "/etc/php/8.1/fpm/php.ini", "/etc/php/8.0/fpm/php.ini",
-                                "/etc/php/7.4/fpm/php.ini"]:
+                for php_ini in ["/etc/php/8.4/fpm/php.ini", "/etc/php/8.3/fpm/php.ini",
+                                "/etc/php/8.2/fpm/php.ini", "/etc/php/8.1/fpm/php.ini",
+                                "/etc/php/8.0/fpm/php.ini", "/etc/php/7.4/fpm/php.ini"]:
                     try:
                         with open(php_ini, "r") as f:
                             for line in f:
@@ -316,17 +316,16 @@ class PCIAuthControlsAttack(Attack):
             # Look for accounts with generic names
             placeholders = ",".join(["%s"] * len(GENERIC_ACCOUNT_NAMES))
             cur.execute(f"""
-                SELECT username, email, is_active, last_login
+                SELECT email, active, last_login_at
                 FROM users
-                WHERE LOWER(username) IN ({placeholders})
-                   OR LOWER(email) LIKE ANY(ARRAY[{','.join(["'%%' || %s || '%%'"] * len(GENERIC_ACCOUNT_NAMES))}])
-                ORDER BY username;
-            """, list(GENERIC_ACCOUNT_NAMES) + list(GENERIC_ACCOUNT_NAMES))
+                WHERE LOWER(SPLIT_PART(email, '@', 1)) IN ({placeholders})
+                ORDER BY email;
+            """, list(GENERIC_ACCOUNT_NAMES))
             generic_accounts = cur.fetchall()
             conn.close()
 
             if generic_accounts:
-                active = [a for a in generic_accounts if a[2]]  # is_active
+                active = [a for a in generic_accounts if a[1]]  # active
                 if active:
                     shared_status = Status.VULNERABLE
                     detail = (

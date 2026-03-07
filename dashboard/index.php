@@ -4,7 +4,7 @@
  * Cybersecurity posture, compliance, incident, and red team overview
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/admin/lib/middleware.php';
+require_once '/opt/artemis/www/admin/lib/middleware.php';
 
 $session = Session::getCurrent();
 if (!$session) {
@@ -683,6 +683,6 @@ if (!$session) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260307e"></script>
+    <script src="js/security.js?v=20260307f"></script>
 </body>
 </html>
