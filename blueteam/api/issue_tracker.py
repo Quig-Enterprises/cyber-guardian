@@ -212,11 +212,13 @@ class IssueTracker:
 
         # Load historical metrics
         history = []
+        persistent_baseline = None
         if os.path.exists(self.metrics_file):
             try:
                 with open(self.metrics_file, 'r') as f:
                     data = json.load(f)
                     history = data.get('history', [])
+                    persistent_baseline = data.get('persistent_baseline', None)
             except (json.JSONDecodeError, IOError):
                 pass
 
@@ -241,6 +243,11 @@ class IssueTracker:
 
         # Net improvement: current total vs worst scan in the history window
         worst_total = max((h['total'] for h in history), default=metrics['total_issues'])
+
+        # Use persistent baseline if it's higher than the rolling window worst
+        if persistent_baseline is not None and persistent_baseline > worst_total:
+            worst_total = persistent_baseline
+
         metrics['net_improvement'] = worst_total - metrics['total_issues']
         metrics['baseline'] = worst_total
 
@@ -248,7 +255,8 @@ class IssueTracker:
         with open(self.metrics_file, 'w') as f:
             json.dump({
                 'current': metrics,
-                'history': history
+                'history': history,
+                'persistent_baseline': worst_total  # Preserve the all-time worst
             }, f, indent=2)
 
     def get_recent_fixes(self, hours: int = 24) -> List[dict]:
