@@ -149,7 +149,7 @@ class CodebaseSecurityScanner:
             "file_upload": [
                 {
                     "pattern": r'move_uploaded_file\s*\([^)]*\)',
-                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus)',
+                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus|malware_scan|scanUploadForMalware)',
                     "severity": Severity.CRITICAL,
                     "cwe": "CWE-434",
                     "description": "File upload without malware scanning detected",
@@ -158,7 +158,7 @@ class CodebaseSecurityScanner:
                 {
                     # Only flag $_FILES access when there's no nonce check in surrounding context
                     "pattern": r'\$_FILES\[[\'"]([^\'"]+)[\'"]\]\s*\[[\'"](tmp_name|name|size|type)[\'\"]\]',
-                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus)',
+                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus|malware_scan|scanUploadForMalware)',
                     "requires_nonce": r'(?:check_ajax_referer|wp_verify_nonce|verify_nonce)',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-434",
@@ -167,7 +167,7 @@ class CodebaseSecurityScanner:
                 },
                 {
                     "pattern": r'wp_handle_upload\s*\([^)]*\)',
-                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus)',
+                    "requires_scan": r'(?:clamscan|clamav|virustotal|malwarebytes|antivirus|malware_scan|scanUploadForMalware)',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-434",
                     "description": "WordPress file upload without malware scanning",
