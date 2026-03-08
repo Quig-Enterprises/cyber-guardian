@@ -49,7 +49,7 @@ Examples:
     redteam_parser = subparsers.add_parser("redteam", help="Run red team attacks")
     redteam_parser.add_argument("--all", action="store_true", help="Run all attacks")
     redteam_parser.add_argument("--category", choices=["ai", "api", "web", "compliance", "wordpress", "cve", "malware"], help="Run category")
-    redteam_parser.add_argument("--attack", help="Run specific attack (e.g., ai.jailbreak)")
+    redteam_parser.add_argument("--attack", action="append", help="Run specific attack (e.g., ai.jailbreak). Can be repeated.")
     redteam_parser.add_argument("--target", type=str, default=None, help="Target type(s): app, ai, wordpress, generic (comma-separated)")
     redteam_parser.add_argument("--url", type=str, default=None, metavar="URL", help="Target base URL (overrides config.yaml)")
     redteam_parser.add_argument("--profile", choices=["wordpress"], default=None, help="Scan profile (e.g. wordpress)")

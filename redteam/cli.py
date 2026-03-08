@@ -74,8 +74,15 @@ async def execute_attacks(args, config):
     elif hasattr(args, 'category') and args.category:
         attacks = registry.get_by_category(args.category)
     elif hasattr(args, 'attack') and args.attack:
-        attack = registry.get(args.attack)
-        attacks = [attack] if attack else []
+        # Support single attack or list of attacks
+        attack_names = args.attack if isinstance(args.attack, list) else [args.attack]
+        attacks = []
+        for name in attack_names:
+            attack = registry.get_by_name(name)
+            if attack:
+                attacks.append(attack)
+            else:
+                logger.warning(f"Attack not found: {name}")
     else:
         logger.error("No attack selection specified")
         return []
@@ -139,33 +146,36 @@ async def execute_attacks(args, config):
                 if username and password:
                     await client.login(username, password)
 
-        # Run all attacks
-        all_results = []
+        # Run all attacks and collect scores
+        all_scores = []
         for attack in attacks:
             logger.info(f"Running attack: {attack.name}")
             attack._config = config
             results = await attack.execute(client)
-            all_results.extend(results)
+            score = attack.score(results)
+            all_scores.append(score)
 
-        return all_results
+        return all_scores
 
 
-def generate_reports(report_format, results, config):
+def generate_reports(report_format, scores, config):
     """Generate reports in requested formats"""
     output_dir = Path(config.get("redteam", {}).get("reporting", {}).get("output_dir", "reports"))
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    summary = aggregate_scores(scores)
+
     if "console" in report_format or report_format == "console":
         reporter = ConsoleReporter()
-        reporter.generate(results)
+        reporter.print_report(summary)
 
     if "json" in report_format or report_format == "json":
-        reporter = JsonReporter(output_dir / "redteam-results.json")
-        reporter.generate(results)
+        reporter = JsonReporter()
+        reporter.write_report(summary, str(output_dir))
 
     if "html" in report_format or report_format == "html":
-        reporter = HtmlReporter(output_dir / "redteam-report.html")
-        reporter.generate(results)
+        reporter = HtmlReporter()
+        reporter.write_report(summary, str(output_dir))
 
 
 async def cleanup_only(config):
