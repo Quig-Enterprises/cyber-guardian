@@ -476,8 +476,9 @@ if __name__ == "__main__":
 
     # Scan WordPress plugins
     base_paths = [
-        "/var/www/html/wordpress/wp-content/plugins",
-        "/opt/claude-workspace/projects"
+        "/var/www/html/eqmon",
+        "/opt/claude-workspace/projects",
+        "/opt/artemis/www"
     ]
 
     results = scanner.scan_all_projects(base_paths)

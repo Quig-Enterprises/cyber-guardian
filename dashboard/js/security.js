@@ -180,6 +180,8 @@
             loadMalwareData();
         } else if (tab === 'passwords') {
             loadPasswordAuditData();
+        } else if (tab === 'mitigation') {
+            loadMitigationData();
         }
     }
 
@@ -2950,12 +2952,9 @@
         });
     };
 
-})();
-
-// ============================================================================
-// MITIGATION TAB
-// ============================================================================
-(function () {
+    // ============================================================================
+    // MITIGATION TAB
+    // ============================================================================
     function loadMitigationData() {
         apiFetch('mitigation_data.php').then(function (data) {
             if (!data || !data.success) {
@@ -2965,9 +2964,9 @@
 
             // Update summary cards
             var summary = data.summary || {};
-            setTextById('mitigation-total-issues', summary.total_issues || 0);
-            setTextById('mitigation-critical', summary.critical || 0);
-            setTextById('mitigation-high', summary.high || 0);
+            setText('mitigation-total-issues', summary.total_issues || 0);
+            setText('mitigation-critical', summary.critical || 0);
+            setText('mitigation-high', summary.high || 0);
             
             var netImprovement = summary.net_improvement || 0;
             var netEl = document.getElementById('mitigation-net-improvement');
@@ -2977,7 +2976,7 @@
             }
 
             // Update project count
-            setTextById('mitigation-project-count', (data.projects || []).length);
+            setText('mitigation-project-count', (data.projects || []).length);
 
             // Populate projects table
             var tbody = document.getElementById('mitigation-tbody');
@@ -2989,8 +2988,8 @@
             }
 
             tbody.innerHTML = data.projects.map(function (p) {
-                var todoLink = p.todo_path ? 
-                    '<a href="file://' + p.todo_path + '" target="_blank">View TODO</a>' :
+                var todoLink = p.todo_path ?
+                    '<a href="#" class="btn-small" onclick="showTodoModal(\'' + escapeHtml(p.todo_path).replace(/'/g, "\\'") + '\', \'' + escapeHtml(p.name).replace(/'/g, "\\'") + '\'); return false;">View TODO</a>' :
                     '—';
                 
                 var criticalClass = p.critical > 0 ? 'severity-critical' : '';
@@ -3112,10 +3111,231 @@
         });
     }
 
-    // Register tab loader
+    // Register mitigation tab loader
     window.addEventListener('DOMContentLoaded', function () {
         if (typeof window.tabLoaders !== 'undefined') {
             window.tabLoaders['mitigation'] = loadMitigationData;
         }
     });
+
+    // Append text with inline **bold** and `code` formatting as safe DOM nodes
+    function appendInlineFormatted(parent, text) {
+        // Split on **bold** and `code` patterns
+        var parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/);
+        parts.forEach(function (part) {
+            if (part.match(/^\*\*(.+)\*\*$/)) {
+                var b = document.createElement('strong');
+                b.textContent = part.slice(2, -2);
+                b.style.color = '#00d4ff';
+                parent.appendChild(b);
+            } else if (part.match(/^`(.+)`$/)) {
+                var c = document.createElement('code');
+                c.textContent = part.slice(1, -1);
+                c.style.cssText = 'background:#0a0e27;color:#00ff88;padding:0.1rem 0.3rem;border-radius:3px;font-family:monospace;font-size:0.8rem;';
+                parent.appendChild(c);
+            } else if (part) {
+                parent.appendChild(document.createTextNode(part));
+            }
+        });
+    }
+
+    // Render markdown TODO content as styled DOM elements (no innerHTML, XSS-safe)
+    function renderTodoContent(container, content) {
+        var lines = content.split('\n');
+        var i = 0;
+        while (i < lines.length) {
+            var line = lines[i];
+
+            // Horizontal rule
+            if (line.match(/^---+$/)) {
+                var hr = document.createElement('hr');
+                hr.style.cssText = 'border:none;border-top:1px solid #2a2f4a;margin:1rem 0;';
+                container.appendChild(hr);
+                i++;
+                continue;
+            }
+
+            // Headings
+            var headingMatch = line.match(/^(#{1,4})\s+(.+)/);
+            if (headingMatch) {
+                var level = headingMatch[1].length;
+                var h = document.createElement('h' + Math.min(level + 1, 6));
+                h.textContent = headingMatch[2].replace(/\*\*/g, '');
+                var colors = { 1: '#00d4ff', 2: '#00d4ff', 3: '#4a9eff', 4: '#7a8ba3' };
+                var sizes = { 1: '1.3rem', 2: '1.1rem', 3: '1rem', 4: '0.9rem' };
+                h.style.cssText = 'color:' + (colors[level] || '#e0e6ed') + ';font-size:' + (sizes[level] || '0.9rem') + ';margin:1rem 0 0.5rem;';
+                container.appendChild(h);
+                i++;
+                continue;
+            }
+
+            // Code block
+            if (line.match(/^```/)) {
+                var codeLines = [];
+                i++;
+                while (i < lines.length && !lines[i].match(/^```/)) {
+                    codeLines.push(lines[i]);
+                    i++;
+                }
+                i++; // skip closing ```
+                var pre = document.createElement('pre');
+                pre.style.cssText = 'background:#0a0e27;padding:0.75rem;border-radius:4px;margin:0.5rem 0;overflow-x:auto;';
+                var code = document.createElement('code');
+                code.style.cssText = 'color:#00ff88;font-family:monospace;font-size:0.8rem;';
+                code.textContent = codeLines.join('\n');
+                pre.appendChild(code);
+                container.appendChild(pre);
+                continue;
+            }
+
+            // Table
+            if (line.indexOf('|') === 0 && line.lastIndexOf('|') > 0) {
+                var table = document.createElement('table');
+                table.style.cssText = 'width:100%;border-collapse:collapse;margin:0.5rem 0;background:#1a1f3a;border-radius:4px;';
+                var isHeader = true;
+                while (i < lines.length && lines[i].indexOf('|') === 0) {
+                    if (lines[i].match(/^\|[\s-|]+$/)) { i++; continue; } // skip separator
+                    var cells = lines[i].split('|').filter(function (c, idx, arr) { return idx > 0 && idx < arr.length - 1; });
+                    var tr = document.createElement('tr');
+                    cells.forEach(function (cell) {
+                        var td = document.createElement(isHeader ? 'th' : 'td');
+                        td.textContent = cell.trim().replace(/\*\*/g, '');
+                        td.style.cssText = isHeader
+                            ? 'background:#1e2442;color:#00d4ff;padding:0.5rem;text-align:left;font-weight:600;'
+                            : 'padding:0.5rem;border-bottom:1px solid #2a2f4a;color:#e0e6ed;';
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                    isHeader = false;
+                    i++;
+                }
+                container.appendChild(table);
+                continue;
+            }
+
+            // Checkbox
+            if (line.match(/^- \[([ x])\]/)) {
+                var cb = document.createElement('div');
+                cb.style.cssText = 'padding:0.15rem 0 0.15rem 1rem;color:#7a8ba3;font-size:0.85rem;';
+                var checked = line.charAt(3) === 'x';
+                cb.textContent = (checked ? '\u2611 ' : '\u2610 ') + line.substring(5).trim();
+                if (checked) cb.style.color = '#00ff88';
+                container.appendChild(cb);
+                i++;
+                continue;
+            }
+
+            // Line with inline formatting (bold, code)
+            if (line.match(/\*\*|`/)) {
+                var p = document.createElement('p');
+                p.style.cssText = 'margin:0.25rem 0;font-size:0.85rem;color:#e0e6ed;';
+                appendInlineFormatted(p, line);
+                container.appendChild(p);
+                i++;
+                continue;
+            }
+
+            // Numbered list item (e.g. "1. **Review** each issue...")
+            var numMatch = line.match(/^(\d+)\.\s+(.+)/);
+            if (numMatch) {
+                var li = document.createElement('div');
+                li.style.cssText = 'padding:0.2rem 0 0.2rem 1.5rem;font-size:0.85rem;color:#e0e6ed;';
+                var num = document.createElement('span');
+                num.style.cssText = 'color:#4a9eff;font-weight:600;margin-right:0.4rem;';
+                num.textContent = numMatch[1] + '.';
+                li.appendChild(num);
+                appendInlineFormatted(li, numMatch[2]);
+                container.appendChild(li);
+                i++;
+                continue;
+            }
+
+            // Bullet list item (e.g. "- Some text")
+            var bulletMatch = line.match(/^-\s+(.+)/);
+            if (bulletMatch) {
+                var bul = document.createElement('div');
+                bul.style.cssText = 'padding:0.15rem 0 0.15rem 1.5rem;font-size:0.85rem;color:#e0e6ed;';
+                bul.appendChild(document.createTextNode('\u2022 '));
+                appendInlineFormatted(bul, bulletMatch[1]);
+                container.appendChild(bul);
+                i++;
+                continue;
+            }
+
+            // Empty line
+            if (line.trim() === '') {
+                i++;
+                continue;
+            }
+
+            // Default: plain text with inline formatting
+            var text = document.createElement('p');
+            text.style.cssText = 'margin:0.2rem 0;font-size:0.85rem;color:#e0e6ed;';
+            appendInlineFormatted(text, line);
+            container.appendChild(text);
+            i++;
+        }
+    }
+
+    // TODO modal - uses textContent (no innerHTML) for safe rendering
+    window.showTodoModal = function (path, projectName) {
+        var existing = document.getElementById('todo-modal-overlay');
+        if (existing) existing.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'todo-modal-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#141938;border:1px solid #2a2f4a;border-radius:8px;width:90%;max-width:800px;max-height:80vh;display:flex;flex-direction:column;';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid #2a2f4a;';
+
+        var title = document.createElement('h3');
+        title.style.cssText = 'margin:0;color:#00d4ff;';
+        title.textContent = 'TODO: ' + projectName;
+
+        var closeBtn = document.createElement('button');
+        closeBtn.style.cssText = 'background:none;border:none;color:#7a8ba3;font-size:1.5rem;cursor:pointer;';
+        closeBtn.textContent = '\u00D7';
+        closeBtn.onclick = function () { overlay.remove(); };
+
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+
+        var body = document.createElement('div');
+        body.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;';
+
+        var loading = document.createElement('p');
+        loading.style.color = '#7a8ba3';
+        loading.textContent = 'Loading...';
+        body.appendChild(loading);
+
+        modal.appendChild(header);
+        modal.appendChild(body);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+
+        apiFetch('todo-content.php?path=' + encodeURIComponent(path)).then(function (data) {
+            body.removeChild(loading);
+            if (!data || !data.success) {
+                var err = document.createElement('p');
+                err.style.color = '#ff4444';
+                err.textContent = data.error || 'Failed to load';
+                body.appendChild(err);
+                return;
+            }
+            renderTodoContent(body, data.content);
+        }).catch(function () {
+            body.removeChild(loading);
+            var err = document.createElement('p');
+            err.style.color = '#ff4444';
+            err.textContent = 'Error loading TODO file';
+            body.appendChild(err);
+        });
+    };
+
 })();

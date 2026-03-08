@@ -4,10 +4,6 @@
  * Renders the complete mitigation dashboard in HTML
  */
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-use League\CommonMark\CommonMarkConverter;
-
 $base_dir = dirname(dirname(__DIR__));
 $dashboard_file = "$base_dir/MITIGATION_DASHBOARD.md";
 
@@ -18,14 +14,7 @@ if (!file_exists($dashboard_file)) {
 }
 
 $markdown = file_get_contents($dashboard_file);
-
-// Convert Markdown to HTML
-$converter = new CommonMarkConverter([
-    'html_input' => 'strip',
-    'allow_unsafe_links' => false,
-]);
-
-$html = $converter->convert($markdown);
+$markdown_json = json_encode($markdown);
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -154,10 +143,15 @@ $html = $converter->convert($markdown);
 <body>
     <div class="container">
         <div class="refresh-note">
-            <a href="javascript:location.reload()">🔄 Refresh</a> |
-            <a href="../">← Back to Dashboard</a>
+            <a href="javascript:location.reload()">Refresh</a> |
+            <a href="../">Back to Dashboard</a>
         </div>
-        <?php echo $html; ?>
+        <div id="content"></div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        var markdownContent = <?php echo $markdown_json; ?>;
+        document.getElementById('content').innerHTML = marked.parse(markdownContent);
+    </script>
 </body>
 </html>

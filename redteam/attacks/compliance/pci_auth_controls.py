@@ -67,9 +67,6 @@ CREDENTIAL_FP_PATTERNS = [
 # the credential is properly protected by filesystem ACLs.
 RESTRICTED_PERM_THRESHOLD = 0o640
 
-# Directories containing the scanner's own config — skip to avoid self-detection.
-SELF_SCAN_DIRS = {"cyber-guardian"}
-
 # Directories to scan for hardcoded credentials.
 CONFIG_SCAN_DIRS = [
     "/etc",
@@ -380,6 +377,21 @@ class PCIAuthControlsAttack(Attack):
         # ----------------------------------------------------------------
         # 5. Hardcoded credentials in config files
         # ----------------------------------------------------------------
+        def _is_env_sourced_value(line: str, env_sourced_vars: set) -> bool:
+            """Check if a credential pattern match uses an env-sourced variable as the value."""
+            # Match patterns like: key = VAR_NAME or key=VAR_NAME
+            for var in env_sourced_vars:
+                if var in line:
+                    return True
+            return False
+
+        # Patterns that indicate a variable is sourced from the environment.
+        _env_source_patterns = [
+            re.compile(r'^(\w+)\s*=\s*os\.environ\.get\('),
+            re.compile(r'^(\w+)\s*=\s*os\.environ\['),
+            re.compile(r'^(\w+)\s*=\s*os\.getenv\('),
+        ]
+
         hardcoded_findings: list[str] = []
         files_scanned = 0
         try:
@@ -397,44 +409,53 @@ class PCIAuthControlsAttack(Attack):
                         fpath = os.path.join(dirpath, fname)
                         try:
                             with open(fpath, "r", errors="ignore") as f:
-                                files_scanned += 1
-                                for line_no, line in enumerate(f, 1):
-                                    if line_no > 5000:  # safety limit
-                                        break
-                                    for pat in CREDENTIAL_PATTERNS:
-                                        if pat.search(line):
-                                            # Exclude comments and empty values
-                                            stripped = line.strip()
-                                            if stripped.startswith("#") or stripped.startswith("//"):
-                                                continue
-                                            # Exclude known false positive patterns
-                                            if any(fp.search(stripped) for fp in CREDENTIAL_FP_PATTERNS):
-                                                continue
-                                            # Skip files with restricted permissions (640 or tighter)
-                                            # — credential is protected by filesystem ACLs
-                                            try:
-                                                fmode = os.stat(fpath).st_mode & 0o777
-                                                if fmode <= RESTRICTED_PERM_THRESHOLD:
-                                                    continue
-                                            except OSError:
-                                                pass
-                                            finding = f"{fpath}:{line_no}: {stripped[:120]}"
-                                            hardcoded_findings.append(finding)
-                                            if len(hardcoded_findings) >= 50:
-                                                break
-                                    if len(hardcoded_findings) >= 50:
-                                        break
+                                all_lines = f.readlines()
                         except (PermissionError, OSError):
                             continue
-                    if len(hardcoded_findings) >= 50:
-                        break
-                if len(hardcoded_findings) >= 50:
-                    break
+
+                        files_scanned += 1
+
+                        # Pass 1: build set of variables sourced from the environment.
+                        env_sourced_vars: set = set()
+                        for raw_line in all_lines[:5000]:
+                            stripped_l = raw_line.strip()
+                            for env_pat in _env_source_patterns:
+                                m = env_pat.match(stripped_l)
+                                if m:
+                                    env_sourced_vars.add(m.group(1))
+
+                        # Pass 2: scan for credential patterns, excluding env-sourced values.
+                        for line_no, raw_line in enumerate(all_lines[:5000], 1):
+                            for pat in CREDENTIAL_PATTERNS:
+                                if pat.search(raw_line):
+                                    stripped = raw_line.strip()
+                                    if stripped.startswith("#") or stripped.startswith("//"):
+                                        continue
+                                    # Exclude known false positive patterns
+                                    if any(fp.search(stripped) for fp in CREDENTIAL_FP_PATTERNS):
+                                        continue
+                                    # Exclude lines whose value is an env-sourced variable
+                                    if env_sourced_vars and _is_env_sourced_value(stripped, env_sourced_vars):
+                                        continue
+                                    # Skip files with restricted permissions (640 or tighter)
+                                    # — credential is protected by filesystem ACLs
+                                    try:
+                                        fmode = os.stat(fpath).st_mode & 0o777
+                                        if fmode <= RESTRICTED_PERM_THRESHOLD:
+                                            continue
+                                    except OSError:
+                                        pass
+                                    finding = f"{fpath}:{line_no}: {stripped[:120]}"
+                                    hardcoded_findings.append(finding)
+
+            # Cap findings for reporting (all directories are fully walked first)
+            total_findings = len(hardcoded_findings)
+            hardcoded_findings = hardcoded_findings[:200]
 
             if hardcoded_findings:
                 cred_status = Status.VULNERABLE
                 detail = (
-                    f"Found {len(hardcoded_findings)} potential hardcoded credential(s) "
+                    f"Found {total_findings} potential hardcoded credential(s) "
                     f"in {files_scanned} files scanned. "
                     "PCI DSS Req 8.6.2 prohibits hardcoded passwords in scripts/config."
                 )
