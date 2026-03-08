@@ -909,7 +909,6 @@ if (!$session['sub']) {
                 <div class="card-header">
                     <h2>Projects Requiring Attention</h2>
                     <span class="count-badge" id="mitigation-project-count">0</span>
-                    <button class="btn-secondary" style="margin-left:auto" onclick="window.open('api/mitigation_dashboard.php', '_blank')">View Full Dashboard</button>
                 </div>
                 <div class="table-container">
                     <table class="data-table" id="mitigation-table">
@@ -1004,6 +1003,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260308e"></script>
+    <script src="js/security.js?v=20260308h"></script>
 </body>
 </html>

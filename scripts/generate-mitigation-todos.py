@@ -236,7 +236,7 @@ def generate_dashboard(projects_summary):
     dashboard += "## Quick Actions\n\n"
     dashboard += "**View all security TODOs:**\n"
     dashboard += "```bash\n"
-    dashboard += "find /var/www/html/wordpress/wp-content/plugins -name 'TODO_SECURITY.md'\n"
+    dashboard += "find /var/www/html/eqmon /opt/claude-workspace/projects /opt/artemis/www -name 'TODO_SECURITY.md'\n"
     dashboard += "```\n\n"
     dashboard += "**Run new scan:**\n"
     dashboard += "```bash\n"
