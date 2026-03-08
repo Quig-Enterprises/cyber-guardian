@@ -2953,6 +2953,69 @@
     };
 
     // ============================================================================
+    // CODEBASE SCAN QUICK ACTIONS
+    // ============================================================================
+    window.runCodebaseScan = function() {
+        var statusEl = document.getElementById('codebase-scan-status');
+        var btn = document.getElementById('btn-run-codebase-scan');
+
+        if (statusEl) {
+            statusEl.style.display = 'inline-block';
+            statusEl.textContent = 'Running...';
+            statusEl.style.background = '#f0ad4e';
+        }
+        if (btn) btn.disabled = true;
+
+        apiFetch('codebase-scan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'scan-and-generate' })
+        }).then(function(data) {
+            if (data.error) {
+                if (statusEl) {
+                    statusEl.textContent = data.error;
+                    statusEl.style.background = '#d9534f';
+                }
+                if (btn) btn.disabled = false;
+                return;
+            }
+            pollCodebaseScan();
+        }).catch(function(err) {
+            console.error('Codebase scan error:', err);
+            if (statusEl) {
+                statusEl.textContent = 'Error';
+                statusEl.style.background = '#d9534f';
+            }
+            if (btn) btn.disabled = false;
+        });
+    };
+
+    function pollCodebaseScan() {
+        var statusEl = document.getElementById('codebase-scan-status');
+        var btn = document.getElementById('btn-run-codebase-scan');
+        setTimeout(function() {
+            apiFetch('codebase-scan.php').then(function(data) {
+                if (data.running) {
+                    pollCodebaseScan();
+                } else {
+                    if (statusEl) {
+                        statusEl.textContent = 'Complete';
+                        statusEl.style.background = '#5cb85c';
+                    }
+                    if (btn) btn.disabled = false;
+                    loadMitigationData();
+                    setTimeout(function() {
+                        if (statusEl) statusEl.style.display = 'none';
+                    }, 5000);
+                }
+            }).catch(function() {
+                if (statusEl) statusEl.style.display = 'none';
+                if (btn) btn.disabled = false;
+            });
+        }, 3000);
+    }
+
+    // ============================================================================
     // MITIGATION TAB
     // ============================================================================
     function loadMitigationData() {

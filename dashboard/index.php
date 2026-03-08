@@ -905,6 +905,18 @@ if (!$session['sub']) {
                 </div>
             </div>
 
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                    <span class="status-badge" id="codebase-scan-status" style="display:none;">Running...</span>
+                </div>
+                <div style="padding: 1rem 1.5rem;">
+                    <button class="scan-now-btn" id="btn-run-codebase-scan" onclick="runCodebaseScan()">
+                        RUN SCAN &amp; REFRESH TODOs
+                    </button>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <h2>Projects Requiring Attention</h2>
@@ -1003,6 +1015,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260308j"></script>
+    <script src="js/security.js?v=20260308l"></script>
 </body>
 </html>
