@@ -2962,7 +2962,8 @@
         if (statusEl) {
             statusEl.style.display = 'inline-block';
             statusEl.textContent = 'Running...';
-            statusEl.style.background = '#f0ad4e';
+            statusEl.style.background = '#00d4ff';
+            statusEl.style.color = '#000';
         }
         if (btn) btn.disabled = true;
 
@@ -2975,6 +2976,7 @@
                 if (statusEl) {
                     statusEl.textContent = data.error;
                     statusEl.style.background = '#d9534f';
+                    statusEl.style.color = '#fff';
                 }
                 if (btn) btn.disabled = false;
                 return;
@@ -2985,6 +2987,7 @@
             if (statusEl) {
                 statusEl.textContent = 'Error';
                 statusEl.style.background = '#d9534f';
+                statusEl.style.color = '#fff';
             }
             if (btn) btn.disabled = false;
         });
@@ -3000,7 +3003,8 @@
                 } else {
                     if (statusEl) {
                         statusEl.textContent = 'Complete';
-                        statusEl.style.background = '#5cb85c';
+                        statusEl.style.background = '#00ff88';
+                        statusEl.style.color = '#000';
                     }
                     if (btn) btn.disabled = false;
                     loadMitigationData();
