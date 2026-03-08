@@ -1,10 +1,13 @@
 """Rate limiting attacks - flood testing against API endpoints."""
 
 import asyncio
+import logging
 import time
 import uuid
 
 from redteam.base import Attack, AttackResult, Severity, Status
+
+logger = logging.getLogger(__name__)
 
 
 class RateLimitingAttack(Attack):
@@ -17,6 +20,13 @@ class RateLimitingAttack(Attack):
     async def execute(self, client) -> list[AttackResult]:
         results = []
         test_path = self._get_test_endpoints()[0]
+
+        # In rate_limit_testing mode, spoof a non-whitelisted source IP
+        extra_headers: dict = {}
+        if self._is_rate_limit_test_mode():
+            test_ip = self._get_rate_test_source_ip()
+            extra_headers = {"X-Forwarded-For": test_ip, "X-Real-IP": test_ip}
+            logger.info(f"  [rate-limit] rate_limit_testing=true — spoofing source IP {test_ip}")
 
         # Pull throttle overrides for this attack (non-empty only in AWS mode)
         throttle = self._get_throttle("api.rate_limiting")
@@ -32,6 +42,7 @@ class RateLimitingAttack(Attack):
             status_code, body, headers = await client.get(
                 test_path,
                 params={"session_id": f"{session_id}-{i}"},
+                headers=extra_headers,
             )
             statuses.append(status_code)
             if delay_ms:
@@ -80,6 +91,7 @@ class RateLimitingAttack(Attack):
                         "message": f"Concurrent test #{idx}",
                         "session_id": s_id,
                     },
+                    headers=extra_headers,
                 )
                 duration = (time.monotonic() - req_start) * 1000
                 return status_code, duration
@@ -146,6 +158,7 @@ class RateLimitingAttack(Attack):
                     "device_id": device_id,
                     "note": f"REDTEAM-SPAM-NOTE-{i:04d}",
                 },
+                headers=extra_headers,
             )
             note_statuses.append(status_code)
             # Track created note IDs for cleanup
@@ -198,7 +211,7 @@ class RateLimitingAttack(Attack):
         return results
 
     async def cleanup(self, client) -> None:
-        """Delete spam notes created during rate limiting tests."""
+        """Delete spam notes and reset rate limit blocks created during tests."""
         test_path = self._get_test_endpoints()[0]
         for note_id in getattr(self, "_cleanup_note_ids", []):
             try:
@@ -208,3 +221,6 @@ class RateLimitingAttack(Attack):
                 )
             except Exception:
                 pass
+        # Reset any IP-based rate limit blocks so subsequent attacks aren't throttled
+        if self._is_rate_limit_test_mode():
+            self._reset_rate_limit_blocks(emails=[], ips=[self._get_rate_test_source_ip()])

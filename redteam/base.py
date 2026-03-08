@@ -4,7 +4,12 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
+import hashlib
+import logging
+import os
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class Severity(str, Enum):
@@ -92,6 +97,63 @@ class Attack(ABC):
         if not self._is_aws_mode():
             return []
         return self._config.get("execution", {}).get("aws", {}).get("blocked_ips", [])
+
+    # ------------------------------------------------------------------
+    # Rate limit test mode
+    # ------------------------------------------------------------------
+
+    def _is_rate_limit_test_mode(self) -> bool:
+        """Return True when rate_limit_testing is enabled in config.
+
+        In this mode, rate-limit attacks use a spoofed external source IP
+        so the scanner's whitelisted localhost address doesn't bypass limits.
+        """
+        return bool(
+            self._config.get("execution", {}).get("rate_limit_testing", False)
+        )
+
+    def _get_rate_test_source_ip(self) -> str:
+        """Return the external IP to spoof for rate-limit tests.
+
+        Configurable via execution.rate_limit_test_ip; defaults to a
+        non-routable external address that is definitely not whitelisted.
+        """
+        return self._config.get("execution", {}).get(
+            "rate_limit_test_ip", "203.0.113.99"  # TEST-NET-3, RFC 5737
+        )
+
+    def _reset_rate_limit_blocks(self, emails: list[str], ips: list[str] | None = None) -> int:
+        """Delete file-based rate limit records for the given email/IP combinations.
+
+        Supports the Alfred dashboard rate limiter which stores blocks in
+        /tmp/artemis_rate_limits/<sha256(ip:email)>.json
+
+        Returns the number of files deleted.
+        """
+        rl_cfg = self._config.get("execution", {}).get("rate_limit_reset", {})
+        dirs = rl_cfg.get("dirs", ["/tmp/artemis_rate_limits"])
+        test_ip = self._get_rate_test_source_ip()
+        check_ips = list(set((ips or []) + [test_ip, "127.0.0.1", "::1"]))
+
+        deleted = 0
+        for rl_dir in dirs:
+            if not os.path.isdir(rl_dir):
+                continue
+            for email in emails:
+                for ip in check_ips:
+                    key = hashlib.sha256(f"{ip}:{email.lower()}".encode()).hexdigest()
+                    path = os.path.join(rl_dir, f"{key}.json")
+                    if os.path.exists(path):
+                        try:
+                            os.unlink(path)
+                            deleted += 1
+                            logger.debug(f"  [rate-reset] Removed block: {ip}:{email}")
+                        except OSError as e:
+                            logger.warning(f"  [rate-reset] Could not remove {path}: {e}")
+
+        if deleted:
+            logger.info(f"  [rate-reset] Cleared {deleted} rate limit block(s)")
+        return deleted
 
     def _get_target_type(self) -> str:
         """Return the active target type from config."""

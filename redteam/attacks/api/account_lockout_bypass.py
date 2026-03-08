@@ -6,10 +6,13 @@ and whether rate limit headers are present.
 """
 
 import asyncio
+import logging
 import time
 import uuid
 
 from redteam.base import Attack, AttackResult, Severity, Status
+
+logger = logging.getLogger(__name__)
 
 
 class AccountLockoutBypassAttack(Attack):
@@ -28,6 +31,16 @@ class AccountLockoutBypassAttack(Attack):
     async def execute(self, client) -> list[AttackResult]:
         results = []
 
+        # In rate_limit_testing mode, spoof a non-whitelisted source IP so
+        # the scanner's localhost address doesn't bypass rate limiting.
+        base_headers: dict = {}
+        if self._is_rate_limit_test_mode():
+            test_ip = self._get_rate_test_source_ip()
+            base_headers = {"X-Forwarded-For": test_ip, "X-Real-IP": test_ip}
+            logger.info(f"  [lockout] rate_limit_testing=true — spoofing source IP {test_ip}")
+            # Clear any pre-existing blocks from prior runs so tests start clean
+            self._reset_rate_limit_blocks([self.TARGET_EMAIL])
+
         # ----------------------------------------------------------------
         # 1. IP rotation bypass — same account, different X-Forwarded-For
         # ----------------------------------------------------------------
@@ -45,7 +58,7 @@ class AccountLockoutBypassAttack(Attack):
                     "email": self.TARGET_EMAIL,
                     "password": self.WRONG_PASSWORD,
                 },
-                headers={"X-Forwarded-For": ip},
+                headers={**base_headers, "X-Forwarded-For": ip},
                 cookies={},
             )
             ip_statuses.append(status_code)
@@ -94,6 +107,10 @@ class AccountLockoutBypassAttack(Attack):
         # ----------------------------------------------------------------
         # 2. Rapid login attempts — 10 fast failures from same source
         # ----------------------------------------------------------------
+        # Reset blocks from test 1 so test 2 starts with a clean slate
+        if self._is_rate_limit_test_mode():
+            self._reset_rate_limit_blocks([self.TARGET_EMAIL])
+
         num_attempts = 10
         start = time.monotonic()
         rapid_statuses = []
@@ -105,6 +122,7 @@ class AccountLockoutBypassAttack(Attack):
                     "email": self.TARGET_EMAIL,
                     "password": f"{self.WRONG_PASSWORD}_{i}",
                 },
+                headers=base_headers,
                 cookies={},
             )
             rapid_statuses.append(status_code)
@@ -148,6 +166,10 @@ class AccountLockoutBypassAttack(Attack):
         # ----------------------------------------------------------------
         # 3. Rate limit headers check
         # ----------------------------------------------------------------
+        # Reset blocks from test 2 before the headers probe
+        if self._is_rate_limit_test_mode():
+            self._reset_rate_limit_blocks([self.TARGET_EMAIL])
+
         # Send a single login attempt and inspect response headers
         status_code, body, headers = await client.post(
             self.LOGIN_PATH,
@@ -155,6 +177,7 @@ class AccountLockoutBypassAttack(Attack):
                 "email": self.TARGET_EMAIL,
                 "password": self.WRONG_PASSWORD,
             },
+            headers=base_headers,
             cookies={},
         )
 
@@ -201,3 +224,7 @@ class AccountLockoutBypassAttack(Attack):
         ))
 
         return results
+
+    async def cleanup(self, client) -> None:
+        """Reset any rate limit blocks created during this attack."""
+        self._reset_rate_limit_blocks([self.TARGET_EMAIL])

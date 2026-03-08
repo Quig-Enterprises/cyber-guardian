@@ -1,0 +1,52 @@
+target:
+  base_url: "https://8qdj5it341kfv92u.brandonquig.com"
+  api_path: "/finance/api"
+  origin_ip: null
+  source_path: null
+
+database:
+  host: "localhost"
+  port: 5432
+  database: "eqmon"
+  user: "eqmon"
+  password: ""
+
+redteam:
+  enabled: true
+  cleanup: false
+  auth:
+    test_users:
+      system_admin:
+        username: ""
+        password: ""
+        role: "system-admin"
+  test_data:
+    session_id_prefix: "redteam-alfred-fqdn-"
+  reporting:
+    formats: ["html", "json", "console"]
+    output_dir: "reports/"
+  ai_attacker:
+    enabled: false
+
+execution:
+  mode: "full"
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  verification:
+    enabled: true
+    mode: "both"
+    aggressiveness: "low"
+
+reporting:
+  formats: ["console", "json", "html"]
+  output_dir: "reports/"
+
+cleanup:
+  enabled: false
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "logs/alfred-fqdn-redteam.log"

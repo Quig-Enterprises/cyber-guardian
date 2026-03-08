@@ -72,6 +72,21 @@ ai_attacker:
 
 execution:
   mode: "full"
+
+  # Rate limit testing mode
+  # When true, rate-limit and lockout attacks spoof a non-whitelisted external
+  # source IP so the scanner's localhost address doesn't bypass rate limiting.
+  # After each test, blocks created for that IP/email are automatically cleared
+  # so subsequent attacks aren't throttled by leftover test blocks.
+  rate_limit_testing: true
+  rate_limit_test_ip: "203.0.113.99"  # TEST-NET-3 (RFC 5737) — never routable
+
+  # Directories containing file-based rate limit blocks to clear after tests.
+  # Add any other rate-limiter tmp dirs here if new limiters are added.
+  rate_limit_reset:
+    dirs:
+      - "/tmp/artemis_rate_limits"
+
   aws:
     skip_attacks:
       - "api.ssrf"
