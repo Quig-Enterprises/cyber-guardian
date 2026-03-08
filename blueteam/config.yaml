@@ -1,29 +1,31 @@
-# Blue Team Configuration
+# Blue Team Configuration — Alfred Server
 database:
-  host: localhost
+  host: 127.0.0.1
   port: 5432
-  name: eqmon
-  user: eqmon
-  # password loaded from EQMON_AUTH_DB_PASS env var
+  name: alfred_admin
+  user: alfred_admin
+  password: Xk9OUuMWtRkBEnY2jugt6992
 
 monitoring:
-  poll_interval_sec: 5
+  poll_interval_sec: 30
   log_retention_days: 90
+  verbose: false
 
 alerting:
   email:
-    enabled: false
+    enabled: true
     smtp_host: localhost
-    smtp_port: 587
-    from_address: blueteam@eqmon.local
-    recipients: []
+    smtp_port: 25
+    from_address: blueteam@alfred.localdomain
+    recipients:
+      - alfred@devteam.quigs.com
   syslog:
     enabled: true
     facility: local6
 
 collectors:
   db_audit:
-    enabled: true
+    enabled: false  # audit_events table not present in alfred_admin
   syslog:
     enabled: true
     path: /var/log/syslog
@@ -31,13 +33,12 @@ collectors:
     enabled: true
     path: /var/log/nginx/access.log
   php_errors:
-    enabled: true
+    enabled: false
     paths:
       - /var/www/html/eqmon/logs/server_errors.log
-      - /opt/eqmon/logs/server_errors.log
   redteam:
     enabled: true
-    reports_dir: /opt/security-red-team/reports  # shared dashboard report dir
+    reports_dir: /opt/claude-workspace/projects/cyber-guardian/reports
 
 correlation:
   window_seconds: 300
