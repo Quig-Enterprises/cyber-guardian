@@ -53,7 +53,7 @@ class TestAttackRegistry:
         registry = AttackRegistry()
         count = registry.discover()
         assert isinstance(count, int)
-        assert count == 41  # 14 AI + 17 API + 4 Web + 2 ai_powered + 4 compliance
+        assert count == 117
 
     def test_register_attack_manually(self):
         """Test internal _attacks registration and retrieval."""

@@ -1,0 +1,91 @@
+target:
+  base_url: "http://10.153.2.9"
+  api_path: "/api"
+  origin_ip: "10.153.2.9"
+  source_path: null
+
+database:
+  host: "localhost"
+  port: 5432
+  database: "eqmon"
+  user: "eqmon"
+  password: ""
+
+redteam:
+  enabled: true
+  cleanup: false
+  auth:
+    test_users: {}
+  test_data:
+    session_id_prefix: "redteam-oodle-"
+  reporting:
+    formats: ["html", "json", "console"]
+    output_dir: "reports/"
+  ai_attacker:
+    enabled: false
+
+execution:
+  mode: "full"
+
+# Oodle runs TrueNAS CE — skip attacks that require app-specific auth or cloud infra
+skip_categories:
+  - wordpress
+
+skip_attacks:
+  # WordPress
+  - wordpress.admin_exposure
+  - wordpress.brute_force
+  - wordpress.comment_xss
+  - wordpress.config_exposure
+  - wordpress.cron_abuse
+  - wordpress.debug_disclosure
+  - wordpress.file_upload
+  - wordpress.info_disclosure
+  - wordpress.plugin_audit
+  - wordpress.plugin_enumeration
+  - wordpress.rest_api_exposure
+  - wordpress.security_headers
+  - wordpress.user_enumeration
+  - wordpress.xmlrpc_abuse
+  - cve.wp_core_cve
+  - cve.wp_plugin_cve
+  - cve.wp_theme_cve
+  # Cloud — local LAN NAS, no cloud infra
+  - cloud.s3_buckets
+  - cloud.security_groups
+  - cloud.iam_audit
+  # SSRF and DoS are risky on shared home-network infra
+  - api.ssrf
+  - api.dos_resilience
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  verification:
+    enabled: true
+    mode: "http"
+    aggressiveness: "low"
+
+# Oodle services on non-default ports — scan each as a secondary target if needed:
+#   MQTT:         10.153.2.9:1883  (plaintext broker)
+#   MQTT WS:      10.153.2.9:8081
+#   n8n:          10.153.2.9:30109
+#   Node-RED:     10.153.2.9:30049
+#   Plex:         10.153.2.9:32400
+#   PostgreSQL:   10.153.2.9:5432
+#   Home Assistant: 10.153.2.9:30103
+#
+# To target a specific service, override base_url on the CLI:
+#   cyber-guardian --config config_oodle.yaml --target http://10.153.2.9:30109
+
+reporting:
+  formats: ["console", "json", "html"]
+  output_dir: "reports/"
+
+cleanup:
+  enabled: false
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "logs/oodle-redteam.log"
