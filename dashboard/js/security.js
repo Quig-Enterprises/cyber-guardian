@@ -3183,7 +3183,26 @@
         if (typeof window.tabLoaders !== 'undefined') {
             window.tabLoaders['mitigation'] = loadMitigationData;
         }
+        // On page load, check if a codebase scan is already running and resume polling
+        checkCodebaseScanStatus();
     });
+
+    function checkCodebaseScanStatus() {
+        apiFetch('codebase-scan.php').then(function(data) {
+            if (!data || !data.running) return;
+            // A scan is already running — show status and start polling
+            var statusEl = document.getElementById('codebase-scan-status');
+            var btn = document.getElementById('btn-run-codebase-scan');
+            if (statusEl) {
+                statusEl.style.display = 'inline-block';
+                statusEl.textContent = 'Running...';
+                statusEl.style.background = '#00d4ff';
+                statusEl.style.color = '#000';
+            }
+            if (btn) btn.disabled = true;
+            pollCodebaseScan();
+        }).catch(function() {});
+    }
 
     // Append text with inline **bold** and `code` formatting as safe DOM nodes
     function appendInlineFormatted(parent, text) {
