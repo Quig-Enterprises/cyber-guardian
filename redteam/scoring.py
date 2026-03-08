@@ -12,6 +12,8 @@ def aggregate_scores(scores: list[Score]) -> dict:
         "total_partial": sum(s.partial for s in scores),
         "total_defended": sum(s.defended for s in scores),
         "total_errors": sum(s.errors for s in scores),
+        "total_skipped": sum(s.skipped for s in scores),
+        "total_not_assessed": sum(s.not_assessed for s in scores),
         "by_category": {},
         "by_severity": {sev.value: 0 for sev in Severity},
         "worst_severity": Severity.INFO,
@@ -25,13 +27,16 @@ def aggregate_scores(scores: list[Score]) -> dict:
         cat = s.category
         if cat not in summary["by_category"]:
             summary["by_category"][cat] = {
-                "attacks": 0, "vulnerable": 0, "partial": 0, "defended": 0, "errors": 0, "duration_ms": 0
+                "attacks": 0, "vulnerable": 0, "partial": 0, "defended": 0, "errors": 0,
+                "skipped": 0, "not_assessed": 0, "duration_ms": 0
             }
         summary["by_category"][cat]["attacks"] += 1
         summary["by_category"][cat]["vulnerable"] += s.vulnerable
         summary["by_category"][cat]["partial"] += s.partial
         summary["by_category"][cat]["defended"] += s.defended
         summary["by_category"][cat]["errors"] += s.errors
+        summary["by_category"][cat]["skipped"] += s.skipped
+        summary["by_category"][cat]["not_assessed"] += s.not_assessed
         summary["by_category"][cat]["duration_ms"] += s.duration_ms
 
         # By severity (count findings)
@@ -65,4 +70,5 @@ def status_color(status: Status) -> str:
         Status.DEFENDED: "green",
         Status.ERROR: "magenta",
         Status.SKIPPED: "dim",
+        Status.NOT_ASSESSED: "cyan",
     }.get(status, "white")

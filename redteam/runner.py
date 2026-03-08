@@ -43,7 +43,7 @@ Examples:
         """,
     )
 
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument("--all", action="store_true", help="Run all attack batteries")
     group.add_argument(
         "--category",
@@ -180,8 +180,38 @@ Examples:
         default=None,
         help="Limit compliance assessment to specific framework(s). Default: all frameworks.",
     )
+    parser.add_argument(
+        "--preflight",
+        action="store_true",
+        help="Run pre-scan health check: test credentials, verify session, report account status",
+    )
+    parser.add_argument(
+        "--fqdn",
+        type=str,
+        default=None,
+        metavar="HOSTNAME",
+        help="Fully qualified domain name for DNS/TLS/certificate checks. "
+             "Web/API attacks still use --url/base_url for HTTP requests.",
+    )
+    parser.add_argument(
+        "--compare",
+        type=str,
+        default=None,
+        metavar="PREVIOUS_REPORT",
+        help="Compare results with a previous JSON report to show new, resolved, and regressed findings.",
+    )
+    parser.add_argument(
+        "--no-verify-ssl",
+        action="store_true",
+        help="Disable SSL certificate verification for HTTPS targets",
+    )
 
-    return parser.parse_args()
+    parsed = parser.parse_args()
+    # At least one action must be specified
+    has_action = parsed.all or parsed.category or parsed.attack or parsed.list or parsed.cleanup or parsed.preflight
+    if not has_action:
+        parser.error("one of the arguments --all --category --attack --list --cleanup --preflight is required")
+    return parsed
 
 
 async def _heartbeat(attack_name: str, start: float, interval: int = 30):
@@ -191,6 +221,71 @@ async def _heartbeat(attack_name: str, start: float, interval: int = 30):
         elapsed = int(time.time() - start)
         logger.info(f"  ... still running: {attack_name} ({elapsed}s elapsed)")
         await asyncio.sleep(interval)
+
+
+def _compare_reports(current_summary: dict, previous_path: str) -> dict:
+    """Compare current scan results with a previous JSON report."""
+    import json as json_module
+
+    try:
+        with open(previous_path, "r") as f:
+            previous = json_module.load(f)
+    except (FileNotFoundError, json_module.JSONDecodeError) as e:
+        logger.error(f"Cannot read previous report: {e}")
+        return {}
+
+    # Build sets of (attack_name, variant, status) for comparison
+    def _extract_findings(summary_data):
+        findings = {}
+        for score_data in summary_data.get("scores", []):
+            if isinstance(score_data, dict):
+                for result in score_data.get("results", []):
+                    key = (result.get("attack_name", ""), result.get("variant", ""))
+                    findings[key] = result.get("status", "")
+            elif hasattr(score_data, 'results'):
+                for result in score_data.results:
+                    key = (result.attack_name, result.variant)
+                    findings[key] = result.status.value if hasattr(result.status, 'value') else str(result.status)
+        return findings
+
+    prev_findings = _extract_findings(previous)
+    curr_findings = _extract_findings(current_summary)
+
+    all_keys = set(prev_findings.keys()) | set(curr_findings.keys())
+
+    new_findings = []      # in current but not in previous
+    resolved = []          # was vulnerable, now defended
+    regressed = []         # was defended, now vulnerable
+    unchanged_vuln = []    # still vulnerable
+
+    vuln_statuses = {"vulnerable", "partial"}
+    safe_statuses = {"defended"}
+
+    for key in sorted(all_keys):
+        prev_status = prev_findings.get(key)
+        curr_status = curr_findings.get(key)
+
+        if prev_status is None and curr_status:
+            new_findings.append({"attack": key[0], "variant": key[1], "status": curr_status})
+        elif prev_status in vuln_statuses and curr_status in safe_statuses:
+            resolved.append({"attack": key[0], "variant": key[1], "was": prev_status, "now": curr_status})
+        elif prev_status in safe_statuses and curr_status in vuln_statuses:
+            regressed.append({"attack": key[0], "variant": key[1], "was": prev_status, "now": curr_status})
+        elif prev_status in vuln_statuses and curr_status in vuln_statuses:
+            unchanged_vuln.append({"attack": key[0], "variant": key[1], "status": curr_status})
+
+    return {
+        "new_findings": new_findings,
+        "resolved": resolved,
+        "regressed": regressed,
+        "unchanged_vulnerable": unchanged_vuln,
+        "summary": {
+            "new": len(new_findings),
+            "resolved": len(resolved),
+            "regressed": len(regressed),
+            "unchanged_vulnerable": len(unchanged_vuln),
+        }
+    }
 
 
 async def run(args):
@@ -234,6 +329,11 @@ async def run(args):
         config.setdefault("target", {})["base_url"] = args.url
         logger.info(f"Target URL override: {args.url}")
 
+    # --fqdn sets target.fqdn for DNS/TLS attacks
+    if args.fqdn:
+        config.setdefault("target", {})["fqdn"] = args.fqdn
+        logger.info(f"FQDN for DNS/TLS checks: {args.fqdn}")
+
     # --path enables static source scanning
     if args.path:
         config.setdefault("target", {})["source_path"] = args.path
@@ -248,6 +348,68 @@ async def run(args):
     # --origin-ip: store for client creation below
     if args.origin_ip:
         config.setdefault("target", {})["origin_ip"] = args.origin_ip
+
+    # Pre-flight health check (if requested)
+    if args.preflight:
+        logger.info("=== Pre-flight Health Check ===")
+        base_url = config["target"]["base_url"]
+        origin_ip = config.get("target", {}).get("origin_ip")
+        verify_ssl = not origin_ip and not getattr(args, 'no_verify_ssl', False)
+
+        try:
+            from redteam.client import RedTeamClient as PFClient, LoginResult
+        except ImportError:
+            from redteam.client import RedTeamClient as PFClient
+            LoginResult = None
+
+        async with PFClient(base_url, origin_ip=origin_ip, verify_ssl=verify_ssl) as preflight_client:
+            # Test connectivity
+            try:
+                status, body, headers = await preflight_client.get("/")
+                logger.info(f"  Connectivity: OK (status {status})")
+            except Exception as e:
+                logger.error(f"  Connectivity: FAILED ({e})")
+                if not (args.all or args.category or args.attack):
+                    return
+
+            # Test authentication
+            test_user = config.get("redteam", {}).get("auth", {}).get("test_users", {}).get("system_admin", {})
+            username = os.environ.get("REDTEAM_SYSADMIN_USER", test_user.get("username", ""))
+            password = os.environ.get("REDTEAM_SYSADMIN_PASS", test_user.get("password", ""))
+
+            if username and password and not username.startswith("${"):
+                if LoginResult is not None:
+                    result = await preflight_client.login(username, password)
+                    if result == LoginResult.SUCCESS:
+                        logger.info(f"  Authentication: OK (logged in as {username})")
+                        # Verify session works
+                        status, body, headers = await preflight_client.get("/")
+                        logger.info(f"  Session verify: status {status}")
+                        # Check token expiry
+                        if preflight_client.session_expires_soon(threshold_seconds=600):
+                            logger.warning("  Token: Expires within 10 minutes!")
+                        else:
+                            logger.info("  Token: Valid")
+                    else:
+                        logger.error(f"  Authentication: FAILED ({result.value})")
+                        if not (args.all or args.category or args.attack):
+                            return
+                else:
+                    # LoginResult not available — fall back to bool check
+                    login_ok = await preflight_client.login(username, password)
+                    if login_ok:
+                        logger.info(f"  Authentication: OK (logged in as {username})")
+                    else:
+                        logger.error("  Authentication: FAILED")
+                        if not (args.all or args.category or args.attack):
+                            return
+            else:
+                logger.warning("  Authentication: No credentials configured")
+
+        logger.info("=== Pre-flight Complete ===")
+        # If only --preflight (no --all/--category/--attack), stop here
+        if not (args.all or args.category or args.attack):
+            return
 
     # Determine target type(s) (CLI > config > default)
     target_raw = args.target or config.get("target", {}).get("type", "app")
@@ -383,11 +545,12 @@ async def run(args):
     origin_ip = config.get("target", {}).get("origin_ip")
     if origin_ip:
         logger.info(f"Origin-direct mode: connecting to {origin_ip} with Host header from {base_url}")
+    verify_ssl = not origin_ip and not args.no_verify_ssl
     if "wordpress" in target_types:
         wp_cfg = config.get("target", {}).get("wordpress", {})
         client = WordPressClient(base_url, wp_config=wp_cfg, origin_ip=origin_ip)
     else:
-        client = RedTeamClient(base_url, timeout=30, origin_ip=origin_ip)
+        client = RedTeamClient(base_url, timeout=30, origin_ip=origin_ip, verify_ssl=verify_ssl)
 
     async with client:
         # Authenticate with appropriate method
@@ -426,8 +589,8 @@ async def run(args):
                 logger.info("No generic credentials configured — running unauthenticated tests")
         elif "app" in target_types or "ai" in target_types:
             test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
-            username = test_user.get("username", "")
-            password = test_user.get("password", "")
+            username = os.environ.get("REDTEAM_SYSADMIN_USER", test_user.get("username", ""))
+            password = os.environ.get("REDTEAM_SYSADMIN_PASS", test_user.get("password", ""))
             if username and password and not username.startswith("${"):
                 if not await client.login(username, password):
                     logger.warning("Authentication failed — running unauthenticated tests only")
@@ -516,6 +679,24 @@ async def run(args):
                     f"  {fw}: {stats['met']} met, {stats['not_met']} not met, "
                     f"{stats['partially_met']} partial, {stats['not_assessed']} not assessed"
                 )
+
+        # Compare with previous report (if requested)
+        if args.compare:
+            logger.info(f"Comparing with previous report: {args.compare}")
+            comparison = _compare_reports(summary, args.compare)
+            if comparison:
+                comp_summary = comparison["summary"]
+                logger.info(f"  New findings: {comp_summary['new']}")
+                logger.info(f"  Resolved: {comp_summary['resolved']}")
+                logger.info(f"  Regressed: {comp_summary['regressed']}")
+                logger.info(f"  Unchanged vulnerable: {comp_summary['unchanged_vulnerable']}")
+
+                # Save comparison report
+                import json as json_module
+                comp_path = Path(args.output) / f"comparison-{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+                with open(comp_path, "w") as f:
+                    json_module.dump(comparison, f, indent=2, default=str)
+                logger.info(f"  Comparison report: {comp_path}")
 
     # Global cleanup
     if not args.no_cleanup and config.get("cleanup", {}).get("enabled", True):

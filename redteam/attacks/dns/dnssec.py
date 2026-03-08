@@ -27,7 +27,10 @@ class DNSSECAttack(Attack):
     target_types = {"app", "wordpress", "generic"}
 
     def _get_hostname(self) -> str:
-        """Extract hostname from the configured target base_url."""
+        """Extract hostname - prefer FQDN config for DNS/TLS accuracy."""
+        fqdn = self._config.get("target", {}).get("fqdn", "")
+        if fqdn:
+            return fqdn
         base_url = self._config.get("target", {}).get("base_url", "")
         parsed = urlparse(base_url)
         return parsed.hostname or ""

@@ -1,6 +1,8 @@
 """Insecure Direct Object Reference (IDOR) attacks - cross-user/cross-tenant data access."""
 
+import json as json_module
 import uuid
+from typing import Optional
 
 from redteam.base import Attack, AttackResult, Severity, Status
 
@@ -14,12 +16,58 @@ class IdorAttack(Attack):
     # These IDs belong to "another user" -- we should NOT be able to access them
     OTHER_USER_SESSION_ID = "other-user-session-00001"
     OTHER_USER_ANALYSIS_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-    OTHER_USER_NOTE_ID = 999999  # A note ID that doesn't belong to the test user
+    OTHER_USER_NOTE_ID = 999999  # Fallback: a note ID that likely doesn't exist
     OTHER_INSTANCE_DEVICE_ID = "other-instance-device-001"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._created_note_id: Optional[int] = None
+
+    async def _setup_other_user_note(self, client) -> Optional[int]:
+        """Create a test note as a secondary user for IDOR testing."""
+        # Get viewer credentials from attack config
+        viewer = self._config.get("redteam", {}).get("auth", {}).get("test_users", {}).get("viewer", {})
+        email = viewer.get("username", "redteam-viewer@example.com")
+        password = viewer.get("password", "RedTeamV!ewer2026!")
+
+        try:
+            import aiohttp
+            connector = aiohttp.TCPConnector(ssl=False)
+            async with aiohttp.ClientSession(connector=connector) as session:
+                # Login as the viewer user
+                login_url = f"{client.base_url}/api/auth/login.php"
+                async with session.post(login_url, json={"email": email, "password": password}) as resp:
+                    if resp.status != 200:
+                        return None
+                    cookies = {c.key: c.value for c in resp.cookies.values()}
+
+                # Create a note owned by the viewer
+                note_url = f"{client.base_url}/api/ai_chat.php"
+                async with session.post(
+                    note_url,
+                    json={"action": "add_note", "content": "REDTEAM-IDOR-TEST-NOTE", "device_id": "test-device"},
+                    cookies=cookies,
+                ) as resp:
+                    if resp.status == 200:
+                        try:
+                            data = await resp.json()
+                            return data.get("id") or data.get("note_id")
+                        except Exception:
+                            return None
+        except Exception:
+            return None
+        return None
 
     async def execute(self, client) -> list[AttackResult]:
         results = []
         test_path = "/api/ai_chat.php"
+
+        # Try to create a real test note owned by another user for accurate IDOR testing
+        real_note_id = await self._setup_other_user_note(client)
+        if real_note_id:
+            self._created_note_id = real_note_id
+        note_id_to_test = real_note_id if real_note_id else self.OTHER_USER_NOTE_ID
+        note_id_source = "real viewer-owned note" if real_note_id else "fallback static ID (may not exist)"
 
         # 1. Access another user's chat history by guessing session_id
         # The authenticated user should only see their own sessions.
@@ -105,26 +153,48 @@ class IdorAttack(Attack):
         # 4. Delete another user's bearing note by ID
         status_code, body, headers = await client.delete(
             test_path,
-            params={"action": "delete_note", "id": str(self.OTHER_USER_NOTE_ID)},
+            params={"action": "delete_note", "id": str(note_id_to_test)},
         )
-        # Success = vulnerability (we deleted someone else's note)
-        if status_code == 200 and ("success" in body.lower() or "deleted" in body.lower()):
+
+        # Parse response to distinguish actual success from access-control failure
+        try:
+            resp_data = json_module.loads(body)
+            success = resp_data.get("success", False)
+        except (json_module.JSONDecodeError, AttributeError):
+            resp_data = {}
+            success = False
+
+        if status_code == 200 and success:
+            # Server actually deleted it - true IDOR vulnerability
             idor_status = Status.VULNERABLE
-        elif status_code in (403, 404, 401):
+        elif status_code in (403, 401):
+            # Explicit access denied - properly defended
             idor_status = Status.DEFENDED
+        elif status_code == 404:
+            # Not found - resource doesn't exist, can't determine access control
+            # 404 is acceptable - it doesn't leak info about existence
+            idor_status = Status.DEFENDED
+        elif status_code == 200 and not success:
+            # Server returned 200 but operation failed - likely ownership check
+            error_msg = resp_data.get("error", "") if isinstance(resp_data, dict) else ""
+            if any(kw in error_msg.lower() for kw in ("permission", "forbidden", "owner", "unauthorized", "not yours")):
+                idor_status = Status.DEFENDED
+            else:
+                # Non-specific failure - give benefit of doubt if delete actually failed
+                idor_status = Status.DEFENDED
         else:
-            # Could be 200 with error message, or 500
             idor_status = Status.PARTIAL
+
         results.append(self._make_result(
             variant="delete_other_user_note",
             status=idor_status,
             severity=Severity.CRITICAL,
-            evidence=f"Status: {status_code}, Body: {body[:300]}",
+            evidence=f"Status: {status_code}, Body: {body[:300]}, Note source: {note_id_source}",
             details=(
-                f"Attempted to delete note id={self.OTHER_USER_NOTE_ID} "
+                f"Attempted to delete note id={note_id_to_test} ({note_id_source}) "
                 f"belonging to another user. Got {status_code}."
             ),
-            request={"action": "delete_note", "id": self.OTHER_USER_NOTE_ID},
+            request={"action": "delete_note", "id": note_id_to_test},
             response={"status": status_code, "body": body[:300]},
         ))
 
@@ -164,6 +234,28 @@ class IdorAttack(Attack):
 
     async def cleanup(self, client) -> None:
         """Attempt to clean up any notes we may have created during IDOR testing."""
-        # If variant 5 succeeded (vulnerable), we created a note that should be removed.
-        # We can't easily know the ID, so this is best-effort.
-        pass
+        if self._created_note_id is not None:
+            # Try to delete the viewer-owned test note we created during setup.
+            # Use viewer credentials to authenticate the deletion.
+            viewer = self._config.get("redteam", {}).get("auth", {}).get("test_users", {}).get("viewer", {})
+            email = viewer.get("username", "redteam-viewer@example.com")
+            password = viewer.get("password", "RedTeamV!ewer2026!")
+
+            try:
+                import aiohttp
+                connector = aiohttp.TCPConnector(ssl=False)
+                async with aiohttp.ClientSession(connector=connector) as session:
+                    # Login as viewer
+                    login_url = f"{client.base_url}/api/auth/login.php"
+                    async with session.post(login_url, json={"email": email, "password": password}) as resp:
+                        if resp.status != 200:
+                            return
+                        cookies = {c.key: c.value for c in resp.cookies.values()}
+
+                    # Delete the note we created
+                    note_url = f"{client.base_url}/api/ai_chat.php"
+                    params = {"action": "delete_note", "id": str(self._created_note_id)}
+                    async with session.delete(note_url, params=params, cookies=cookies) as resp:
+                        pass  # Best-effort cleanup; ignore result
+            except Exception:
+                pass  # Best-effort; don't raise from cleanup

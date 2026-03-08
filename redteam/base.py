@@ -21,6 +21,7 @@ class Status(str, Enum):
     DEFENDED = "defended"
     ERROR = "error"
     SKIPPED = "skipped"
+    NOT_ASSESSED = "not_assessed"
 
 
 @dataclass
@@ -51,15 +52,18 @@ class Score:
     partial: int = 0
     defended: int = 0
     errors: int = 0
+    skipped: int = 0
+    not_assessed: int = 0
     worst_severity: Severity = Severity.INFO
     results: list[AttackResult] = field(default_factory=list)
     duration_ms: float = 0.0
 
     @property
     def pass_rate(self) -> float:
-        if self.total_variants == 0:
+        assessed = self.total_variants - self.skipped - self.not_assessed
+        if assessed == 0:
             return 0.0
-        return self.defended / self.total_variants
+        return self.defended / assessed
 
     @property
     def has_findings(self) -> bool:
@@ -152,6 +156,10 @@ class Attack(ABC):
                 score.defended += 1
             elif r.status == Status.ERROR:
                 score.errors += 1
+            elif r.status == Status.SKIPPED:
+                score.skipped += 1
+            elif r.status == Status.NOT_ASSESSED:
+                score.not_assessed += 1
             if r.is_vulnerable and severity_order.index(r.severity) < severity_order.index(score.worst_severity):
                 score.worst_severity = r.severity
         return score

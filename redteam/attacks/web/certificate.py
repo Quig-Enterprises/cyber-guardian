@@ -35,10 +35,11 @@ class CertificateAttack(Attack):
     target_types = {"app", "wordpress", "generic"}
 
     def _get_hostname_and_port(self) -> tuple[str, int]:
-        """Extract hostname and port from the target base_url config."""
+        """Extract hostname and port - prefer FQDN config for TLS accuracy."""
+        fqdn = self._config.get("target", {}).get("fqdn", "")
         base_url = self._config.get("target", {}).get("base_url", "")
         parsed = urlparse(base_url)
-        hostname = parsed.hostname or "localhost"
+        hostname = fqdn or parsed.hostname or "localhost"
         port = parsed.port or (443 if parsed.scheme == "https" else 443)
         return hostname, port
 
