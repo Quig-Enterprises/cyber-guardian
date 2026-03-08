@@ -9,9 +9,19 @@ header('Content-Type: application/json');
 // Paths
 $base_dir = dirname(dirname(__DIR__));
 $state_dir = "$base_dir/.scan-state";
-$dashboard_file = "$base_dir/MITIGATION_DASHBOARD.md";
+$reports_dir = "$base_dir/reports";
 $metrics_file = "$state_dir/mitigation_metrics.json";
 $scan_log = "$state_dir/scan.log";
+
+// Find latest codebase scan report
+$latest_report = null;
+if (is_dir($reports_dir)) {
+    $report_files = glob("$reports_dir/codebase-security-scan-*.md");
+    if ($report_files) {
+        sort($report_files);
+        $latest_report = end($report_files);
+    }
+}
 
 // Response structure
 $response = [
@@ -49,52 +59,68 @@ if (file_exists($metrics_file)) {
     }
 }
 
-// Parse dashboard for project list and severity counts
-if (file_exists($dashboard_file)) {
-    $content = file_get_contents($dashboard_file);
+// Parse latest scan report for project list and severity counts
+if ($latest_report && file_exists($latest_report)) {
+    $content = file_get_contents($latest_report);
 
-    // Extract overall severity counts from overview table
-    if (preg_match('/\| \*\*CRITICAL Issues\*\* \| \*\*(\d+)\*\*/', $content, $matches)) {
+    // Extract overall severity counts from Executive Summary table
+    // Format: | **CRITICAL** | 149 |
+    if (preg_match('/\| \*\*CRITICAL\*\* \| (\d+) \|/', $content, $matches)) {
         $response['summary']['critical'] = (int)$matches[1];
     }
-    if (preg_match('/\| \*\*HIGH Issues\*\* \| \*\*(\d+)\*\*/', $content, $matches)) {
+    if (preg_match('/\| \*\*HIGH\*\* \| (\d+) \|/', $content, $matches)) {
         $response['summary']['high'] = (int)$matches[1];
     }
-    if (preg_match('/\| MEDIUM Issues \| (\d+)/', $content, $matches)) {
+    if (preg_match('/\| \*\*MEDIUM\*\* \| (\d+) \|/', $content, $matches)) {
         $response['summary']['medium'] = (int)$matches[1];
     }
+    if (preg_match('/\| \*\*Total Issues\*\* \| (\d+) \|/', $content, $matches)) {
+        $response['summary']['total_issues'] = (int)$matches[1];
+    }
 
-    // Extract project table rows
+    // Extract Projects Summary table
+    // Format: | Project | Files | Issues | CRITICAL | HIGH | MEDIUM | LOW |
     $lines = explode("\n", $content);
-    $in_table = false;
+    $in_projects_table = false;
     foreach ($lines as $line) {
-        if (strpos($line, '| Project | Critical |') !== false) {
-            $in_table = true;
+        if (strpos($line, '| Project | Files | Issues |') !== false) {
+            $in_projects_table = true;
             continue;
         }
-        if ($in_table && strpos($line, '|') === 0) {
-            if (strpos($line, '---') !== false) continue;
-            if (strpos($line, '## Quick Actions') !== false) break;
+        if ($in_projects_table) {
+            if (strpos($line, '|') !== 0) break; // end of table
+            if (strpos($line, '---') !== false) continue; // separator row
 
-            // Parse project row: | name | critical | high | medium | total | TODO |
+            // Parse: | project | files | issues | critical | high | medium | low |
             $cols = array_map('trim', explode('|', trim($line, '|')));
-            if (count($cols) >= 6) {
-                $project_name = $cols[0];
-                // Extract TODO link
-                $todo_link = null;
-                if (preg_match('/\[TODO\]\((.+?)\)/', $cols[5], $matches)) {
-                    $todo_link = $matches[1];
-                }
+            if (count($cols) < 7) continue;
 
-                $response['projects'][] = [
-                    'name' => $project_name,
-                    'critical' => (int)$cols[1],
-                    'high' => (int)$cols[2],
-                    'medium' => (int)$cols[3],
-                    'total' => (int)$cols[4],
-                    'todo_path' => $todo_link
-                ];
+            $project_name = $cols[0];
+            if ($project_name === '') continue;
+
+            $total    = (int)$cols[2];
+            $critical = (int)$cols[3];
+            $high     = (int)$cols[4];
+            $medium   = (int)$cols[5];
+
+            // Look for a TODO.md for this project in known plugin/project locations
+            $todo_link = null;
+            $plugin_todo = "/var/www/html/wordpress/wp-content/plugins/{$project_name}/TODO.md";
+            $project_todo = "/opt/claude-workspace/projects/{$project_name}/TODO.md";
+            if (file_exists($plugin_todo)) {
+                $todo_link = $plugin_todo;
+            } elseif (file_exists($project_todo)) {
+                $todo_link = $project_todo;
             }
+
+            $response['projects'][] = [
+                'name'      => $project_name,
+                'critical'  => $critical,
+                'high'      => $high,
+                'medium'    => $medium,
+                'total'     => $total,
+                'todo_path' => $todo_link
+            ];
         }
     }
 }
