@@ -1,10 +1,11 @@
-"""AI-powered attack generation using local Ollama models.
+"""AI-powered attack generation with Claude-primary, Ollama-fallback strategy.
 
-Uses local LLMs (via Ollama) to dynamically generate adversarial prompts
-and evaluate responses. No external API keys needed.
+Uses Claude API (when ANTHROPIC_API_KEY is set) as the primary LLM provider,
+falling back to local Ollama models when Claude is unavailable. This allows
+high-quality attacks with Claude while supporting fully offline operation.
 
-Attacker model: qwen2.5-coder:32b (code-focused model for crafting attacks)
-Judge model: deepseek-r1:32b (strong reasoning for accurate evaluation)
+Attacker model: claude-sonnet-4-6 (primary) / qwen2.5-coder:32b (fallback)
+Judge model:    claude-haiku-4-5-20251001 (primary) / deepseek-r1:32b (fallback)
 
 The adaptive attack loop:
     for attempt in range(max_attempts):
@@ -19,35 +20,96 @@ The adaptive attack loop:
 
 import json
 import logging
+import os
 import aiohttp
 from abc import abstractmethod
 from redteam.base import Attack, AttackResult, Severity, Status
+
+try:
+    import anthropic
+    _anthropic_importable = True
+except ImportError:
+    _anthropic_importable = False
 
 logger = logging.getLogger(__name__)
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 
 
+class LLMUnavailableError(RuntimeError):
+    """Raised when neither Claude nor Ollama can provide a response."""
+    pass
+
+# Determine provider availability once at module load
+_claude_available = bool(os.environ.get("ANTHROPIC_API_KEY")) and _anthropic_importable
+
+if _claude_available:
+    logger.info("AI attacks: Claude API available (primary provider)")
+else:
+    logger.info("AI attacks: Claude unavailable, using Ollama fallback")
+
+
 class AiPoweredAttack(Attack):
-    """Base class for AI-powered attacks using local Ollama models.
+    """Base class for AI-powered attacks.
+
+    Uses Claude API when ANTHROPIC_API_KEY is set, falls back to local
+    Ollama models otherwise. This allows high-quality attacks with Claude
+    while supporting fully offline operation.
 
     Subclasses should override execute() and use generate_prompt()
     and evaluate_with_ai() in their attack loops.
 
     Class attributes:
-    - attacker_model: Ollama model used to generate attack prompts
-    - judge_model: Ollama model used to evaluate responses
+    - claude_attacker_model: Claude model used to generate attack prompts
+    - claude_judge_model: Claude model used to evaluate responses
+    - ollama_attacker_model: Ollama fallback model for attack generation
+    - ollama_judge_model: Ollama fallback model for evaluation
     - max_attempts: Maximum number of adaptive attempts per variant
     """
 
     name = "ai_powered.base"
     category = "ai"
     severity = Severity.HIGH
-    description = "AI-powered dynamic attack generation using local Ollama models"
+    description = "AI-powered dynamic attack generation using Claude (primary) or Ollama (fallback)"
 
-    attacker_model: str = "qwen2.5-coder:32b"
-    judge_model: str = "deepseek-r1:32b"
+    # Claude models (primary)
+    claude_attacker_model: str = "claude-sonnet-4-6"
+    claude_judge_model: str = "claude-haiku-4-5-20251001"
+    # Ollama models (fallback)
+    ollama_attacker_model: str = "qwen2.5-coder:32b"
+    ollama_judge_model: str = "deepseek-r1:32b"
     max_attempts: int = 15
+
+    # Cached at class level — only check once
+    _claude_available: bool = _claude_available
+
+    async def _call_claude(self, model: str, messages: list[dict],
+                           temperature: float = 0.7, max_tokens: int = 1024) -> str:
+        """Call Claude API. Returns the assistant's response text."""
+        try:
+            import anthropic
+            client = anthropic.Anthropic()
+
+            # Convert messages format: extract system message
+            system_msg = ""
+            api_messages = []
+            for msg in messages:
+                if msg["role"] == "system":
+                    system_msg = msg["content"]
+                else:
+                    api_messages.append(msg)
+
+            response = client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                system=system_msg,
+                messages=api_messages,
+                temperature=temperature,
+            )
+            return response.content[0].text
+        except Exception as e:
+            logger.warning(f"Claude API call failed: {e}")
+            return ""
 
     async def _call_ollama(self, model: str, messages: list[dict],
                            temperature: float = 0.7, max_tokens: int = 1024) -> str:
@@ -74,6 +136,38 @@ class AiPoweredAttack(Attack):
         except Exception as e:
             logger.error(f"Ollama call failed: {e}")
             return ""
+
+    async def _call_llm(self, role: str, messages: list[dict],
+                        temperature: float = 0.7, max_tokens: int = 1024) -> str:
+        """Call LLM with Claude-first, Ollama-fallback strategy.
+
+        Args:
+            role: "attacker" or "judge" — determines which model to use
+            messages: Chat messages in OpenAI format
+            temperature: Sampling temperature
+            max_tokens: Max response tokens
+
+        Returns:
+            Response text, or empty string if both providers fail.
+
+        Raises:
+            LLMUnavailableError: If both Claude and Ollama are unreachable.
+        """
+        if self._claude_available:
+            claude_model = self.claude_attacker_model if role == "attacker" else self.claude_judge_model
+            result = await self._call_claude(claude_model, messages, temperature, max_tokens)
+            if result:
+                return result
+            logger.info(f"Claude failed for {role}, falling back to Ollama")
+
+        ollama_model = self.ollama_attacker_model if role == "attacker" else self.ollama_judge_model
+        result = await self._call_ollama(ollama_model, messages, temperature, max_tokens)
+        if not result:
+            raise LLMUnavailableError(
+                f"No LLM available for {role}: Claude {'unavailable' if not self._claude_available else 'failed'}, "
+                f"Ollama ({ollama_model}) failed"
+            )
+        return result
 
     async def generate_prompt(self, context: dict) -> str:
         """Use attacker LLM to generate an adversarial prompt.
@@ -129,9 +223,7 @@ class AiPoweredAttack(Attack):
             {"role": "user", "content": user_msg},
         ]
 
-        result = await self._call_ollama(
-            self.attacker_model, messages, temperature=0.8, max_tokens=512
-        )
+        result = await self._call_llm("attacker", messages, temperature=0.8, max_tokens=512)
         return result.strip() if result else ""
 
     async def evaluate_with_ai(self, attack_prompt: str, response: str, goal: str) -> dict:
@@ -178,9 +270,7 @@ class AiPoweredAttack(Attack):
             {"role": "user", "content": user_msg},
         ]
 
-        result = await self._call_ollama(
-            self.judge_model, messages, temperature=0.1, max_tokens=256
-        )
+        result = await self._call_llm("judge", messages, temperature=0.1, max_tokens=256)
 
         # Parse JSON from judge response
         try:

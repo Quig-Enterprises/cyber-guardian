@@ -17,7 +17,7 @@ import time
 import uuid
 
 from redteam.base import AttackResult, Severity, Status
-from .base import AiPoweredAttack
+from .base import AiPoweredAttack, LLMUnavailableError
 
 logger = logging.getLogger(__name__)
 
@@ -132,9 +132,7 @@ class CreativeExtractionAttack(AiPoweredAttack):
             {"role": "user", "content": user_msg},
         ]
 
-        result = await self._call_ollama(
-            self.attacker_model, messages, temperature=0.9, max_tokens=512
-        )
+        result = await self._call_llm("attacker", messages, temperature=0.9, max_tokens=512)
         return result.strip() if result else ""
 
     def _check_fragments(self, text: str) -> list[str]:
@@ -181,7 +179,19 @@ class CreativeExtractionAttack(AiPoweredAttack):
                 ],
             }
 
-            attack_prompt = await self._generate_extraction_prompt(context)
+            try:
+                attack_prompt = await self._generate_extraction_prompt(context)
+            except LLMUnavailableError as e:
+                logger.error(f"No LLM available, marking as NOT_ASSESSED: {e}")
+                return [self._make_result(
+                    variant="creative_extraction_campaign",
+                    status=Status.NOT_ASSESSED,
+                    evidence=str(e),
+                    details="No LLM provider available — test not assessed",
+                    request={"session_id": session_id, "attempts": len(conversation_log)},
+                    response={"conversation": conversation_log},
+                    duration_ms=(time.time() - start_time) * 1000,
+                )]
             if not attack_prompt:
                 logger.warning("Attempt %d: attacker returned empty prompt, skipping", attempt_num)
                 continue

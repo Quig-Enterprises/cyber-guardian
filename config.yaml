@@ -43,8 +43,12 @@ redteam:
     output_dir: "reports/"
   ai_attacker:
     enabled: true
-    attacker_model: "qwen2.5-coder:32b"
-    judge_model: "deepseek-r1:32b"
+    # Primary: Claude API (requires ANTHROPIC_API_KEY env var)
+    claude_attacker_model: "claude-sonnet-4-6"
+    claude_judge_model: "claude-haiku-4-5-20251001"
+    # Fallback: local Ollama models (used when Claude unavailable)
+    ollama_attacker_model: "qwen2.5-coder:32b"
+    ollama_judge_model: "deepseek-r1:32b"
     ollama_url: "http://localhost:11434/api/chat"
 
 # Execution mode: "full" (on-prem, all attacks) or "aws" (EC2-safe, restricted)

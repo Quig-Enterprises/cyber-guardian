@@ -16,7 +16,7 @@ import time
 import uuid
 
 from redteam.base import AttackResult, Severity, Status
-from .base import AiPoweredAttack
+from .base import AiPoweredAttack, LLMUnavailableError
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,21 @@ class AdaptiveJailbreakAttack(AiPoweredAttack):
                 f"{goal_label}"
             )
 
-            result = await self._attack_single_goal(client, goal, goal_label)
+            try:
+                result = await self._attack_single_goal(client, goal, goal_label)
+            except LLMUnavailableError as e:
+                logger.error(f"No LLM available, marking all goals as NOT_ASSESSED: {e}")
+                for remaining_goal in self.attack_goals[goal_index:]:
+                    results.append(self._make_result(
+                        variant=self._goal_to_variant(remaining_goal),
+                        status=Status.NOT_ASSESSED,
+                        evidence=str(e),
+                        details=f"No LLM provider available — test not assessed",
+                        request={"goal": remaining_goal},
+                        response={},
+                        duration_ms=0,
+                    ))
+                return results
             results.append(result)
 
         return results
@@ -112,6 +126,8 @@ class AdaptiveJailbreakAttack(AiPoweredAttack):
             # --- Step 1: Generate adversarial prompt ---
             try:
                 attack_prompt = await self.generate_prompt(context)
+            except LLMUnavailableError:
+                raise  # Propagate to execute() for NOT_ASSESSED
             except Exception as e:
                 logger.warning(
                     f"[{variant}] Attempt {attempt_num}: generate_prompt error: {e}"
@@ -266,8 +282,8 @@ class AdaptiveJailbreakAttack(AiPoweredAttack):
                 "session_id": session_id,
                 "attempts": attempts_completed,
                 "max_attempts": self.max_attempts,
-                "attacker_model": self.attacker_model,
-                "judge_model": self.judge_model,
+                "attacker_model": self.claude_attacker_model if self._claude_available else self.ollama_attacker_model,
+                "judge_model": self.claude_judge_model if self._claude_available else self.ollama_judge_model,
             },
             response={"conversation_log": conversation_log},
             duration_ms=total_duration_ms,
