@@ -329,15 +329,17 @@ class ReplayAttack(Attack):
         # reject tokens once a newer login supersedes them (or after logout).
         # ------------------------------------------------------------------
         # Attempt initial login to get a fresh cookie set for "user A".
-        login_status_a, login_body_a, _ = await client.login(
+        login_ok_a = await client.login(
             "redteam-sysadmin@example.com", "RedTeam2026!"
         )
+        login_status_a = 200 if login_ok_a else 401
         cookie_a = dict(client._cookies)
 
         # Initiate a second login (same or different user) to rotate server state.
-        login_status_b, login_body_b, _ = await client.login(
+        login_ok_b = await client.login(
             "redteam-sysadmin@example.com", "RedTeam2026!"
         )
+        login_status_b = 200 if login_ok_b else 401
 
         # Now replay cookie_a (the pre-rotation cookie).
         cross_status, cross_body, _ = await client.get(
