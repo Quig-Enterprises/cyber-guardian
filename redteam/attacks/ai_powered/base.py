@@ -3,8 +3,8 @@
 Uses local LLMs (via Ollama) to dynamically generate adversarial prompts
 and evaluate responses. No external API keys needed.
 
-Attacker model: qwen2.5:32b (capable reasoning for crafting attacks)
-Judge model: llama3.2:latest (fast 3B model for quick evaluation)
+Attacker model: qwen2.5-coder:32b (code-focused model for crafting attacks)
+Judge model: deepseek-r1:32b (strong reasoning for accurate evaluation)
 
 The adaptive attack loop:
     for attempt in range(max_attempts):
@@ -45,8 +45,8 @@ class AiPoweredAttack(Attack):
     severity = Severity.HIGH
     description = "AI-powered dynamic attack generation using local Ollama models"
 
-    attacker_model: str = "qwen2.5:32b"
-    judge_model: str = "llama3.2:latest"
+    attacker_model: str = "qwen2.5-coder:32b"
+    judge_model: str = "deepseek-r1:32b"
     max_attempts: int = 15
 
     async def _call_ollama(self, model: str, messages: list[dict],
