@@ -3118,6 +3118,127 @@
         }
     });
 
+    // Render markdown TODO content as styled DOM elements (no innerHTML, XSS-safe)
+    function renderTodoContent(container, content) {
+        var lines = content.split('\n');
+        var i = 0;
+        while (i < lines.length) {
+            var line = lines[i];
+
+            // Horizontal rule
+            if (line.match(/^---+$/)) {
+                var hr = document.createElement('hr');
+                hr.style.cssText = 'border:none;border-top:1px solid #2a2f4a;margin:1rem 0;';
+                container.appendChild(hr);
+                i++;
+                continue;
+            }
+
+            // Headings
+            var headingMatch = line.match(/^(#{1,4})\s+(.+)/);
+            if (headingMatch) {
+                var level = headingMatch[1].length;
+                var h = document.createElement('h' + Math.min(level + 1, 6));
+                h.textContent = headingMatch[2].replace(/\*\*/g, '');
+                var colors = { 1: '#00d4ff', 2: '#00d4ff', 3: '#4a9eff', 4: '#7a8ba3' };
+                var sizes = { 1: '1.3rem', 2: '1.1rem', 3: '1rem', 4: '0.9rem' };
+                h.style.cssText = 'color:' + (colors[level] || '#e0e6ed') + ';font-size:' + (sizes[level] || '0.9rem') + ';margin:1rem 0 0.5rem;';
+                container.appendChild(h);
+                i++;
+                continue;
+            }
+
+            // Code block
+            if (line.match(/^```/)) {
+                var codeLines = [];
+                i++;
+                while (i < lines.length && !lines[i].match(/^```/)) {
+                    codeLines.push(lines[i]);
+                    i++;
+                }
+                i++; // skip closing ```
+                var pre = document.createElement('pre');
+                pre.style.cssText = 'background:#0a0e27;padding:0.75rem;border-radius:4px;margin:0.5rem 0;overflow-x:auto;';
+                var code = document.createElement('code');
+                code.style.cssText = 'color:#00ff88;font-family:monospace;font-size:0.8rem;';
+                code.textContent = codeLines.join('\n');
+                pre.appendChild(code);
+                container.appendChild(pre);
+                continue;
+            }
+
+            // Table
+            if (line.indexOf('|') === 0 && line.lastIndexOf('|') > 0) {
+                var table = document.createElement('table');
+                table.style.cssText = 'width:100%;border-collapse:collapse;margin:0.5rem 0;background:#1a1f3a;border-radius:4px;';
+                var isHeader = true;
+                while (i < lines.length && lines[i].indexOf('|') === 0) {
+                    if (lines[i].match(/^\|[\s-|]+$/)) { i++; continue; } // skip separator
+                    var cells = lines[i].split('|').filter(function (c, idx, arr) { return idx > 0 && idx < arr.length - 1; });
+                    var tr = document.createElement('tr');
+                    cells.forEach(function (cell) {
+                        var td = document.createElement(isHeader ? 'th' : 'td');
+                        td.textContent = cell.trim().replace(/\*\*/g, '');
+                        td.style.cssText = isHeader
+                            ? 'background:#1e2442;color:#00d4ff;padding:0.5rem;text-align:left;font-weight:600;'
+                            : 'padding:0.5rem;border-bottom:1px solid #2a2f4a;color:#e0e6ed;';
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                    isHeader = false;
+                    i++;
+                }
+                container.appendChild(table);
+                continue;
+            }
+
+            // Checkbox
+            if (line.match(/^- \[([ x])\]/)) {
+                var cb = document.createElement('div');
+                cb.style.cssText = 'padding:0.15rem 0 0.15rem 1rem;color:#7a8ba3;font-size:0.85rem;';
+                var checked = line.charAt(3) === 'x';
+                cb.textContent = (checked ? '\u2611 ' : '\u2610 ') + line.substring(5).trim();
+                if (checked) cb.style.color = '#00ff88';
+                container.appendChild(cb);
+                i++;
+                continue;
+            }
+
+            // Bold-only line (like **Issue:** or **Fix:**)
+            if (line.match(/^\*\*.+\*\*/)) {
+                var p = document.createElement('p');
+                p.style.cssText = 'margin:0.25rem 0;font-size:0.85rem;color:#e0e6ed;';
+                var parts = line.split(/\*\*/);
+                parts.forEach(function (part, idx) {
+                    if (idx % 2 === 1) {
+                        var b = document.createElement('strong');
+                        b.textContent = part;
+                        b.style.color = '#00d4ff';
+                        p.appendChild(b);
+                    } else {
+                        p.appendChild(document.createTextNode(part));
+                    }
+                });
+                container.appendChild(p);
+                i++;
+                continue;
+            }
+
+            // Empty line
+            if (line.trim() === '') {
+                i++;
+                continue;
+            }
+
+            // Default: plain text
+            var text = document.createElement('p');
+            text.style.cssText = 'margin:0.2rem 0;font-size:0.85rem;color:#e0e6ed;';
+            text.textContent = line;
+            container.appendChild(text);
+            i++;
+        }
+    }
+
     // TODO modal - uses textContent (no innerHTML) for safe rendering
     window.showTodoModal = function (path, projectName) {
         var existing = document.getElementById('todo-modal-overlay');
@@ -3169,10 +3290,7 @@
                 body.appendChild(err);
                 return;
             }
-            var pre = document.createElement('pre');
-            pre.style.cssText = 'font-family:monospace;font-size:0.85rem;line-height:1.6;color:#e0e6ed;white-space:pre-wrap;word-wrap:break-word;margin:0;';
-            pre.textContent = data.content;
-            body.appendChild(pre);
+            renderTodoContent(body, data.content);
         }).catch(function () {
             body.removeChild(loading);
             var err = document.createElement('p');
