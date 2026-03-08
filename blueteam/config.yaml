@@ -16,9 +16,9 @@ alerting:
     enabled: true
     smtp_host: localhost
     smtp_port: 25
-    from_address: alfred@devteam.quigs.com
+    from_address: ${CYBER_GUARDIAN_EMAIL:-alfred@devteam.quigs.com}
     recipients:
-      - alfred@devteam.quigs.com
+      - ${CYBER_GUARDIAN_EMAIL:-alfred@devteam.quigs.com}
   syslog:
     enabled: true
     facility: local6

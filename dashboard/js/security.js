@@ -2955,6 +2955,30 @@
     // ============================================================================
     // CODEBASE SCAN QUICK ACTIONS
     // ============================================================================
+    window.copyClaudePrompt = function(mode) {
+        var flag = mode === 'all' ? '--3rdparty' : '';
+        var prompt = 'Run the following command to get the current list of open TODO items across all CxQ projects, then investigate each one and prepare a prioritized mitigation plan. Group fixes by: (1) quick shell/config fixes, (2) code changes, (3) items needing external action or my input. For each item, note the affected file and line number where relevant.\n\n```bash\nbash /opt/claude-workspace/shared-resources/consolidate-todos.sh ' + flag + '\n```';
+        navigator.clipboard.writeText(prompt).then(function() {
+            var notice = document.getElementById('claude-prompt-copied');
+            if (notice) {
+                notice.style.display = 'inline';
+                setTimeout(function() { notice.style.display = 'none'; }, 3000);
+            }
+        });
+    };
+
+    window.downloadConsolidatedTodos = function(includeAll) {
+        var mode = includeAll ? 'all' : 'cxq';
+        var url = 'api/todo-export.php?mode=' + mode;
+        // Trigger download via hidden anchor
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
     window.runCodebaseScan = function() {
         var statusEl = document.getElementById('codebase-scan-status');
         var btn = document.getElementById('btn-run-codebase-scan');
@@ -3255,12 +3279,16 @@
                 continue;
             }
 
-            // Code block
-            if (line.match(/^```/)) {
+            // Code block (may be indented)
+            if (line.match(/^\s*```/)) {
                 var codeLines = [];
+                var indent = line.match(/^(\s*)/)[1];
                 i++;
-                while (i < lines.length && !lines[i].match(/^```/)) {
-                    codeLines.push(lines[i]);
+                while (i < lines.length && !lines[i].match(/^\s*```/)) {
+                    // Strip the same leading indentation as the opening fence
+                    var cl = lines[i];
+                    if (indent && cl.indexOf(indent) === 0) cl = cl.substring(indent.length);
+                    codeLines.push(cl);
                     i++;
                 }
                 i++; // skip closing ```
@@ -3304,8 +3332,9 @@
                 var cb = document.createElement('div');
                 cb.style.cssText = 'padding:0.15rem 0 0.15rem 1rem;color:#7a8ba3;font-size:0.85rem;';
                 var checked = line.charAt(3) === 'x';
-                cb.textContent = (checked ? '\u2611 ' : '\u2610 ') + line.substring(5).trim();
                 if (checked) cb.style.color = '#00ff88';
+                cb.appendChild(document.createTextNode(checked ? '\u2611 ' : '\u2610 '));
+                appendInlineFormatted(cb, line.substring(5).trim());
                 container.appendChild(cb);
                 i++;
                 continue;

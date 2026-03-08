@@ -136,8 +136,8 @@ if (file_exists($scan_log)) {
             $timestamp = $matches[1];
             $message = $matches[2];
 
-            // Remove ANSI color codes
-            $message = preg_replace('/\\033\[[0-9;]+m/', '', $message);
+            // Remove ANSI color codes (both literal \033 text and actual ESC character)
+            $message = preg_replace('/(?:\\\\033|\x1B)\[[0-9;]+m/', '', $message);
 
             // Only include interesting events
             if (strpos($message, 'FIXED:') !== false ||

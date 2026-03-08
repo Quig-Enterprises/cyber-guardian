@@ -27,9 +27,10 @@ if ($real === false || !is_file($real)) {
     exit;
 }
 
-// Whitelist: only TODO_SECURITY.md under known directories
+// Whitelist: only TODO*.md files under known directories
 $allowed = [
     '/var/www/html/eqmon/',
+    '/var/www/html/wordpress/wp-content/plugins/',
     '/opt/claude-workspace/projects/',
     '/opt/artemis/www/'
 ];
@@ -42,7 +43,8 @@ foreach ($allowed as $prefix) {
     }
 }
 
-if (!$ok || basename($real) !== 'TODO_SECURITY.md') {
+$filename = basename($real);
+if (!$ok || !preg_match('/^TODO.*\.md$/', $filename)) {
     http_response_code(403);
     echo json_encode(['error' => 'Access denied']);
     exit;

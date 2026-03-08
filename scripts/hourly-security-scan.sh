@@ -88,8 +88,28 @@ if [ -f "$STATE_DIR/previous-counts.txt" ]; then
         log "  CRITICAL: $PREV_CRITICAL → $CRITICAL (+$CRITICAL_DIFF)"
         log "  HIGH: $PREV_HIGH → $HIGH (+$HIGH_DIFF)"
 
-        # TODO: Send email/Slack notification here
-        # Example: send-alert.sh "Security scan: +$CRITICAL_DIFF CRITICAL, +$HIGH_DIFF HIGH issues"
+        # Send email notification
+        ALERT_SUBJECT="[Cyber-Guardian] Security Alert: +$CRITICAL_DIFF CRITICAL, +$HIGH_DIFF HIGH issues"
+        ALERT_BODY="Security scan detected increased severity on $(hostname):
+
+Previous scan: $PREV_CRITICAL CRITICAL, $PREV_HIGH HIGH
+Current scan:  $CRITICAL CRITICAL, $HIGH HIGH
+
+Changes:
+  CRITICAL: +$CRITICAL_DIFF
+  HIGH:     +$HIGH_DIFF
+
+New vulnerabilities: $NEW_ISSUES
+Fixed vulnerabilities: $FIXED_ISSUES
+Persistent vulnerabilities: $PERSISTENT_ISSUES
+
+Latest report: $LATEST_JSON
+
+Security Dashboard: https://8qdj5it341kfv92u.brandonquig.com/security-dashboard/
+
+Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
+
+        "$SCRIPT_DIR/send-security-alert.sh" "$ALERT_SUBJECT" "$ALERT_BODY" >> "$STATE_DIR/scan.log" 2>&1 || log "WARNING: Failed to send email alert"
     elif [ $TOTAL_DIFF -lt 0 ]; then
         log "${GREEN}IMPROVEMENT: $((TOTAL_DIFF * -1)) total issues resolved${NC}"
     fi

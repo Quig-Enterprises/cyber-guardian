@@ -910,10 +910,17 @@ if (!$session['sub']) {
                     <h2>Quick Actions</h2>
                     <span class="status-badge" id="codebase-scan-status" style="display:none;">Running...</span>
                 </div>
-                <div style="padding: 1rem 1.5rem;">
+                <div style="padding: 1rem 1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
                     <button class="scan-now-btn" id="btn-run-codebase-scan" onclick="runCodebaseScan()">
                         RUN SCAN &amp; REFRESH TODOs
                     </button>
+                    <button class="scan-now-btn" style="background:linear-gradient(135deg,#1a3a5c,#0d2137);border-color:#4a9eff;" onclick="copyClaudePrompt('cxq')" title="Copy a Claude prompt to your clipboard — paste into a new Claude session to plan and fix all open TODOs">
+                        📋 PREPARE CLAUDE PROMPT (CxQ)
+                    </button>
+                    <button class="scan-now-btn" style="background:linear-gradient(135deg,#1a2a4c,#0d1a30);border-color:#7a6aff;" onclick="copyClaudePrompt('all')" title="Include 3rd-party plugins in the Claude prompt">
+                        📋 PREPARE CLAUDE PROMPT (ALL)
+                    </button>
+                    <span id="claude-prompt-copied" style="display:none;color:#00ff88;font-size:0.8rem;align-self:center;">✓ Copied to clipboard</span>
                 </div>
             </div>
 
