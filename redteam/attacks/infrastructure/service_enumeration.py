@@ -162,17 +162,33 @@ class ServiceEnumerationAttack(Attack):
                 svc["local_addr"] + ":" + svc["port"] + " (" + svc["process"] + ")"
             )
 
+        # Identify web servers
+        webserver_ports = {}
+        for svc in services:
+            if svc["port"] in ("80", "443", "8080", "8443"):
+                process_name = svc["process"].split("/")[0] if "/" in svc["process"] else svc["process"]
+                if "nginx" in process_name.lower() or "apache" in process_name.lower():
+                    webserver_ports[svc["port"]] = {
+                        "process": process_name,
+                        "address": svc["local_addr"],
+                    }
+
+        details_text = "Found " + str(len(services)) + " listening TCP service(s):\n"
+        details_text += "\n".join("  - " + s for s in service_lines[:30])
+
+        if webserver_ports:
+            details_text += "\n\nWeb servers detected:\n"
+            for port, info in webserver_ports.items():
+                details_text += f"  - Port {port}: {info['process']} ({info['address']})\n"
+
         return self._make_result(
             variant="listening_services",
             status=Status.DEFENDED,
             severity=Severity.INFO,
             evidence=str(len(services)) + " listening service(s) enumerated",
-            details=(
-                "Found " + str(len(services)) + " listening TCP service(s):\n"
-                + "\n".join("  - " + s for s in service_lines[:30])
-            ),
+            details=details_text,
             request={"tool": "ss -tlnp"},
-            response={"service_count": len(services), "services": service_lines[:30]},
+            response={"service_count": len(services), "services": service_lines[:30], "webservers": webserver_ports},
         )
 
     def _check_unnecessary_services(self, services: list[dict]) -> AttackResult:
