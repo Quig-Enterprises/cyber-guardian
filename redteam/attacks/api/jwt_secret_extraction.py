@@ -44,7 +44,7 @@ class JWTSecretExtractionAttack(Attack):
             "exp": int(time.time()) + 86400,
             "user_id": f"redteam-jwt-{uuid.uuid4().hex[:8]}",
             "instance_id": "default",
-            "email": "redteam-jwt-forge@test.com",
+            "email": "redteam-jwt-forge@example.com",
             "role": "system-admin",
             "opco_id": None,
             "vessel_id": None,

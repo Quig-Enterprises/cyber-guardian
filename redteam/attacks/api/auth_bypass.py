@@ -21,7 +21,7 @@ class AuthBypassAttack(Attack):
             "exp": int(time.time()) + 86400,
             "user_id": "redteam-fake-user",
             "instance_id": "default",
-            "email": "fake@test.com",
+            "email": "fake@example.com",
             "role": "system-admin",
             "opco_id": None,
             "vessel_id": None,

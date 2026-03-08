@@ -90,7 +90,7 @@ class UnauthAdminSettingsAttack(Attack):
         # ----------------------------------------------------------------
         # Login as viewer first
         login_ok = await client.login(
-            "redteam-viewer@test.com", "RedTeamV!ewer2026!"
+            "redteam-viewer@example.com", "RedTeamV!ewer2026!"
         )
 
         if not login_ok:

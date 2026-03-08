@@ -184,6 +184,15 @@ Examples:
     return parser.parse_args()
 
 
+async def _heartbeat(attack_name: str, start: float, interval: int = 30):
+    """Log a still-running message every `interval` seconds for long attacks."""
+    await asyncio.sleep(interval)
+    while True:
+        elapsed = int(time.time() - start)
+        logger.info(f"  ... still running: {attack_name} ({elapsed}s elapsed)")
+        await asyncio.sleep(interval)
+
+
 async def run(args):
     # Setup logging
     level = logging.DEBUG if args.verbose else logging.INFO
@@ -378,7 +387,7 @@ async def run(args):
         wp_cfg = config.get("target", {}).get("wordpress", {})
         client = WordPressClient(base_url, wp_config=wp_cfg, origin_ip=origin_ip)
     else:
-        client = RedTeamClient(base_url, origin_ip=origin_ip)
+        client = RedTeamClient(base_url, timeout=30, origin_ip=origin_ip)
 
     async with client:
         # Authenticate with appropriate method
@@ -417,9 +426,13 @@ async def run(args):
                 logger.info("No generic credentials configured — running unauthenticated tests")
         elif "app" in target_types or "ai" in target_types:
             test_user = config["redteam"]["auth"]["test_users"]["system_admin"]
-            if not await client.login(test_user["username"], test_user["password"]):
-                logger.error("Authentication failed. Have test users been created?")
-                sys.exit(1)
+            username = test_user.get("username", "")
+            password = test_user.get("password", "")
+            if username and password and not username.startswith("${"):
+                if not await client.login(username, password):
+                    logger.warning("Authentication failed — running unauthenticated tests only")
+            else:
+                logger.info("No credentials configured — running unauthenticated tests only")
 
         # Run attacks
         suite_start = time.time()
@@ -435,7 +448,17 @@ async def run(args):
             attack._state = scan_state  # pass shared state to attacks
             attack_start = time.time()
             try:
-                results = await attack.execute(client)
+                heartbeat_task = asyncio.ensure_future(
+                    _heartbeat(attack.name, attack_start)
+                )
+                try:
+                    results = await attack.execute(client)
+                finally:
+                    heartbeat_task.cancel()
+                    try:
+                        await heartbeat_task
+                    except asyncio.CancelledError:
+                        pass
                 score = attack.score(results)
                 attack_elapsed = (time.time() - attack_start) * 1000
                 score.duration_ms = attack_elapsed

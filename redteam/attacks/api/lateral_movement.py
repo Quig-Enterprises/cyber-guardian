@@ -27,10 +27,10 @@ from redteam.base import Attack, AttackResult, Severity, Status
 JWT_SECRET = "eqmon_jwt_secret_2026_artemis_integration"
 
 # Credentials matching the red-team user fixture set
-_VESSEL_OFFICER_EMAIL = "redteam-vessel@test.com"
+_VESSEL_OFFICER_EMAIL = "redteam-vessel@example.com"
 _VESSEL_OFFICER_PASSWORD = "RedTeamV3ssel2026!"
 
-_COMPANY_ADMIN_EMAIL = "redteam-company@test.com"
+_COMPANY_ADMIN_EMAIL = "redteam-company@example.com"
 _COMPANY_ADMIN_PASSWORD = "RedTeamC0mpany2026!"
 
 # Fictitious but realistic tenant/vessel IDs used in crafted tokens
@@ -46,7 +46,7 @@ def _build_jwt(role: str, opco_id: str, vessel_id: str | None = None) -> str:
     now = int(time.time())
     claims: dict = {
         "sub": str(uuid.uuid4()),
-        "email": f"redteam-crafted-{role}@test.com",
+        "email": f"redteam-crafted-{role}@example.com",
         "role": role,
         "opco_id": opco_id,
         "iat": now,

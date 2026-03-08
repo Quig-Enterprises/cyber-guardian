@@ -24,7 +24,7 @@ class AuthzBoundariesAttack(Attack):
             "exp": int(time.time()) + 86400,
             "user_id": user_id or f"redteam-authz-{uuid.uuid4().hex[:8]}",
             "instance_id": instance_id,
-            "email": f"redteam-authz-{role}@test.com",
+            "email": f"redteam-authz-{role}@example.com",
             "role": role,
             "opco_id": opco_id,
             "vessel_id": vessel_id,

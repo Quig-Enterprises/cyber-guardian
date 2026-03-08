@@ -21,16 +21,16 @@ redteam:
   auth:
     test_users:
       system_admin:
-        username: "redteam-sysadmin@test.com"
+        username: "redteam-sysadmin@example.com"
         password: "${REDTEAM_SYSADMIN_PASS}"
         role: "system-admin"
       company_a_admin:
-        username: "redteam-companya@test.com"
+        username: "redteam-companya@example.com"
         password: "${REDTEAM_COMPANYA_PASS}"
         role: "company-admin"
         opco_id: "opco-a"
       company_b_officer:
-        username: "redteam-companyb@test.com"
+        username: "redteam-companyb@example.com"
         password: "${REDTEAM_COMPANYB_PASS}"
         role: "vessel-officer"
         opco_id: "opco-b"

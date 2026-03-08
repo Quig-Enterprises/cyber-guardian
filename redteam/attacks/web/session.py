@@ -37,7 +37,7 @@ class SessionAttack(Attack):
             status_code, body, headers = await client.post(
                 self._get_login_endpoint(),
                 json_body={
-                    "email": "redteam-sysadmin@test.com",
+                    "email": "redteam-sysadmin@example.com",
                     "password": "RedTeam$ysAdmin2026!",
                 },
             )

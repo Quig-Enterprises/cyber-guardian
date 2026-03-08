@@ -48,7 +48,7 @@ class CommentXSSAttack(Attack):
             "post": self.TARGET_POST_ID,
             "content": payload,
             "author_name": "RedTeam",
-            "author_email": "redteam@test.com",
+            "author_email": "redteam@example.com",
         }
 
         auth_label = "authenticated" if authenticated else "unauthenticated"

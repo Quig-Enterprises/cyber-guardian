@@ -2449,3 +2449,295 @@ a.incident-link:hover {
 .score-improve-list a {
     color: var(--primary-cyan);
 }
+
+/* ============================================================
+   Scan Now Bar & Log Panel
+   ============================================================ */
+.scan-now-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.scan-now-btn {
+    background: var(--primary-green);
+    color: #000;
+    border: none;
+    padding: 8px 20px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: background 0.15s;
+}
+.scan-now-btn:hover { background: #00ff8c; }
+.scan-now-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.scan-now-btn.scan-stop-btn { background: #ff4444; color: #fff; border-color: #ff4444; }
+.scan-now-btn.scan-stop-btn:hover { background: #ff2222; }
+
+.redteam-target-select {
+    background: #111;
+    color: var(--text-primary);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.85em;
+    cursor: pointer;
+    min-width: 220px;
+}
+.redteam-target-select:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+}
+
+.scan-now-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88em;
+    color: var(--text-secondary);
+}
+.scan-status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.scan-status-dot.running { background: var(--primary-cyan); animation: pulse 1.2s infinite; }
+.scan-status-dot.done    { background: var(--primary-green); }
+.scan-status-dot.failed  { background: var(--danger-red); }
+
+.scan-status-log-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 2px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.scan-status-log-btn:hover { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+
+.scan-log-panel {
+    background: #0a0a0a;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.scan-log-panel pre {
+    margin: 0;
+    font-size: 0.78em;
+    color: #aaa;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* ============================================================
+   Scan Now Modal & Target Modal (shared .scan-modal-*)
+   ============================================================ */
+.scan-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+}
+.scan-modal {
+    background: #111;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 520px;
+    max-width: 95vw;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+}
+.scan-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+.scan-modal-header h3 {
+    margin: 0;
+    font-size: 1em;
+    color: var(--primary-cyan);
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+}
+.scan-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+.scan-modal-close:hover { color: var(--danger-red); }
+
+.scan-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+.scan-form-group {
+    margin-bottom: 16px;
+}
+.scan-form-group label {
+    display: block;
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.scan-form-group input[type=text],
+.scan-form-group input[type=password],
+.scan-form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    background: #111;
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    padding: 7px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    border-radius: 3px;
+}
+.scan-form-group input:focus,
+.scan-form-group select:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+}
+
+.scan-categories { }
+.scan-cat-all {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.88em;
+    color: var(--text-white);
+    cursor: pointer;
+}
+.scan-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+.scan-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82em;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+.scan-cat-item:hover { border-color: var(--border-color); color: var(--text-white); }
+.scan-cat-item input { cursor: pointer; accent-color: var(--primary-cyan); }
+
+.scan-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-color);
+}
+.scan-btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 7px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.scan-btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-white); }
+.scan-btn-start {
+    background: var(--primary-green);
+    color: #000;
+    border: none;
+    padding: 7px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+.scan-btn-start:hover { background: #00ff8c; }
+.scan-btn-start:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.req { color: var(--danger-red); }
+
+/* ============================================================
+   Target Management Table
+   ============================================================ */
+.target-self-badge {
+    display: inline-block;
+    background: rgba(0,255,136,0.15);
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-size: 0.75em;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+}
+.target-actions { white-space: nowrap; }
+.target-action-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 2px 9px;
+    font-size: 0.78em;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 4px;
+    font-family: var(--font-mono);
+}
+.target-action-btn:hover { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+.target-delete-btn:hover { border-color: var(--danger-red); color: var(--danger-red); }
+
+/* Manage Targets button (secondary, beside Scan Now) */
+.scan-targets-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 7px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: border-color 0.15s, color 0.15s;
+}
+.scan-targets-btn:hover { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+
+/* Wide variant of scan-modal for the targets list */
+.scan-modal-wide {
+    width: 760px;
+}
+
+/* Scanner definition update date */
+.scanner-defn {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+.scanner-defn-date {
+    color: var(--primary-green);
+}
+.scanner-defn-schedule {
+    color: #555;
+    font-size: 0.9em;
+}

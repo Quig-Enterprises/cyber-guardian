@@ -108,14 +108,12 @@
         return null;
     }
 
-    function apiFetch(endpoint) {
-        return fetch(API_BASE + '/' + endpoint, {
-            credentials: 'same-origin',
-            headers: {
-                'X-Auth-User-Id': AUTH.userId
-            }
-        }).then(function (res) {
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+    function apiFetch(endpoint, options) {
+        var opts = options || {};
+        opts.credentials = 'same-origin';
+        opts.headers = Object.assign({ 'X-Auth-User-Id': AUTH.userId, 'X-Auth-Super': AUTH.isSuper ? 'true' : 'false' }, opts.headers || {});
+        return fetch(API_BASE + '/' + endpoint, opts).then(function (res) {
+            if (!res.ok) return res.json().then(function(e) { throw new Error(e.error || 'HTTP ' + res.status); });
             return res.json();
         });
     }
@@ -177,8 +175,11 @@
             fetchRedteam();
             fetchScanHistory();
             fetchSchedules();
+            checkActiveScan();
         } else if (tab === 'malware') {
             loadMalwareData();
+        } else if (tab === 'passwords') {
+            loadPasswordAuditData();
         }
     }
 
@@ -861,7 +862,18 @@
     // ---- Red Team Tab ----
 
     function fetchRedteam() {
-        apiFetch('redteam.php').then(function (data) {
+        // Ensure targets are loaded (needed for the selector)
+        if (!targetsCache) {
+            apiFetch('targets.php').then(function(data) {
+                targetsCache = data.targets || [];
+                populateRedteamTargetBar();
+                fetchRedteam();
+            }).catch(function() {});
+            return;
+        }
+        var url = 'redteam.php';
+        if (selectedRedteamTargetId !== null) url += '?target_id=' + selectedRedteamTargetId;
+        apiFetch(url).then(function (data) {
             renderRedteam(data);
         }).catch(function (err) {
             var el = document.getElementById('redteam-findings');
@@ -1505,7 +1517,7 @@
             renderDetectionsTable(data.active_detections || [], data.severity_counts || {});
 
             // Render scanner status
-            renderScannerStatus(data.latest_scans || [], data.last_scan_days || {});
+            renderScannerStatus(data.latest_scans || [], data.last_scan_days || {}, data.definitions || {});
 
         }).catch(function (err) {
             console.error('Failed to load malware data:', err);
@@ -1620,62 +1632,424 @@
     window.openScoreModal = openScoreModal;
     window.clearIncidentFilter = clearIncidentFilter;
 
+    // ---- Scan Now ----
+
+    var scanPollTimer = null;
+    var targetsCache = null;
+    var selectedRedteamTargetId = null;
+
+    function openScanNowModal() {
+        document.getElementById('scan-now-modal').style.display = 'flex';
+        loadTargetsIntoSelect();
+    }
+    function closeScanNowModal() {
+        document.getElementById('scan-now-modal').style.display = 'none';
+    }
+
+    function loadTargetsIntoSelect() {
+        var promise = targetsCache
+            ? Promise.resolve({ targets: targetsCache })
+            : apiFetch('targets.php');
+        promise.then(function(data) {
+            targetsCache = data.targets || [];
+            // Scan modal select
+            var sel = document.getElementById('scan-target-select');
+            if (sel) {
+                sel.innerHTML = '';
+                targetsCache.forEach(function(t) {
+                    var opt = document.createElement('option');
+                    opt.value = t.target_id;
+                    opt.textContent = t.name + ' — ' + t.base_url + (t.is_self ? ' (self)' : '');
+                    if (t.is_self) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+            }
+            // Redteam results target selector — show only when >1 target
+            populateRedteamTargetBar();
+        }).catch(function() {});
+    }
+
+    function populateRedteamTargetBar() {
+        var bar = document.getElementById('redteam-target-bar');
+        var sel = document.getElementById('redteam-target-select');
+        if (!bar || !sel || !targetsCache) return;
+        if (targetsCache.length <= 1) {
+            bar.style.display = 'none';
+            return;
+        }
+        sel.innerHTML = '';
+        targetsCache.forEach(function(t) {
+            var opt = document.createElement('option');
+            opt.value = t.target_id;
+            opt.textContent = t.name + (t.is_self ? ' (self)' : '') + ' — ' + t.base_url;
+            if (t.is_self) {
+                opt.selected = true;
+                if (selectedRedteamTargetId === null) selectedRedteamTargetId = t.target_id;
+            }
+            sel.appendChild(opt);
+        });
+        // If no self target pre-selected, pick first
+        if (selectedRedteamTargetId === null && targetsCache.length > 0) {
+            selectedRedteamTargetId = targetsCache[0].target_id;
+            sel.value = selectedRedteamTargetId;
+        } else if (selectedRedteamTargetId !== null) {
+            sel.value = selectedRedteamTargetId;
+        }
+        bar.style.display = 'flex';
+    }
+
+    function onRedteamTargetChange() {
+        var sel = document.getElementById('redteam-target-select');
+        if (!sel) return;
+        selectedRedteamTargetId = parseInt(sel.value, 10) || null;
+        fetchRedteam();
+    }
+
+    function toggleAllCategories(checked) {
+        document.querySelectorAll('.scan-cat-cb').forEach(function(cb) { cb.checked = checked; });
+    }
+
+    function startScan() {
+        var targetId = parseInt(document.getElementById('scan-target-select').value, 10);
+        var allChecked = document.getElementById('scan-cat-all').checked;
+        var categories;
+        if (allChecked) {
+            categories = ['all'];
+        } else {
+            categories = Array.from(document.querySelectorAll('.scan-cat-cb:checked')).map(function(cb) { return cb.value; });
+            if (categories.length === 0) {
+                alert('Select at least one category.');
+                return;
+            }
+        }
+
+        var btn = document.getElementById('scan-btn-start');
+        btn.disabled = true;
+        btn.textContent = 'Launching\u2026';
+
+        apiFetch('scan-now.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ categories: categories, target_id: targetId })
+        }).then(function(data) {
+            closeScanNowModal();
+            btn.disabled = false;
+            btn.textContent = '\u25b6 Start Scan';
+            if (data.job_id) {
+                showScanStatus(data.job_id, targetId);
+            }
+        }).catch(function(err) {
+            btn.disabled = false;
+            btn.textContent = '\u25b6 Start Scan';
+            alert('Failed to start scan: ' + (err.message || 'Unknown error'));
+        });
+    }
+
+    function setScanRunningUI(running) {
+        var btn = document.getElementById('scan-now-btn');
+        if (!btn) return;
+        if (running) {
+            btn.textContent = '\u25a0 Stop Scan';
+            btn.onclick = stopScan;
+            btn.classList.add('scan-stop-btn');
+        } else {
+            btn.textContent = '\u25b6 Scan Now';
+            btn.onclick = openScanNowModal;
+            btn.classList.remove('scan-stop-btn');
+        }
+    }
+
+    function showScanStatus(jobId, targetId) {
+        var bar = document.getElementById('scan-now-status');
+        if (bar) bar.style.display = 'flex';
+        setText('scan-status-text', 'Scan running\u2026');
+        var dot = document.getElementById('scan-status-dot');
+        if (dot) { dot.className = 'scan-status-dot running'; }
+        setScanRunningUI(true);
+
+        clearInterval(scanPollTimer);
+        scanPollTimer = setInterval(function() { pollScanJob(jobId, targetId); }, 4000);
+        pollScanJob(jobId, targetId);
+    }
+
+    function pollScanJob(jobId, scanTargetId) {
+        apiFetch('scan-status.php?job_id=' + jobId).then(function(data) {
+            var logEl = document.getElementById('scan-log-output');
+            if (logEl && data.log_tail) {
+                logEl.textContent = data.log_tail;
+                var panel = document.getElementById('scan-log-panel');
+                if (panel && panel.style.display !== 'none') {
+                    panel.scrollTop = panel.scrollHeight;
+                }
+            }
+
+            // Live-update results if scan is for the currently-viewed target
+            var viewingTarget = selectedRedteamTargetId;
+            var scanIsForViewedTarget = (scanTargetId && viewingTarget && scanTargetId === viewingTarget)
+                                     || (!scanTargetId && !viewingTarget);
+
+            if (data.status === 'done' || data.status === 'failed' || data.status === 'cancelled') {
+                clearInterval(scanPollTimer);
+                setScanRunningUI(false);
+                var dot = document.getElementById('scan-status-dot');
+                if (dot) dot.className = 'scan-status-dot ' + data.status;
+                var msg = data.status === 'done'      ? 'Scan complete'
+                        : data.status === 'cancelled' ? 'Scan cancelled'
+                        : 'Scan failed (exit ' + data.exit_code + ')';
+                setText('scan-status-text', msg);
+                if (data.status === 'done' && scanIsForViewedTarget) {
+                    fetchRedteam();
+                    fetchScanHistory();
+                }
+            }
+        }).catch(function() {});
+    }
+
+    function stopScan() {
+        var btn = document.getElementById('scan-now-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Stopping\u2026'; }
+        apiFetch('scan-now.php', { method: 'DELETE' }).then(function() {
+            clearInterval(scanPollTimer);
+            setScanRunningUI(false);
+            setText('scan-status-text', 'Scan cancelled');
+            var dot = document.getElementById('scan-status-dot');
+            if (dot) dot.className = 'scan-status-dot failed';
+            if (btn) btn.disabled = false;
+        }).catch(function() {
+            if (btn) btn.disabled = false;
+            setScanRunningUI(false);
+        });
+    }
+
+    function toggleScanLog() {
+        var panel = document.getElementById('scan-log-panel');
+        if (!panel) return;
+        var opening = panel.style.display === 'none';
+        panel.style.display = opening ? 'block' : 'none';
+        if (opening) panel.scrollTop = panel.scrollHeight;
+    }
+
+    // Check for already-running scan on page load
+    function checkActiveScan() {
+        apiFetch('scan-status.php?latest=1').then(function(data) {
+            if (data.status === 'running' && data.job_id) {
+                showScanStatus(data.job_id);
+            }
+        }).catch(function(){});
+    }
+
+    window.openScanNowModal       = openScanNowModal;
+    window.closeScanNowModal      = closeScanNowModal;
+    window.toggleAllCategories    = toggleAllCategories;
+    window.startScan              = startScan;
+    window.stopScan               = stopScan;
+    window.toggleScanLog          = toggleScanLog;
+    window.onRedteamTargetChange  = onRedteamTargetChange;
+
+    // ---- Target Management ----
+
+    function fetchTargets() {
+        apiFetch('targets.php').then(function(data) {
+            targetsCache = data.targets || [];
+            renderTargets(targetsCache);
+            loadTargetsIntoSelect();
+        }).catch(function() {
+            var body = document.getElementById('targets-body');
+            if (body) body.innerHTML = '<tr><td colspan="5" class="empty-state">Failed to load targets</td></tr>';
+        });
+    }
+
+    function renderTargets(targets) {
+        var body = document.getElementById('targets-body');
+        if (!body) return;
+        if (!targets.length) {
+            body.innerHTML = '<tr><td colspan="5" class="empty-state">No targets configured</td></tr>';
+            return;
+        }
+        var html = '';
+        targets.forEach(function(t) {
+            var editBtn = '<button class="target-action-btn" onclick="openTargetForm(' + t.target_id + ')">Edit</button>';
+            var delBtn = t.is_self
+                ? ''
+                : ' <button class="target-action-btn target-delete-btn" onclick="deleteTarget(' + t.target_id + ',\'' + escapeHtml(t.name) + '\')">Delete</button>';
+            var selfBadge = t.is_self ? ' <span class="target-self-badge">self</span>' : '';
+            html += '<tr>'
+                + '<td>' + escapeHtml(t.name) + selfBadge + '</td>'
+                + '<td><code>' + escapeHtml(t.base_url) + '</code></td>'
+                + '<td>' + escapeHtml(t.target_type) + '</td>'
+                + '<td>' + escapeHtml(t.description || '') + '</td>'
+                + '<td class="target-actions">' + editBtn + delBtn + '</td>'
+                + '</tr>';
+        });
+        body.innerHTML = html;
+    }
+
+    function openTargetsModal() {
+        document.getElementById('targets-modal').style.display = 'flex';
+        showTargetsList();
+        fetchTargets();
+    }
+    function closeTargetsModal() {
+        document.getElementById('targets-modal').style.display = 'none';
+    }
+
+    function showTargetsList() {
+        document.getElementById('targets-list-view').style.display = 'block';
+        document.getElementById('targets-form-view').style.display = 'none';
+    }
+
+    function openTargetForm(targetId) {
+        document.getElementById('target-form-title').textContent = targetId ? 'Edit Target' : 'Add Target';
+        document.getElementById('target-id-field').value = targetId || '';
+        document.getElementById('target-name').value = '';
+        document.getElementById('target-url').value = '';
+        document.getElementById('target-type').value = 'app';
+        document.getElementById('target-description').value = '';
+        document.getElementById('target-origin-ip').value = '';
+        document.getElementById('target-wp-user').value = '';
+        document.getElementById('target-wp-pass').value = '';
+        document.getElementById('target-wp-fields').style.display = 'none';
+
+        if (targetId && targetsCache) {
+            var t = targetsCache.find(function(x) { return x.target_id === targetId; });
+            if (t) {
+                document.getElementById('target-name').value = t.name || '';
+                document.getElementById('target-url').value = t.base_url || '';
+                document.getElementById('target-type').value = t.target_type || 'app';
+                document.getElementById('target-description').value = t.description || '';
+                document.getElementById('target-origin-ip').value = t.origin_ip || '';
+                document.getElementById('target-wp-user').value = t.wp_user || '';
+                if (t.target_type === 'wordpress') {
+                    document.getElementById('target-wp-fields').style.display = 'block';
+                }
+            }
+        }
+
+        document.getElementById('target-type').onchange = function() {
+            document.getElementById('target-wp-fields').style.display = this.value === 'wordpress' ? 'block' : 'none';
+        };
+
+        document.getElementById('targets-list-view').style.display = 'none';
+        document.getElementById('targets-form-view').style.display = 'block';
+    }
+
+    function saveTarget() {
+        var id = document.getElementById('target-id-field').value;
+        var payload = {
+            name:        document.getElementById('target-name').value.trim(),
+            base_url:    document.getElementById('target-url').value.trim(),
+            target_type: document.getElementById('target-type').value,
+            description: document.getElementById('target-description').value.trim(),
+            origin_ip:   document.getElementById('target-origin-ip').value.trim(),
+            wp_user:     document.getElementById('target-wp-user').value.trim(),
+            wp_pass:     document.getElementById('target-wp-pass').value,
+        };
+        if (!payload.name || !payload.base_url) {
+            alert('Name and Base URL are required.');
+            return;
+        }
+        if (id) payload.target_id = parseInt(id, 10);
+
+        apiFetch('targets.php', {
+            method: id ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(function() {
+            fetchTargets();
+            showTargetsList();
+        }).catch(function(err) {
+            alert('Save failed: ' + (err.message || 'Unknown error'));
+        });
+    }
+
+    function deleteTarget(id, name) {
+        if (!confirm('Delete target "' + name + '"?')) return;
+        apiFetch('targets.php', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target_id: id })
+        }).then(function() {
+            fetchTargets();
+        }).catch(function(err) {
+            alert('Delete failed: ' + (err.message || 'Unknown error'));
+        });
+    }
+
+    window.openTargetsModal  = openTargetsModal;
+    window.closeTargetsModal = closeTargetsModal;
+    window.openTargetForm    = openTargetForm;
+    window.showTargetsList   = showTargetsList;
+    window.saveTarget        = saveTarget;
+    window.deleteTarget      = deleteTarget;
+
     // ---- Monitoring Score Modal ----
 
     function openMonitoringModal() {
         var modal = document.getElementById('monitoring-score-modal');
         modal.style.display = 'flex';
         var body = document.getElementById('monitoring-modal-body');
-        var score = 80; // current hardcoded baseline
+        body.innerHTML = '<p class="score-loading">Loading&hellip;</p>';
 
-        body.innerHTML =
-            '<div class="score-formula-summary">' +
-                '<div class="score-formula-result score-yellow">' + score + '<span class="score-formula-denom">/100</span></div>' +
-                '<div class="score-formula-label">Current Score</div>' +
-            '</div>' +
+        apiFetch('monitoring-status.php').then(function(data) {
+            var score = data.score || 80;
+            var scoreClass = score >= 90 ? 'score-green' : score >= 70 ? 'score-yellow' : 'score-red';
 
-            '<p class="score-formula-desc">The Monitoring score reflects the <strong>coverage and freshness</strong> of active security monitoring on this system. It is currently set to a <strong>baseline of 80/100</strong> pending automated log ingestion.</p>' +
+            var corr = data.correlator || {};
+            var alerts = data.alerts || {};
+            var collectors = data.collectors || {};
 
-            '<table class="score-factors-table">' +
-            '<thead><tr><th>Factor</th><th>Status</th><th>Impact</th></tr></thead>' +
-            '<tbody>' +
-                '<tr class="factor-active">' +
-                    '<td>Nginx access log ingestion</td>' +
-                    '<td><span class="score-factor-zero">Configured &mdash; /var/log/nginx/access.log</span></td>' +
-                    '<td>+10 pts when active</td>' +
-                '</tr>' +
-                '<tr class="factor-active">' +
-                    '<td>Auth log ingestion</td>' +
-                    '<td><span class="score-factor-zero">Configured &mdash; /var/log/auth.log</span></td>' +
-                    '<td>+5 pts when active</td>' +
-                '</tr>' +
-                '<tr class="factor-active">' +
-                    '<td>Red team audit DB polling</td>' +
-                    '<td><span class="score-factor-zero">Configured &mdash; 30s interval</span></td>' +
-                    '<td>+5 pts when active</td>' +
-                '</tr>' +
-                '<tr class="factor-clear">' +
-                    '<td>Blueteam correlator</td>' +
-                    '<td><span class="score-factor-bad">Not yet running</span></td>' +
-                    '<td>&minus;10 pts (currently applied)</td>' +
-                '</tr>' +
-                '<tr class="factor-clear">' +
-                    '<td>Alert delivery confirmed</td>' +
-                    '<td><span class="score-factor-bad">No alerts sent in last 30 days</span></td>' +
-                    '<td>&minus;10 pts (currently applied)</td>' +
-                '</tr>' +
-            '</tbody>' +
-            '</table>' +
+            var corrActive = corr.active === true;
+            var alertCount = alerts.syslog_count_30d || 0;
+            var lastAlert = alerts.last_alert_at || null;
 
-            '<div class="score-improve-section">' +
-                '<h4>How to improve this score</h4>' +
-                '<ul class="score-improve-list">' +
-                    '<li>Run the blueteam correlator: <code>python3 -m cyberguardian blueteam start</code></li>' +
-                    '<li>Configure alert delivery (email or syslog) in <code>config.yaml</code></li>' +
-                    '<li>Verify log paths are readable by the service user</li>' +
-                    '<li>Score will auto-update once the correlator reports active coverage</li>' +
-                '</ul>' +
-            '</div>';
+            // Correlator row
+            var corrStatus = corrActive
+                ? '<span class="score-factor-good">Running' + (corr.uptime ? ' &mdash; up ' + corr.uptime : '') + (corr.pid ? ' (PID ' + corr.pid + ')' : '') + '</span>'
+                : '<span class="score-factor-bad">Not running</span>';
+            var corrImpact = corrActive
+                ? '<span class="score-factor-good">+10 pts applied</span>'
+                : '&minus;10 pts (not applied)';
+
+            // Alert delivery row
+            var alertStatus = alertCount > 0
+                ? '<span class="score-factor-good">' + alertCount + ' alert' + (alertCount !== 1 ? 's' : '') + ' in last 30 days' + (lastAlert ? ' &mdash; last ' + lastAlert : '') + '</span>'
+                : '<span class="score-factor-bad">No alerts sent in last 30 days</span>';
+            var alertImpact = alertCount > 0
+                ? '<span class="score-factor-good">+10 pts applied</span>'
+                : '&minus;10 pts (not applied)';
+
+            // Collector rows
+            function collectorRow(label, path, key) {
+                var c = collectors[key] || {};
+                var ok = c.readable === true;
+                var status = ok
+                    ? '<span class="score-factor-good">Readable &mdash; ' + (c.path || path) + '</span>'
+                    : '<span class="score-factor-zero">Not readable &mdash; ' + (c.path || path) + '</span>';
+                return '<tr><td>' + label + '</td><td>' + status + '</td><td>Configured</td></tr>';
+            }
+
+            body.innerHTML =
+                '<div class="score-formula-summary">' +
+                    '<div class="score-formula-result ' + scoreClass + '">' + score + '<span class="score-formula-denom">/100</span></div>' +
+                    '<div class="score-formula-label">Current Score</div>' +
+                '</div>' +
+
+                '<p class="score-formula-desc">The Monitoring score reflects the <strong>coverage and freshness</strong> of active security monitoring on this system. Baseline is <strong>80/100</strong>; bonus points are added for confirmed correlator activity and alert delivery.</p>' +
+
+                '<table class="score-factors-table">' +
+                '<thead><tr><th>Factor</th><th>Status</th><th>Impact</th></tr></thead>' +
+                '<tbody>' +
+                    collectorRow('Nginx access log ingestion', '/var/log/nginx/access.log', 'nginx') +
+                    collectorRow('Auth log ingestion', '/var/log/auth.log', 'auth') +
+                    collectorRow('Syslog ingestion', '/var/log/syslog', 'syslog') +
+                    collectorRow('Red team reports', '/opt/claude-workspace/projects/cyber-guardian/reports', 'redteam') +
+                    '<tr><td>Blueteam correlator</td><td>' + corrStatus + '</td><td>' + corrImpact + '</td></tr>' +
+                    '<tr><td>Alert delivery confirmed</td><td>' + alertStatus + '</td><td>' + alertImpact + '</td></tr>' +
+                '</tbody>' +
+                '</table>';
+        }).catch(function() {
+            body.innerHTML = '<p class="score-error">Could not load monitoring status.</p>';
+        });
     }
 
     window.openMonitoringModal = function() { openMonitoringModal(); };
@@ -1756,12 +2130,11 @@
         body.innerHTML = html;
     }
 
-    function renderScannerStatus(latestScans, lastScanDays) {
+    function renderScannerStatus(latestScans, lastScanDays, definitions) {
         var grid = document.getElementById('scanner-status-grid');
         var scanners = ['clamav', 'maldet', 'rkhunter', 'chkrootkit'];
 
         var html = scanners.map(function(scanner) {
-            var scan = latestScans.find(function(s) { return s.scan_type === scanner; });
             var daysSince = lastScanDays[scanner];
             var statusClass = 'scanner-status-card';
             var statusText = 'Never run';
@@ -1769,7 +2142,7 @@
             if (daysSince != null) {
                 if (daysSince < 1) {
                     statusClass += ' status-active';
-                    statusText = 'Active (< 1 day)';
+                    statusText = 'Active (&lt; 1 day)';
                 } else if (daysSince < 7) {
                     statusClass += ' status-active';
                     statusText = daysSince.toFixed(1) + ' days ago';
@@ -1779,9 +2152,17 @@
                 }
             }
 
+            var defn = definitions[scanner];
+            var defHtml = '';
+            if (defn) {
+                defHtml = '<div class="scanner-defn">Definitions: <span class="scanner-defn-date">' + escapeHtml(defn.updated_at) + '</span>'
+                    + '<span class="scanner-defn-schedule"> &mdash; ' + escapeHtml(defn.auto_update) + '</span></div>';
+            }
+
             return '<div class="' + statusClass + '">' +
                 '<div class="scanner-name">' + escapeHtml(scanner).toUpperCase() + '</div>' +
                 '<div class="last-scan">Last scan: <span class="last-scan-value">' + statusText + '</span></div>' +
+                defHtml +
             '</div>';
         }).join('');
 
@@ -2481,4 +2862,260 @@
         .catch(function () {});
     })();
 
+    // ---- Password Audit Tab ----
+
+    function loadPasswordAuditData() {
+        if (tabDataLoaded['passwords']) return;
+        tabDataLoaded['passwords'] = true;
+
+        apiFetch('password-audit.php').then(function (data) {
+            var sev = data.severity_counts || {};
+            var insecure = (sev.insecure || 0) + (sev.critical || 0);
+            var weak = sev.weak || 0;
+            var run = data.latest_run;
+            var ok = run ? (run.ok_count || 0) : 0;
+
+            setText('pw-score-display', data.score != null ? Math.round(data.score) : '--');
+            setText('pw-insecure-count', insecure);
+            setText('pw-weak-count', weak);
+            setText('pw-ok-count', ok);
+
+            var findings = data.active_findings || [];
+            setText('pw-findings-count', findings.length);
+            renderPasswordFindings(findings);
+            renderPasswordHistory(data.history || []);
+        }).catch(function () {
+            setText('pw-findings-tbody', '');
+            document.getElementById('pw-findings-tbody').innerHTML =
+                '<tr><td colspan="6" class="empty-state">Failed to load password audit data</td></tr>';
+        });
+    }
+
+    function renderPasswordFindings(findings) {
+        var tbody = document.getElementById('pw-findings-tbody');
+        if (!tbody) return;
+        if (!findings.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No active findings — all password hashes are secure</td></tr>';
+            return;
+        }
+        tbody.innerHTML = findings.map(function (f) {
+            var sevClass = f.severity === 'critical' ? 'sev-critical'
+                         : f.severity === 'insecure'  ? 'sev-high'
+                         : f.severity === 'weak'      ? 'sev-medium'
+                         : 'sev-low';
+            var label = f.severity === 'insecure' ? 'INSECURE' : f.severity.toUpperCase();
+            var cost = f.hash_cost != null ? ' (cost=' + f.hash_cost + ')' : '';
+            return '<tr>'
+                + '<td><span class="severity-badge ' + sevClass + '">' + label + '</span></td>'
+                + '<td><code>' + escapeHtml(f.source_db) + '</code></td>'
+                + '<td>' + escapeHtml(f.user_email || f.user_id) + '</td>'
+                + '<td><code>' + escapeHtml(f.hash_algorithm) + cost + '</code></td>'
+                + '<td>' + escapeHtml(f.finding) + '</td>'
+                + '<td>' + formatDate(f.detected_at) + '</td>'
+                + '</tr>';
+        }).join('');
+    }
+
+    function renderPasswordHistory(history) {
+        var tbody = document.getElementById('pw-history-tbody');
+        if (!tbody) return;
+        if (!history.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No audit runs recorded yet</td></tr>';
+            return;
+        }
+        tbody.innerHTML = history.map(function (r) {
+            var statusClass = r.status === 'completed' ? 'status-ok'
+                            : r.status === 'failed'    ? 'status-fail'
+                            : 'status-running';
+            return '<tr>'
+                + '<td>' + formatDate(r.run_at) + '</td>'
+                + '<td>' + (r.total_checked || 0) + '</td>'
+                + '<td>' + ((r.insecure_count || 0)) + '</td>'
+                + '<td>' + (r.weak_count || 0) + '</td>'
+                + '<td>' + (r.ok_count || 0) + '</td>'
+                + '<td><span class="' + statusClass + '">' + r.status + '</span></td>'
+                + '</tr>';
+        }).join('');
+    }
+
+    window.triggerPasswordScan = function () {
+        var btn = document.getElementById('pw-scan-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Starting...'; }
+        apiFetch('password-audit.php', { method: 'POST' }).then(function () {
+            if (btn) { btn.textContent = 'Scan started'; }
+            tabDataLoaded['passwords'] = false;
+            setTimeout(function () { loadPasswordAuditData(); }, 3000);
+        }).catch(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Run Scan Now'; }
+        });
+    };
+
+})();
+
+// ============================================================================
+// MITIGATION TAB
+// ============================================================================
+(function () {
+    function loadMitigationData() {
+        apiFetch('mitigation_data.php').then(function (data) {
+            if (!data || !data.success) {
+                console.error('Failed to load mitigation data');
+                return;
+            }
+
+            // Update summary cards
+            var summary = data.summary || {};
+            setTextById('mitigation-total-issues', summary.total_issues || 0);
+            setTextById('mitigation-critical', summary.critical || 0);
+            setTextById('mitigation-high', summary.high || 0);
+            
+            var netImprovement = summary.net_improvement || 0;
+            var netEl = document.getElementById('mitigation-net-improvement');
+            if (netEl) {
+                netEl.textContent = (netImprovement >= 0 ? '+' : '') + netImprovement;
+                netEl.style.color = netImprovement >= 0 ? '#00ff88' : '#ff4444';
+            }
+
+            // Update project count
+            setTextById('mitigation-project-count', (data.projects || []).length);
+
+            // Populate projects table
+            var tbody = document.getElementById('mitigation-tbody');
+            if (!tbody) return;
+
+            if (!data.projects || data.projects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No projects with security issues</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.projects.map(function (p) {
+                var todoLink = p.todo_path ? 
+                    '<a href="file://' + p.todo_path + '" target="_blank">View TODO</a>' :
+                    '—';
+                
+                var criticalClass = p.critical > 0 ? 'severity-critical' : '';
+                var highClass = p.high > 0 ? 'severity-high' : '';
+                
+                return '<tr>'
+                    + '<td><strong>' + escapeHtml(p.name) + '</strong></td>'
+                    + '<td class="' + criticalClass + '">' + p.critical + '</td>'
+                    + '<td class="' + highClass + '">' + p.high + '</td>'
+                    + '<td>' + p.medium + '</td>'
+                    + '<td><strong>' + p.total + '</strong></td>'
+                    + '<td>' + todoLink + '</td>'
+                    + '</tr>';
+            }).join('');
+
+            // Populate activity table
+            var activityTbody = document.getElementById('mitigation-activity-tbody');
+            if (activityTbody) {
+                if (!data.activity || data.activity.length === 0) {
+                    activityTbody.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activity</td></tr>';
+                } else {
+                    activityTbody.innerHTML = data.activity.map(function (a) {
+                        var eventClass = '';
+                        var eventIcon = 'ℹ️';
+                        if (a.type === 'success') {
+                            eventClass = 'event-success';
+                            eventIcon = '✓';
+                        } else if (a.type === 'warning') {
+                            eventClass = 'event-warning';
+                            eventIcon = '⚠️';
+                        }
+
+                        return '<tr class="' + eventClass + '">'
+                            + '<td>' + escapeHtml(a.timestamp) + '</td>'
+                            + '<td>' + eventIcon + '</td>'
+                            + '<td>' + escapeHtml(a.message) + '</td>'
+                            + '</tr>';
+                    }).join('');
+                }
+            }
+
+            // Render trend chart
+            renderMitigationChart(data.trend || []);
+        }).catch(function (err) {
+            console.error('Error loading mitigation data:', err);
+            var tbody = document.getElementById('mitigation-tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state error">Error loading data</td></tr>';
+            }
+        });
+    }
+
+    function renderMitigationChart(trendData) {
+        var canvas = document.getElementById('mitigation-chart');
+        if (!canvas || !window.Chart) return;
+
+        // Prepare data
+        var labels = trendData.map(function (d) {
+            return new Date(d.timestamp).toLocaleDateString();
+        });
+        var totalData = trendData.map(function (d) { return d.total; });
+        var newData = trendData.map(function (d) { return d.new; });
+        var fixedData = trendData.map(function (d) { return d.fixed; });
+
+        // Destroy existing chart if any
+        if (window.mitigationChart) {
+            window.mitigationChart.destroy();
+        }
+
+        // Create chart
+        window.mitigationChart = new Chart(canvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Issues',
+                        data: totalData,
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'New Issues',
+                        data: newData,
+                        borderColor: '#ff4444',
+                        backgroundColor: 'rgba(255, 68, 68, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Fixed Issues',
+                        data: fixedData,
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e0e6ed' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#7a8ba3' },
+                        grid: { color: '#2a2f4a' }
+                    },
+                    x: {
+                        ticks: { color: '#7a8ba3' },
+                        grid: { color: '#2a2f4a' }
+                    }
+                }
+            }
+        });
+    }
+
+    // Register tab loader
+    window.addEventListener('DOMContentLoaded', function () {
+        if (typeof window.tabLoaders !== 'undefined') {
+            window.tabLoaders['mitigation'] = loadMitigationData;
+        }
+    });
 })();

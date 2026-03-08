@@ -28,7 +28,7 @@ class MFAAbsenceAttack(Attack):
         status_code, body, headers = await client.post(
             "/api/auth/login.php",
             json_body={
-                "email": "redteam-viewer@test.com",
+                "email": "redteam-viewer@example.com",
                 "password": "RedTeamV!ewer2026!",
             },
             cookies={},
@@ -67,7 +67,7 @@ class MFAAbsenceAttack(Attack):
         status_code, body, headers = await client.post(
             "/api/auth/login.php",
             json_body={
-                "email": "redteam-sysadmin@test.com",
+                "email": "redteam-sysadmin@example.com",
                 "password": "RedTeam$ysAdmin2026!",
             },
             cookies={},
@@ -108,7 +108,7 @@ class MFAAbsenceAttack(Attack):
             "/api/auth/login.php",
             json_body={
                 "action": "reset_password",
-                "email": "redteam-viewer@test.com",
+                "email": "redteam-viewer@example.com",
             },
             cookies={},
         )

@@ -61,7 +61,7 @@ def import_report(config: dict, report_path: str) -> dict:
         row = cur.fetchone()
 
     return {
-        "score_id": str(row["score_id"]),
+        "score_id": str(row[0]),
         "redteam_score": round(score, 2),
         "total": total,
         "defended": defended,

@@ -23,7 +23,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-REPORT_DIR="$PROJECT_DIR/reports"
+REPORT_DIR="$PROJECT_DIR/redteam/reports"
 DASHBOARD_REPORT_DIR="/opt/security-red-team/reports"
 BLUETEAM_DIR="$PROJECT_DIR/blueteam"
 LOG_DIR="$PROJECT_DIR/logs"
@@ -59,15 +59,15 @@ log "=== Cyber-Guardian Red Team Run ==="
 log "Args: $RUNNER_ARGS"
 log "Project: $PROJECT_DIR"
 
-# Activate venv
-cd "$PROJECT_DIR"
-source venv/bin/activate
+# Activate venv and run from redteam/ directory (runner.py requires this for config lookup)
+cd "$PROJECT_DIR/redteam"
+source ../venv/bin/activate
 
 # Run attacks with all report formats
 log "Starting attack suite..."
 RUN_START=$(date +%s)
 
-python -m redteam.runner $RUNNER_ARGS --report console json html 2>&1 | tee -a "$LOGFILE"
+PYTHONPATH=../shared ../venv/bin/python runner.py $RUNNER_ARGS --report console json html --output reports/ 2>&1 | tee -a "$LOGFILE"
 RUN_EXIT=$?
 
 RUN_END=$(date +%s)
@@ -102,7 +102,7 @@ fi
 # Import into blue team posture scoring (blueteam is installed in same venv)
 if command -v blueteam &>/dev/null; then
     log "Importing report into blue team posture scoring..."
-    blueteam redteam import "$LATEST_JSON" 2>&1 | tee -a "$LOGFILE"
+    blueteam --config "$PROJECT_DIR/blueteam/config.yaml" redteam import "$LATEST_JSON" 2>&1 | tee -a "$LOGFILE"
     log "Blue team import complete"
 else
     log "WARN: blueteam CLI not found in venv, skipping import"

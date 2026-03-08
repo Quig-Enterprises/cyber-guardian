@@ -1,8 +1,8 @@
 # Security Vulnerabilities - cyber-guardian
 
-**Auto-generated:** 2026-03-07 09:47:01
+**Auto-generated:** 2026-03-07 21:27:31
 **Source:** Blue Team Codebase Scanner
-**Status:** Closed — All False Positives
+**Status:** Requires Review
 
 ---
 
@@ -10,83 +10,29 @@
 
 | Severity | Count |
 |----------|-------|
-| **CRITICAL** | **4** |
+| **HIGH** | **1** |
 
-**Total:** 4 issues
+**Total:** 1 issues
 
-## CRITICAL Priority
+## HIGH Priority
 
-### Sql Injection (4 issues)
+### Xss Js (1 issues)
 
-**1. api/malware.php:139**
-
-```php
-error_log("Malware API Error: " . $e->getMessage());
-```
-
-**Issue:** Possible SQL injection via string concatenation
-
-**Fix:** Use $wpdb->prepare() with placeholders instead of string concatenation
-
-**CWE:** CWE-89
-
-- [x] Reviewed — FALSE POSITIVE: error_log() in catch block, no DB query involved
-- [x] Fixed — N/A
-- [x] Tested — N/A
-
----
-
-**2. api/malware.php:139**
+**1. dashboard/js/security.js:2031**
 
 ```php
-error_log("Malware API Error: " . $e->getMessage());
+body.innerHTML =
 ```
 
-**Issue:** Possible SQL injection via string concatenation
+**Issue:** Potential XSS via innerHTML assignment
 
-**Fix:** Use $wpdb->prepare() with placeholders
+**Fix:** Use textContent or DOMPurify.sanitize() before assigning to innerHTML
 
-**CWE:** CWE-89
+**CWE:** CWE-79
 
-- [x] Reviewed — FALSE POSITIVE: error_log() in catch block, no DB query involved
-- [x] Fixed — N/A
-- [x] Tested — N/A
-
----
-
-**3. api/posture.php:84**
-
-```php
-error_log("Malware score calculation failed: " . $e->getMessage());
-```
-
-**Issue:** Possible SQL injection via string concatenation
-
-**Fix:** Use $wpdb->prepare() with placeholders instead of string concatenation
-
-**CWE:** CWE-89
-
-- [x] Reviewed — FALSE POSITIVE: error_log() in catch block, no DB query involved
-- [x] Fixed — N/A
-- [x] Tested — N/A
-
----
-
-**4. api/posture.php:84**
-
-```php
-error_log("Malware score calculation failed: " . $e->getMessage());
-```
-
-**Issue:** Possible SQL injection via string concatenation
-
-**Fix:** Use $wpdb->prepare() with placeholders
-
-**CWE:** CWE-89
-
-- [x] Reviewed — FALSE POSITIVE: error_log() in catch block, no DB query involved
-- [x] Fixed — N/A
-- [x] Tested — N/A
+- [ ] Reviewed
+- [ ] Fixed
+- [ ] Tested
 
 ---
 

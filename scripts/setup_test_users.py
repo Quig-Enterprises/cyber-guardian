@@ -31,7 +31,7 @@ TEST_USERS = [
     {
         "user_id": f"redteam-{uuid.uuid4().hex[:12]}",
         "instance_id": "default",
-        "email": "redteam-sysadmin@test.com",
+        "email": "redteam-sysadmin@example.com",
         "password": "RedTeam$ysAdmin2026!",
         "role": "system-admin",
         "display_name": "Red Team Admin",
@@ -39,7 +39,7 @@ TEST_USERS = [
     {
         "user_id": f"redteam-{uuid.uuid4().hex[:12]}",
         "instance_id": "default",
-        "email": "redteam-viewer@test.com",
+        "email": "redteam-viewer@example.com",
         "password": "RedTeamV!ewer2026!",
         "role": "viewer",
         "display_name": "Red Team Viewer",

@@ -115,7 +115,7 @@ class PCIAuthControlsAttack(Attack):
                     login_ep,
                     json_body={
                         "action": "change_password",
-                        "email": "redteam-viewer@test.com",
+                        "email": "redteam-viewer@example.com",
                         "new_password": pwd,
                     },
                     cookies={},
@@ -159,7 +159,7 @@ class PCIAuthControlsAttack(Attack):
                 status_code, body, headers = await client.post(
                     login_ep,
                     json_body={
-                        "email": "redteam-lockout@test.com",
+                        "email": "redteam-lockout@example.com",
                         "password": f"WrongPassword{i}!",
                     },
                     cookies={},
@@ -217,7 +217,7 @@ class PCIAuthControlsAttack(Attack):
             status_code, body, headers = await client.post(
                 login_ep,
                 json_body={
-                    "email": "redteam-viewer@test.com",
+                    "email": "redteam-viewer@example.com",
                     "password": "RedTeamV!ewer2026!",
                 },
                 cookies={},
@@ -467,7 +467,7 @@ class PCIAuthControlsAttack(Attack):
             status_code, body, headers = await client.post(
                 login_ep,
                 json_body={
-                    "email": "redteam-viewer@test.com",
+                    "email": "redteam-viewer@example.com",
                     "password": "RedTeamV!ewer2026!",
                 },
                 cookies={},

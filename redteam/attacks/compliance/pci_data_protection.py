@@ -5,11 +5,14 @@ in logs and databases, encryption algorithm strength, and prohibited
 CVV storage.
 """
 
+import logging
 import os
 import re
 import glob as globmod
 
 from redteam.base import Attack, AttackResult, Severity, Status
+
+logger = logging.getLogger(__name__)
 
 
 # Card number prefixes by brand.
@@ -75,21 +78,26 @@ class PCIDataProtectionAttack(Attack):
         log_files_checked = 0
         log_dirs = ["/var/log"]
 
-        # Also check application log directories
+        # Collect app log directories (only actual log dirs, not full recursive walk of /opt)
+        logger.info("  [pci_data_protection] Phase 1: collecting log directories")
         for app_dir in ["/var/www/html", "/opt"]:
             try:
                 for match in globmod.glob(os.path.join(app_dir, "**", "*.log"), recursive=True):
-                    if match not in log_dirs:
-                        log_dirs.append(os.path.dirname(match))
+                    d = os.path.dirname(match)
+                    if d not in log_dirs:
+                        log_dirs.append(d)
             except Exception:
                 pass
+        logger.info(f"  [pci_data_protection] Phase 1: scanning {len(log_dirs)} log directories for PANs")
 
         try:
             skip_dirs = {"vendor", "node_modules", ".git", "__pycache__",
-                         ".cache", "venv", ".venv", "env", "site-packages"}
+                         ".cache", "venv", ".venv", "env", "site-packages",
+                         "cvelistV5", "data"}
             for log_dir in log_dirs:
                 if not os.path.isdir(log_dir):
                     continue
+                logger.debug(f"  [pci_data_protection] scanning dir: {log_dir}")
                 for dirpath, dirnames, filenames in os.walk(log_dir):
                     dirnames[:] = [d for d in dirnames if d not in skip_dirs]
                     for fname in filenames:
@@ -107,6 +115,7 @@ class PCIDataProtectionAttack(Attack):
                         try:
                             fsize = os.path.getsize(fpath)
                             if fsize > 50 * 1024 * 1024:  # Skip files > 50MB
+                                logger.debug(f"  [pci_data_protection] skipping large file: {fpath}")
                                 continue
                         except OSError:
                             continue
@@ -114,6 +123,8 @@ class PCIDataProtectionAttack(Attack):
                         try:
                             with open(fpath, "r", errors="ignore") as f:
                                 log_files_checked += 1
+                                if log_files_checked % 50 == 0:
+                                    logger.info(f"  [pci_data_protection] PAN scan progress: {log_files_checked} files checked, {len(pan_in_logs)} hits so far")
                                 # Read last 10000 lines for efficiency
                                 lines = f.readlines()[-10000:]
                                 for line_no, line in enumerate(lines, 1):
@@ -138,6 +149,7 @@ class PCIDataProtectionAttack(Attack):
                         break
                 if len(pan_in_logs) >= 20:
                     break
+            logger.info(f"  [pci_data_protection] Phase 1 complete: {log_files_checked} files scanned, {len(pan_in_logs)} PANs found")
 
             if pan_in_logs:
                 pan_log_status = Status.VULNERABLE
@@ -168,6 +180,7 @@ class PCIDataProtectionAttack(Attack):
         # ----------------------------------------------------------------
         # 2. PAN discovery in database columns
         # ----------------------------------------------------------------
+        logger.info("  [pci_data_protection] Phase 2: scanning database columns for PANs")
         try:
             import psycopg2
             db_pass = os.environ.get("EQMON_AUTH_DB_PASS", "3eK4NNHxLQakuTQK5KcnB3Vz")
@@ -262,6 +275,7 @@ class PCIDataProtectionAttack(Attack):
         # ----------------------------------------------------------------
         # 3. Encryption algorithm strength
         # ----------------------------------------------------------------
+        logger.info("  [pci_data_protection] Phase 3: scanning for weak encryption algorithms")
         weak_algo_findings: list[str] = []
 
         # Check PostgreSQL pgcrypto settings
@@ -316,7 +330,8 @@ class PCIDataProtectionAttack(Attack):
                 for dirpath, dirnames, filenames in os.walk(scan_dir):
                     dirnames[:] = [d for d in dirnames
                                    if d not in {"node_modules", "__pycache__",
-                                                ".git", "vendor"}]
+                                                ".git", "vendor", "venv", ".venv",
+                                                "cvelistV5", "data", "site-packages"}]
                     for fname in filenames:
                         ext = os.path.splitext(fname)[1].lower()
                         if ext not in {".php", ".py", ".conf", ".cfg", ".ini",
@@ -365,6 +380,7 @@ class PCIDataProtectionAttack(Attack):
         # ----------------------------------------------------------------
         # 4. CVV storage check — CVV must NEVER be stored post-authorization
         # ----------------------------------------------------------------
+        logger.info("  [pci_data_protection] Phase 4: checking for CVV/CVC storage")
         try:
             import psycopg2
             conn = psycopg2.connect(

@@ -22,7 +22,7 @@ class AccountLockoutBypassAttack(Attack):
     )
 
     LOGIN_PATH = "/api/auth/login.php"
-    TARGET_EMAIL = "redteam-sysadmin@test.com"
+    TARGET_EMAIL = "redteam-sysadmin@example.com"
     WRONG_PASSWORD = "WrongPassword!999"
 
     async def execute(self, client) -> list[AttackResult]:

@@ -23,7 +23,7 @@ if (!$session['sub']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Dashboard - Artemis</title>
-    <link rel="stylesheet" href="css/security.css?v=20260307f">
+    <link rel="stylesheet" href="css/security.css?v=20260308c">
 </head>
 <body>
     <div class="dashboard-container">
@@ -69,6 +69,8 @@ if (!$session['sub']) {
             <a href="#incidents">Incidents</a>
             <a href="#redteam">Red Team</a>
             <a href="#malware">Malware</a>
+            <a href="#passwords">Passwords</a>
+            <a href="#mitigation">Mitigation</a>
         </nav>
 
         <!-- Notification Preferences Modal (requires positive close - no click-outside-to-dismiss) -->
@@ -416,8 +418,142 @@ if (!$session['sub']) {
 
         <!-- Tab 4: Red Team -->
         <div id="tab-redteam" class="tab-content">
+            <!-- Target selector (shown when >1 target exists) -->
+            <div id="redteam-target-bar" style="display:none; align-items:center; gap:10px; margin-bottom:14px;">
+                <label for="redteam-target-select" style="font-size:0.85em; color:var(--text-secondary); white-space:nowrap;">Viewing target:</label>
+                <select id="redteam-target-select" class="redteam-target-select" onchange="onRedteamTargetChange()"></select>
+            </div>
             <div class="redteam-meta" id="redteam-meta"></div>
             <div class="redteam-meta" id="redteam-timing" style="display:none; color: var(--text-secondary); font-size: 0.85em; margin-top: 4px;"></div>
+
+            <?php if (!empty($session['super'])): ?>
+            <!-- Scan Now button + status bar -->
+            <div class="scan-now-bar">
+                <button class="scan-now-btn" id="scan-now-btn" onclick="openScanNowModal()">&#9654; Scan Now</button>
+                <button class="scan-targets-btn" onclick="openTargetsModal()">&#9881; Manage Targets</button>
+                <div class="scan-now-status" id="scan-now-status" style="display:none;">
+                    <span class="scan-status-dot running" id="scan-status-dot"></span>
+                    <span id="scan-status-text">Scan running&hellip;</span>
+                    <button class="scan-status-log-btn" onclick="toggleScanLog()">View Log</button>
+                </div>
+            </div>
+            <div class="scan-log-panel" id="scan-log-panel" style="display:none;">
+                <pre id="scan-log-output"></pre>
+            </div>
+            <?php endif; ?>
+
+            <!-- Scan Now Modal -->
+            <?php if (!empty($session['super'])): ?>
+            <div class="scan-modal-overlay" id="scan-now-modal" style="display:none;" onclick="if(event.target===this)closeScanNowModal()">
+                <div class="scan-modal">
+                    <div class="scan-modal-header">
+                        <h3>Run Red Team Scan</h3>
+                        <button class="scan-modal-close" onclick="closeScanNowModal()">&#x2715;</button>
+                    </div>
+                    <div class="scan-modal-body">
+                        <div class="scan-form-group">
+                            <label>Target</label>
+                            <select id="scan-target-select">
+                                <option value="">Loading targets...</option>
+                            </select>
+                        </div>
+                        <div class="scan-form-group">
+                            <label>Categories</label>
+                            <div class="scan-categories">
+                                <label class="scan-cat-all"><input type="checkbox" id="scan-cat-all" checked onchange="toggleAllCategories(this.checked)"> <strong>All Categories</strong></label>
+                                <div class="scan-cat-grid" id="scan-cat-grid">
+                                    <?php foreach (['api','web','infrastructure','dns','secrets','exposure','malware','cve','compliance','ai','wordpress','cloud'] as $cat): ?>
+                                    <label class="scan-cat-item">
+                                        <input type="checkbox" class="scan-cat-cb" value="<?= $cat ?>" checked>
+                                        <?= ucfirst($cat) ?>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scan-modal-footer">
+                        <button class="scan-btn-cancel" onclick="closeScanNowModal()">Cancel</button>
+                        <button class="scan-btn-start" id="scan-btn-start" onclick="startScan()">&#9654; Start Scan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Targets Modal (list + add/edit form) -->
+            <div class="scan-modal-overlay" id="targets-modal" style="display:none;" onclick="if(event.target===this)closeTargetsModal()">
+                <div class="scan-modal scan-modal-wide">
+                    <div class="scan-modal-header">
+                        <h3>Scan Targets</h3>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <button class="schedule-add-btn" onclick="openTargetForm()">+ Add Target</button>
+                            <button class="scan-modal-close" onclick="closeTargetsModal()">&#x2715;</button>
+                        </div>
+                    </div>
+                    <div class="scan-modal-body" style="padding:0;">
+                        <!-- Target list -->
+                        <div id="targets-list-view">
+                            <table class="data-table" id="targets-table" style="margin:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>URL</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="targets-body">
+                                    <tr><td colspan="5" class="empty-state">Loading targets...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Add/Edit form (hidden until needed) -->
+                        <div id="targets-form-view" style="display:none;padding:20px;">
+                            <h4 id="target-form-title" style="margin:0 0 16px;color:var(--primary-cyan);font-family:var(--font-mono);font-size:0.9em;letter-spacing:1px;">Add Target</h4>
+                            <input type="hidden" id="target-id-field">
+                            <div class="scan-form-group">
+                                <label>Name <span class="req">*</span></label>
+                                <input type="text" id="target-name" placeholder="e.g. My AWS EC2 Server">
+                            </div>
+                            <div class="scan-form-group">
+                                <label>Base URL <span class="req">*</span></label>
+                                <input type="text" id="target-url" placeholder="https://example.com">
+                            </div>
+                            <div class="scan-form-group">
+                                <label>Target Type</label>
+                                <select id="target-type">
+                                    <option value="app">App (EQMON / REST API)</option>
+                                    <option value="wordpress">WordPress</option>
+                                    <option value="generic">Generic Web</option>
+                                </select>
+                            </div>
+                            <div class="scan-form-group">
+                                <label>Description</label>
+                                <input type="text" id="target-description" placeholder="Optional description">
+                            </div>
+                            <div class="scan-form-group">
+                                <label>Origin IP <small>(bypass CDN/Cloudflare)</small></label>
+                                <input type="text" id="target-origin-ip" placeholder="1.2.3.4">
+                            </div>
+                            <div id="target-wp-fields" style="display:none;">
+                                <div class="scan-form-group">
+                                    <label>WP Admin Username</label>
+                                    <input type="text" id="target-wp-user" placeholder="admin">
+                                </div>
+                                <div class="scan-form-group">
+                                    <label>WP Admin Password</label>
+                                    <input type="password" id="target-wp-pass" placeholder="Leave blank to keep existing">
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;margin-top:8px;">
+                                <button class="scan-btn-cancel" onclick="showTargetsList()">&#8592; Back</button>
+                                <button class="scan-btn-start" onclick="saveTarget()">Save Target</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Schedule Management Card -->
             <div class="card" id="schedule-card">
@@ -659,6 +795,171 @@ if (!$session['sub']) {
             </div>
         </div>
 
+        <!-- Passwords Tab -->
+        <div id="tab-passwords" class="tab-content">
+            <div class="malware-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">🔑</div>
+                    <div class="summary-value" id="pw-score-display">--</div>
+                    <div class="summary-label">Password Health Score</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🚨</div>
+                    <div class="summary-value" id="pw-insecure-count">--</div>
+                    <div class="summary-label">Insecure Hashes</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">⚠️</div>
+                    <div class="summary-value" id="pw-weak-count">--</div>
+                    <div class="summary-label">Weak Hashes</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">✅</div>
+                    <div class="summary-value" id="pw-ok-count">--</div>
+                    <div class="summary-label">Secure Hashes</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Active Findings</h2>
+                    <span class="count-badge" id="pw-findings-count">0</span>
+                    <button class="btn-secondary" style="margin-left:auto" onclick="triggerPasswordScan()" id="pw-scan-btn">Run Scan Now</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="pw-findings-table">
+                        <thead>
+                            <tr>
+                                <th>Severity</th>
+                                <th>Database</th>
+                                <th>User</th>
+                                <th>Algorithm</th>
+                                <th>Finding</th>
+                                <th>Detected</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pw-findings-tbody">
+                            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2>Audit History</h2></div>
+                <div class="table-container">
+                    <table class="data-table" id="pw-history-table">
+                        <thead>
+                            <tr>
+                                <th>Run Time</th>
+                                <th>Total Users</th>
+                                <th>Insecure</th>
+                                <th>Weak</th>
+                                <th>OK</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pw-history-tbody">
+                            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2>About Password Auditing</h2></div>
+                <div style="padding:1rem;line-height:1.7;color:var(--text-secondary)">
+                    <p>This scanner checks password hashes stored across all local databases for algorithm strength and cost factors. It does <strong>not</strong> attempt to crack passwords or store any plaintext — only the hash prefix is evaluated.</p>
+                    <ul style="margin:.5rem 0 0 1.2rem">
+                        <li><strong>Insecure</strong> — MD5, SHA-1, phpass-MD5, or plaintext: trivially crackable, must migrate immediately</li>
+                        <li><strong>Weak</strong> — Bcrypt with cost &lt; 10, SHA-256/512 without stretching: upgrade cost factor or algorithm</li>
+                        <li><strong>OK</strong> — Bcrypt ≥ 10, Argon2, scrypt, PBKDF2: meets current recommendations</li>
+                    </ul>
+                    <p style="margin-top:.75rem">Databases scanned: <code>alfred_admin.public.users</code> (Keystone), <code>wordpress.wp_users</code> (MySQL). Runs daily at 3:00 AM.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mitigation Tab -->
+        <div id="tab-mitigation" class="tab-content">
+            <div class="malware-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">🛡️</div>
+                    <div class="summary-value" id="mitigation-total-issues">--</div>
+                    <div class="summary-label">Total Issues</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🔴</div>
+                    <div class="summary-value" id="mitigation-critical">--</div>
+                    <div class="summary-label">Critical</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🟠</div>
+                    <div class="summary-value" id="mitigation-high">--</div>
+                    <div class="summary-label">High</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">📈</div>
+                    <div class="summary-value" id="mitigation-net-improvement">--</div>
+                    <div class="summary-label">Net Improvement (7d)</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Projects Requiring Attention</h2>
+                    <span class="count-badge" id="mitigation-project-count">0</span>
+                    <button class="btn-secondary" style="margin-left:auto" onclick="window.open('api/mitigation_dashboard.php', '_blank')">View Full Dashboard</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="mitigation-table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Critical</th>
+                                <th>High</th>
+                                <th>Medium</th>
+                                <th>Total</th>
+                                <th>TODO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mitigation-tbody">
+                            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Activity</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="mitigation-activity-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mitigation-activity-tbody">
+                            <tr><td colspan="3" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>7-Day Trend</h2>
+                </div>
+                <div style="padding: 1.5rem;">
+                    <canvas id="mitigation-chart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Monitoring Score Explanation Modal -->
@@ -703,6 +1004,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260307j"></script>
+    <script src="js/security.js?v=20260308c"></script>
 </body>
 </html>

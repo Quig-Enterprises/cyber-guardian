@@ -29,7 +29,7 @@ class SessionTimeoutAttack(Attack):
 
         # Authenticate to get a real JWT
         login_ok = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+            "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
         )
         if not login_ok:
             results.append(self._make_result(
@@ -150,13 +150,13 @@ class SessionTimeoutAttack(Attack):
         # ----------------------------------------------------------------
         # Login again (session 1)
         login_ok_1 = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+            "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
         )
         session_1_cookies = dict(client._cookies)
 
         # Login a second time (session 2) — simulating different location
         login_ok_2 = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+            "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
         )
         session_2_cookies = dict(client._cookies)
 

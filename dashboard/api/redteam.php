@@ -9,7 +9,34 @@ if (!$userId) {
 }
 
 try {
-    $reportsDir = '/opt/claude-workspace/projects/cyber-guardian/reports';
+    $reportsDir = '/opt/claude-workspace/projects/cyber-guardian/redteam/reports';
+
+    // If a target_id is specified, find the latest completed job for that target
+    $targetId = isset($_GET['target_id']) ? (int) $_GET['target_id'] : null;
+    if ($targetId !== null) {
+        require_once __DIR__ . '/lib/db.php';
+        $pdo = getSecurityDb();
+        $stmt = $pdo->prepare("
+            SELECT report_json FROM blueteam.scan_jobs
+            WHERE target_id = :tid AND status = 'done' AND report_json IS NOT NULL
+            ORDER BY job_id DESC LIMIT 1
+        ");
+        $stmt->execute([':tid' => $targetId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            echo json_encode(['error' => 'No completed scan found for this target']);
+            exit;
+        }
+        $reportPath = $reportsDir . '/' . basename($row['report_json']);
+        if (!file_exists($reportPath)) {
+            echo json_encode(['error' => 'Report file not found']);
+            exit;
+        }
+        $report = json_decode(file_get_contents($reportPath), true);
+        outputReport($report, $reportPath);
+        exit;
+    }
+
     $reportFiles = glob("{$reportsDir}/redteam-report-*.json");
     if (empty($reportFiles)) {
         echo json_encode(['error' => 'No red team reports found']);

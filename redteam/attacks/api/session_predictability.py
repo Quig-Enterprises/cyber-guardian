@@ -100,7 +100,7 @@ class SessionPredictabilityAttack(Attack):
 
         for attempt in range(3):
             ok = await client.login(
-                "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+                "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
             )
             if not ok:
                 return self._make_result(
@@ -238,7 +238,7 @@ class SessionPredictabilityAttack(Attack):
         # Perform three logins and collect all non-JWT session cookies
         for _ in range(3):
             ok = await client.login(
-                "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+                "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
             )
             if not ok:
                 continue
@@ -549,7 +549,7 @@ class SessionPredictabilityAttack(Attack):
         variant = "cookie_security_attributes"
 
         ok = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+            "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
         )
         if not ok:
             return self._make_result(
@@ -563,7 +563,7 @@ class SessionPredictabilityAttack(Attack):
         _code, _body, headers = await client.post(
             "/api/auth/login.php",
             json_body={
-                "email": "redteam-sysadmin@test.com",
+                "email": "redteam-sysadmin@example.com",
                 "password": "RedTeam$ysAdmin2026!",
                 "action": "login",
             },

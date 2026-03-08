@@ -43,7 +43,7 @@ class ReplayAttack(Attack):
             "exp": now - 1,
             "user_id": "redteam-replay",
             "instance_id": "default",
-            "email": "redteam-sysadmin@test.com",
+            "email": "redteam-sysadmin@example.com",
             "role": "system-admin",
             "salt_version": 1,
             "auth_source": "eqmon",
@@ -330,13 +330,13 @@ class ReplayAttack(Attack):
         # ------------------------------------------------------------------
         # Attempt initial login to get a fresh cookie set for "user A".
         login_status_a, login_body_a, _ = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam2026!"
+            "redteam-sysadmin@example.com", "RedTeam2026!"
         )
         cookie_a = dict(client._cookies)
 
         # Initiate a second login (same or different user) to rotate server state.
         login_status_b, login_body_b, _ = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam2026!"
+            "redteam-sysadmin@example.com", "RedTeam2026!"
         )
 
         # Now replay cookie_a (the pre-rotation cookie).

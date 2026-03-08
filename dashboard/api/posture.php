@@ -72,8 +72,16 @@ try {
         }
         $incidentScore = max(0, 100 - ($incidentCounts['critical'] * 25 + $incidentCounts['high'] * 15 + $incidentCounts['medium'] * 5));
 
-        // Monitoring score
-        $monitoringScore = 80;
+        // Monitoring score — derived from correlator service state + alert delivery
+        $monitoringScore = 80; // baseline
+        $corrOut = shell_exec('systemctl show cyber-guardian-correlator --property=ActiveState 2>/dev/null');
+        if ($corrOut && strpos(trim($corrOut), 'ActiveState=active') !== false) {
+            $monitoringScore += 10;
+        }
+        $alertOut = shell_exec('journalctl -t eqmon-blueteam --since "30 days ago" --no-pager -o short-iso 2>/dev/null | grep -c SECURITY_INCIDENT 2>/dev/null');
+        if ($alertOut && (int) trim($alertOut) > 0) {
+            $monitoringScore += 10;
+        }
 
         // Malware score (using database function)
         $malwareScore = 100.0;

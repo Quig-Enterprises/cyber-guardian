@@ -26,7 +26,7 @@ class PrivilegeEscalationV2Attack(Attack):
 
         # Login as viewer first
         login_ok = await client.login(
-            "redteam-viewer@test.com", "RedTeamV!ewer2026!"
+            "redteam-viewer@example.com", "RedTeamV!ewer2026!"
         )
         if not login_ok:
             results.append(self._make_result(
@@ -96,7 +96,7 @@ class PrivilegeEscalationV2Attack(Attack):
             "/api/admin/users.php",
             json_body={
                 "action": "create",
-                "email": "redteam-escalation-test@test.com",
+                "email": "redteam-escalation-test@example.com",
                 "role": "system-admin",
                 "name": "RedTeam Escalation Test",
             },
@@ -139,7 +139,7 @@ class PrivilegeEscalationV2Attack(Attack):
         status_code, body, headers = await client.post(
             "/api/auth/login.php",
             json_body={
-                "email": "redteam-viewer@test.com",
+                "email": "redteam-viewer@example.com",
                 "password": "RedTeamV!ewer2026!",
                 "role": "system-admin",
             },

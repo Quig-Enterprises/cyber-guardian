@@ -30,7 +30,7 @@ class PasswordPolicyAttack(Attack):
         # We need to be authenticated to test password change.
         # Login as the test viewer user.
         login_ok = await client.login(
-            "redteam-viewer@test.com", "RedTeamV!ewer2026!"
+            "redteam-viewer@example.com", "RedTeamV!ewer2026!"
         )
         if not login_ok:
             # Try testing via registration or password reset if login fails

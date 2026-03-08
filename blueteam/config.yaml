@@ -16,7 +16,7 @@ alerting:
     enabled: true
     smtp_host: localhost
     smtp_port: 25
-    from_address: blueteam@alfred.localdomain
+    from_address: alfred@devteam.quigs.com
     recipients:
       - alfred@devteam.quigs.com
   syslog:

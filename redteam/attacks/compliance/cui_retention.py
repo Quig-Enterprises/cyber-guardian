@@ -210,7 +210,7 @@ class CUIRetentionAttack(Attack):
         #    After logout, CUI accessed pre-logout must not remain accessible
         # ----------------------------------------------------------------
         login_ok = await client.login(
-            "redteam-sysadmin@test.com", "RedTeam$ysAdmin2026!"
+            "redteam-sysadmin@example.com", "RedTeam$ysAdmin2026!"
         )
 
         if not login_ok:
