@@ -44,6 +44,11 @@ EXPECTED_SUID = {
     "/bin/ping",
     "/usr/bin/ping",
     "/snap/snapd/current/usr/lib/snapd/snap-confine",
+    "/usr/bin/sudo.ws",
+    "/usr/bin/ntfs-3g",
+    "/usr/lib/cargo/bin/sudo",
+    "/usr/lib/cargo/bin/su",
+    "/usr/lib/polkit-1/polkit-agent-helper-1",
 }
 
 # Sensitive files and their maximum allowed permissions (octal)
