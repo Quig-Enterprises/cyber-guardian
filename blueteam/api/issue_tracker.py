@@ -238,7 +238,11 @@ class IssueTracker:
 
         metrics['cumulative_fixed'] = total_fixed
         metrics['cumulative_new'] = total_new
-        metrics['net_improvement'] = total_fixed - total_new
+
+        # Net improvement: current total vs worst scan in the history window
+        worst_total = max((h['total'] for h in history), default=metrics['total_issues'])
+        metrics['net_improvement'] = worst_total - metrics['total_issues']
+        metrics['baseline'] = worst_total
 
         # Save metrics
         with open(self.metrics_file, 'w') as f:
