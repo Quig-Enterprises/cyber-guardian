@@ -90,7 +90,10 @@ class CodebaseSecurityScanner:
                     # Safe: empty string, purely static string literal (no $ interpolation or variables),
                     # textarea entity-decode pattern, or sanitization function present in context
                     "safe_pattern": r'(?:\.innerHTML\s*=\s*(?:\'\'|""|\'[^\'$`]*\'|"[^"$`]*")|\.innerHTML\s*=\s*`[^`$]*`|\.innerHTML\s*=\s*\[)',
-                    "safe_context_pattern": r'(?:escapeHtml|escHtml|escAttr|DOMPurify\.sanitize|sanitizeHtml|esc_html|esc\(|createElement\s*\(\s*[\'"]textarea[\'"])',
+                    "safe_context_pattern": r'(?:escapeHtml|escHtml|escAttr|DOMPurify\.sanitize|sanitizeHtml|esc_html|esc\(|createElement\s*\(\s*[\'"]textarea[\'"]|\.replace\s*\(\s*/</g\s*,\s*[\'"]&lt;[\'"])',
+                    "safe_interpolation_pattern": r'(?:\.toFixed\s*\(|\.toPrecision\s*\(|\.toString\s*\(\s*\)|Math\.\w+\s*\(|parseInt\s*\(|parseFloat\s*\(|\.length\b|Number\s*\(|\w*[Cc]ount\b|\w*[Pp]ct\b|\w*[Tt]otal\b|\w*[Ii]ndex\b|\w*[Nn]um\b|\w*[Ww]idth\b|\w*[Hh]eight\b|\w*[Ss]ize\b|format\w+\s*\(|\.toUpperCase\s*\(|\.toLowerCase\s*\(|\.slice\s*\(|\.substring\s*\(|\.trim\s*\(|\.join\s*\(|encodeURIComponent\s*\(|\.id\b)',
+                    "safe_id_interpolation": r'(?:config\.id|container\.id|this\.id|el\.id|element\.id|\w+\.id\.replace\s*\()\b',
+                    "reduced_severity_pattern": r'\$\{(?:error|err|e)\.message\}',
                     "severity": Severity.HIGH,
                     "cwe": "CWE-79",
                     "description": "Potential XSS via innerHTML assignment",
@@ -320,7 +323,7 @@ class CodebaseSecurityScanner:
             files_scanned=0
         )
 
-        skip_dirs = ['/vendor/', '/node_modules/', '/dev/', '/.git/', '/dist/', '/build/']
+        skip_dirs = ['/vendor/', '/node_modules/', '/dev/', '/.git/', '/dist/', '/build/', '/venv/', '/.venv/']
 
         # Scan PHP files
         php_files = list(Path(project_path).rglob("*.php"))
@@ -353,6 +356,34 @@ class CodebaseSecurityScanner:
         logger.info(f"Scan complete: {len(result.issues)} issues found in {result.files_scanned} files")
 
         return result
+
+    def _extract_template_literal(self, lines: list, start_line: int) -> str:
+        """Extract full template literal content starting from a line with innerHTML = `.
+
+        Returns the complete template string across multiple lines, or just the
+        start line if no template literal is found.
+        """
+        line = lines[start_line]
+        # Check if this line starts a template literal (backtick after innerHTML =)
+        backtick_match = re.search(r'\.innerHTML\s*[+=]*=\s*`', line)
+        if not backtick_match:
+            return line
+
+        # Count backticks to find the closing one
+        # Start after the opening backtick
+        full_content = line[backtick_match.end():]
+
+        # Check if template closes on same line
+        if '`' in full_content:
+            return line
+
+        # Accumulate lines until closing backtick
+        for i in range(start_line + 1, min(start_line + 50, len(lines))):
+            full_content += '\n' + lines[i]
+            if '`' in lines[i]:
+                break
+
+        return line + '\n' + full_content
 
     def _scan_file(self, file_path: str, patterns: Dict[str, List[Dict[str, Any]]] = None) -> List[SecurityIssue]:
         """Scan a single file for security issues.
@@ -388,6 +419,9 @@ class CodebaseSecurityScanner:
                         context_end = min(len(lines), line_num + 75)
                         context = "\n".join(lines[context_start:context_end])
 
+                        # For innerHTML checks, extract multi-line template literal content
+                        template_content = self._extract_template_literal(lines, line_num - 1) if '.innerHTML' in line else line
+
                         # Suppress if the line itself matches a known-safe pattern
                         if "safe_pattern" in pattern_config:
                             if re.search(pattern_config["safe_pattern"], line, re.IGNORECASE):
@@ -408,8 +442,40 @@ class CodebaseSecurityScanner:
                             if re.search(pattern_config["requires_nonce"], context, re.IGNORECASE):
                                 continue
 
+                        # Suppress if ALL ${} interpolations in the template are numeric-safe
+                        if "safe_interpolation_pattern" in pattern_config:
+                            interpolations = re.findall(r'\$\{([^}]+)\}', template_content)
+                            if not interpolations:
+                                # No interpolations at all = static HTML = safe
+                                continue
+                            if all(
+                                re.search(pattern_config["safe_interpolation_pattern"], expr)
+                                for expr in interpolations
+                            ):
+                                continue
+
+                        # Suppress if ALL interpolations are safe (ID props, numeric, format functions, or pre-built HTML)
+                        if "safe_id_interpolation" in pattern_config:
+                            interpolations = re.findall(r'\$\{([^}]+)\}', template_content)
+                            if interpolations and all(
+                                re.search(pattern_config["safe_id_interpolation"], expr)
+                                or re.search(pattern_config["safe_interpolation_pattern"], expr)
+                                or re.match(r'^[\'"][^\'"]*[\'"]$', expr.strip())  # string literals
+                                or re.match(r'^\w+Html$', expr.strip())  # pre-built HTML variables (e.g. controlsHtml, metricsHTML)
+                                or re.match(r'^\d+$', expr.strip())  # bare numbers
+                                or '?' in expr and "'" in expr  # ternary with string literals
+                                for expr in interpolations
+                            ):
+                                continue
+
+                        # Reduce severity for error.message interpolation (not directly user-controlled)
+                        effective_severity = pattern_config["severity"]
+                        if "reduced_severity_pattern" in pattern_config:
+                            if re.search(pattern_config["reduced_severity_pattern"], template_content):
+                                effective_severity = Severity.MEDIUM
+
                         issue = SecurityIssue(
-                            severity=pattern_config["severity"],
+                            severity=effective_severity,
                             category=category,
                             file_path=file_path,
                             line_number=line_num,
@@ -418,7 +484,7 @@ class CodebaseSecurityScanner:
                             code_snippet=line.strip(),
                             recommendation=pattern_config["recommendation"],
                             cwe_id=pattern_config.get("cwe"),
-                            confidence="high" if pattern_config["severity"] == Severity.CRITICAL else "medium"
+                            confidence="high" if effective_severity == Severity.CRITICAL else "medium"
                         )
                         issues.append(issue)
 
