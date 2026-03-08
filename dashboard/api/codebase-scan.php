@@ -65,7 +65,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 if (file_exists($lockFile)) {
     $lockData = json_decode(file_get_contents($lockFile), true);
     $pid = $lockData['pid'] ?? 0;
+    $started = $lockData['started'] ?? null;
+    $isRunning = false;
     if ($pid > 0 && file_exists('/proc/' . $pid)) {
+        // Verify the process is actually our scan (not a recycled PID)
+        // If lock is older than 2 hours, treat as stale regardless
+        $age = $started ? (time() - strtotime($started)) : PHP_INT_MAX;
+        if ($age < 7200) {
+            $isRunning = true;
+        }
+    }
+    if ($isRunning) {
         http_response_code(409);
         echo json_encode(['error' => 'A codebase scan is already running', 'pid' => $pid]);
         exit;
