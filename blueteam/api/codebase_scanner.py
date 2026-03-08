@@ -428,25 +428,52 @@ class CodebaseSecurityScanner:
         """Scan all projects under given base paths.
 
         Args:
-            base_paths: List of base paths to scan (e.g., ['/var/www/html/wordpress/wp-content/plugins'])
+            base_paths: List of base paths to scan (e.g., ['/var/www/html/eqmon', '/opt/claude-workspace/projects'])
 
         Returns:
             List of ScanResult objects
         """
         results = []
+        seen_real_paths = set()
 
         for base_path in base_paths:
             if not os.path.exists(base_path):
                 logger.warning(f"Base path does not exist: {base_path}")
                 continue
 
+            real_base = os.path.realpath(base_path)
+
+            # Check if base_path itself is a project (has source files directly)
+            has_source_files = any(
+                f.endswith(('.php', '.js', '.py'))
+                for f in os.listdir(real_base)
+                if os.path.isfile(os.path.join(real_base, f))
+            )
+
+            if has_source_files:
+                # Treat this base_path as a single project
+                if real_base not in seen_real_paths:
+                    seen_real_paths.add(real_base)
+                    project_name = os.path.basename(real_base)
+                    result = self.scan_project(real_base, project_name)
+                    if result.issues:
+                        results.append(result)
+                continue
+
             # Find all subdirectories (projects)
-            for entry in os.listdir(base_path):
-                project_path = os.path.join(base_path, entry)
+            for entry in os.listdir(real_base):
+                project_path = os.path.join(real_base, entry)
                 if os.path.isdir(project_path):
                     # Skip common non-project directories
-                    if entry in ['vendor', 'node_modules', '.git', '__pycache__']:
+                    if entry in ['vendor', 'node_modules', '.git', '__pycache__', 'venv', '.venv']:
                         continue
+
+                    # Resolve symlinks for deduplication
+                    real_project_path = os.path.realpath(project_path)
+                    if real_project_path in seen_real_paths:
+                        logger.info(f"Skipping duplicate (symlink): {project_path} -> {real_project_path}")
+                        continue
+                    seen_real_paths.add(real_project_path)
 
                     result = self.scan_project(project_path, entry)
                     if result.issues:  # Only include projects with issues
