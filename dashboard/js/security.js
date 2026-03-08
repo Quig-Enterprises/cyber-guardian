@@ -3118,6 +3118,27 @@
         }
     });
 
+    // Append text with inline **bold** and `code` formatting as safe DOM nodes
+    function appendInlineFormatted(parent, text) {
+        // Split on **bold** and `code` patterns
+        var parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/);
+        parts.forEach(function (part) {
+            if (part.match(/^\*\*(.+)\*\*$/)) {
+                var b = document.createElement('strong');
+                b.textContent = part.slice(2, -2);
+                b.style.color = '#00d4ff';
+                parent.appendChild(b);
+            } else if (part.match(/^`(.+)`$/)) {
+                var c = document.createElement('code');
+                c.textContent = part.slice(1, -1);
+                c.style.cssText = 'background:#0a0e27;color:#00ff88;padding:0.1rem 0.3rem;border-radius:3px;font-family:monospace;font-size:0.8rem;';
+                parent.appendChild(c);
+            } else if (part) {
+                parent.appendChild(document.createTextNode(part));
+            }
+        });
+    }
+
     // Render markdown TODO content as styled DOM elements (no innerHTML, XSS-safe)
     function renderTodoContent(container, content) {
         var lines = content.split('\n');
@@ -3204,22 +3225,39 @@
                 continue;
             }
 
-            // Bold-only line (like **Issue:** or **Fix:**)
-            if (line.match(/^\*\*.+\*\*/)) {
+            // Line with inline formatting (bold, code)
+            if (line.match(/\*\*|`/)) {
                 var p = document.createElement('p');
                 p.style.cssText = 'margin:0.25rem 0;font-size:0.85rem;color:#e0e6ed;';
-                var parts = line.split(/\*\*/);
-                parts.forEach(function (part, idx) {
-                    if (idx % 2 === 1) {
-                        var b = document.createElement('strong');
-                        b.textContent = part;
-                        b.style.color = '#00d4ff';
-                        p.appendChild(b);
-                    } else {
-                        p.appendChild(document.createTextNode(part));
-                    }
-                });
+                appendInlineFormatted(p, line);
                 container.appendChild(p);
+                i++;
+                continue;
+            }
+
+            // Numbered list item (e.g. "1. **Review** each issue...")
+            var numMatch = line.match(/^(\d+)\.\s+(.+)/);
+            if (numMatch) {
+                var li = document.createElement('div');
+                li.style.cssText = 'padding:0.2rem 0 0.2rem 1.5rem;font-size:0.85rem;color:#e0e6ed;';
+                var num = document.createElement('span');
+                num.style.cssText = 'color:#4a9eff;font-weight:600;margin-right:0.4rem;';
+                num.textContent = numMatch[1] + '.';
+                li.appendChild(num);
+                appendInlineFormatted(li, numMatch[2]);
+                container.appendChild(li);
+                i++;
+                continue;
+            }
+
+            // Bullet list item (e.g. "- Some text")
+            var bulletMatch = line.match(/^-\s+(.+)/);
+            if (bulletMatch) {
+                var bul = document.createElement('div');
+                bul.style.cssText = 'padding:0.15rem 0 0.15rem 1.5rem;font-size:0.85rem;color:#e0e6ed;';
+                bul.appendChild(document.createTextNode('\u2022 '));
+                appendInlineFormatted(bul, bulletMatch[1]);
+                container.appendChild(bul);
                 i++;
                 continue;
             }
@@ -3230,10 +3268,10 @@
                 continue;
             }
 
-            // Default: plain text
+            // Default: plain text with inline formatting
             var text = document.createElement('p');
             text.style.cssText = 'margin:0.2rem 0;font-size:0.85rem;color:#e0e6ed;';
-            text.textContent = line;
+            appendInlineFormatted(text, line);
             container.appendChild(text);
             i++;
         }
