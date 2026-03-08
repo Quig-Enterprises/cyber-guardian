@@ -261,11 +261,11 @@ def main():
     print("Blue Team Codebase Security Scanner")
     print("=" * 80)
 
-    # Define base paths to scan
+    # Define base paths to scan (Artemis server)
     base_paths = [
-        "/var/www/html/wordpress/wp-content/plugins",
-        "/var/www/html/wordpress/wp-content/mu-plugins",
-        "/opt/claude-workspace/projects"
+        "/var/www/html/eqmon",
+        "/opt/claude-workspace/projects",
+        "/opt/artemis/www"
     ]
 
     print("\nScanning projects in:")

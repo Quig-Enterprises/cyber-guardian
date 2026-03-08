@@ -48,6 +48,9 @@ logs/
 # Reports
 reports/*.html
 reports/*.json
+MITIGATION_DASHBOARD.md
+TODO_SECURITY.md
+**/TODO_SECURITY.md
 
 # Evidence (git-tracked but sensitive)
 evidence/*.pdf

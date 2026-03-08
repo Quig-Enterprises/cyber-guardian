@@ -180,6 +180,8 @@
             loadMalwareData();
         } else if (tab === 'passwords') {
             loadPasswordAuditData();
+        } else if (tab === 'mitigation') {
+            loadMitigationData();
         }
     }
 
@@ -2950,12 +2952,9 @@
         });
     };
 
-})();
-
-// ============================================================================
-// MITIGATION TAB
-// ============================================================================
-(function () {
+    // ============================================================================
+    // MITIGATION TAB
+    // ============================================================================
     function loadMitigationData() {
         apiFetch('mitigation_data.php').then(function (data) {
             if (!data || !data.success) {
@@ -2965,9 +2964,9 @@
 
             // Update summary cards
             var summary = data.summary || {};
-            setTextById('mitigation-total-issues', summary.total_issues || 0);
-            setTextById('mitigation-critical', summary.critical || 0);
-            setTextById('mitigation-high', summary.high || 0);
+            setText('mitigation-total-issues', summary.total_issues || 0);
+            setText('mitigation-critical', summary.critical || 0);
+            setText('mitigation-high', summary.high || 0);
             
             var netImprovement = summary.net_improvement || 0;
             var netEl = document.getElementById('mitigation-net-improvement');
@@ -2977,7 +2976,7 @@
             }
 
             // Update project count
-            setTextById('mitigation-project-count', (data.projects || []).length);
+            setText('mitigation-project-count', (data.projects || []).length);
 
             // Populate projects table
             var tbody = document.getElementById('mitigation-tbody');
@@ -3112,10 +3111,11 @@
         });
     }
 
-    // Register tab loader
+    // Register mitigation tab loader
     window.addEventListener('DOMContentLoaded', function () {
         if (typeof window.tabLoaders !== 'undefined') {
             window.tabLoaders['mitigation'] = loadMitigationData;
         }
     });
+
 })();
