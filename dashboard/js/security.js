@@ -6,8 +6,12 @@
  * Data originates from authenticated server-side API endpoints only.
  */
 
+console.log('[SECURITY.JS] Script loading - timestamp:', new Date().toISOString());
+
 (function () {
     'use strict';
+
+    console.log('[SECURITY.JS] IIFE started');
 
     // ---- Constants ----
     var API_BASE = '/security-dashboard/api';
@@ -134,6 +138,7 @@
 
     function switchTab(hash, pushHistory) {
         var target = hash.replace('#', '') || 'posture';
+        console.log('[DEBUG] switchTab called, target:', target);
         tabs.forEach(function (t) {
             t.classList.toggle('active', t.getAttribute('href') === '#' + target);
         });
@@ -141,7 +146,9 @@
             c.classList.toggle('active', c.id === 'tab-' + target);
         });
         // Lazy load on first tab visit
+        console.log('[DEBUG] tabDataLoaded[' + target + ']:', tabDataLoaded[target]);
         if (!tabDataLoaded[target]) {
+            console.log('[DEBUG] Loading tab data for:', target);
             loadTabData(target);
             tabDataLoaded[target] = true;
         }
@@ -153,6 +160,7 @@
     }
 
     function loadTabData(tab) {
+        console.log('[DEBUG] loadTabData called for tab:', tab);
         if (tab === 'posture') {
             fetchPosture();
             fetchAlerts();
@@ -1662,9 +1670,14 @@
                     var opt = document.createElement('option');
                     opt.value = t.target_id;
                     opt.textContent = t.name + ' — ' + t.base_url + (t.is_self ? ' (self)' : '');
+                    opt.setAttribute('data-is-self', t.is_self ? '1' : '0');
                     if (t.is_self) opt.selected = true;
                     sel.appendChild(opt);
                 });
+                // Add change handler to enforce AWS mode for self targets
+                sel.onchange = updateAwsCompliantRequirement;
+                // Set initial state
+                updateAwsCompliantRequirement();
             }
             // Redteam results target selector — show only when >1 target
             populateRedteamTargetBar();
@@ -1711,9 +1724,30 @@
         document.querySelectorAll('.scan-cat-cb').forEach(function(cb) { cb.checked = checked; });
     }
 
+    function updateAwsCompliantRequirement() {
+        var sel = document.getElementById('scan-target-select');
+        var checkbox = document.getElementById('scan-aws-compliant');
+        if (!sel || !checkbox) return;
+
+        var selectedOpt = sel.options[sel.selectedIndex];
+        var isSelf = selectedOpt && selectedOpt.getAttribute('data-is-self') === '1';
+
+        if (isSelf) {
+            // Self target on production (cp.quigs.com) - AWS mode required
+            checkbox.checked = true;
+            checkbox.disabled = true;
+            checkbox.parentElement.title = 'AWS-compliant mode is required for production self-scans';
+        } else {
+            // External target - allow toggling
+            checkbox.disabled = false;
+            checkbox.parentElement.title = '';
+        }
+    }
+
     function startScan() {
         var targetId = parseInt(document.getElementById('scan-target-select').value, 10);
         var allChecked = document.getElementById('scan-cat-all').checked;
+        var awsCompliant = document.getElementById('scan-aws-compliant').checked;
         var categories;
         if (allChecked) {
             categories = ['all'];
@@ -1732,7 +1766,7 @@
         apiFetch('scan-now.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ categories: categories, target_id: targetId })
+            body: JSON.stringify({ categories: categories, target_id: targetId, aws_compliant: awsCompliant })
         }).then(function(data) {
             closeScanNowModal();
             btn.disabled = false;
@@ -3047,17 +3081,21 @@
     // MITIGATION TAB
     // ============================================================================
     function loadMitigationData() {
+        console.log('loadMitigationData() called - fetching mitigation_data.php');
         apiFetch('mitigation_data.php').then(function (data) {
+            console.log('mitigation_data.php response:', data);
             if (!data || !data.success) {
-                console.error('Failed to load mitigation data');
+                console.error('Failed to load mitigation data:', data);
                 return;
             }
 
             // Update summary cards
             var summary = data.summary || {};
+            console.log('[DEBUG] Updating summary cards with:', summary);
             setText('mitigation-total-issues', summary.total_issues || 0);
             setText('mitigation-critical', summary.critical || 0);
             setText('mitigation-high', summary.high || 0);
+            console.log('[DEBUG] Summary cards updated');
             
             var netImprovement = summary.net_improvement || 0;
             var netEl = document.getElementById('mitigation-net-improvement');
@@ -3071,7 +3109,12 @@
 
             // Populate projects table
             var tbody = document.getElementById('mitigation-tbody');
-            if (!tbody) return;
+            console.log('[DEBUG] Projects table tbody:', tbody);
+            console.log('[DEBUG] Projects data:', data.projects);
+            if (!tbody) {
+                console.error('[DEBUG] ERROR: mitigation-tbody element not found!');
+                return;
+            }
 
             if (!data.projects || data.projects.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No projects with security issues</td></tr>';
@@ -3453,4 +3496,8 @@
         });
     };
 
+    console.log('[SECURITY.JS] IIFE completed - all functions defined');
+
 })();
+
+console.log('[SECURITY.JS] Script fully loaded');

@@ -74,6 +74,8 @@ $validCategories = ['all', 'ai', 'api', 'web', 'compliance', 'wordpress', 'cve',
                     'malware', 'infrastructure', 'dns', 'secrets', 'exposure', 'cloud'];
 
 $requestedCategories = $input['categories'] ?? ['all'];
+$awsCompliant = isset($input['aws_compliant']) ? (bool) $input['aws_compliant'] : true; // Default to AWS-compliant for safety
+
 if (!is_array($requestedCategories) || empty($requestedCategories)) {
     http_response_code(400);
     echo json_encode(['error' => 'categories must be a non-empty array']);
@@ -155,6 +157,12 @@ try {
 
     // Build runner args
     $args = [];
+
+    // Add execution mode (AWS-compliant by default for production safety)
+    if ($awsCompliant) {
+        $args[] = '--mode aws';
+    }
+
     if (count($requestedCategories) === 1 && $requestedCategories[0] === 'all') {
         $args[] = '--all';
     } else {

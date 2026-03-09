@@ -4,18 +4,10 @@
  * Cybersecurity posture, compliance, incident, and red team overview
  */
 
-// Session is validated by nginx auth_request against Keystone before this runs.
-// User identity is injected as HTTP headers by nginx from Keystone's auth response.
-$session = [
-    'sub'   => (int) ($_SERVER['HTTP_X_AUTH_USER_ID'] ?? 0),
-    'name'  => $_SERVER['HTTP_X_AUTH_USER'] ?? 'User',
-    'email' => '',
-    'super' => ($_SERVER['HTTP_X_AUTH_SUPER'] ?? '0') === '1',
-];
-if (!$session['sub']) {
-    header('Location: /admin/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
-    exit;
-}
+// JWT-based session authentication via Project Keystone
+require_once __DIR__ . '/auth-check.php';
+
+// $session is now populated by auth-check.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -470,6 +462,15 @@ if (!$session['sub']) {
                                     <?php endforeach; ?>
                                 </div>
                             </div>
+                        </div>
+                        <div class="scan-form-group">
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" id="scan-aws-compliant" checked style="width:auto;cursor:pointer;">
+                                <strong>AWS-Compliant Mode</strong>
+                            </label>
+                            <p style="margin:8px 0 0 0;font-size:0.85em;color:#8b949e;">
+                                Safe for production/cloud environments. Excludes network flooding, infrastructure DoS, and service disruption attacks.
+                            </p>
                         </div>
                     </div>
                     <div class="scan-modal-footer">
@@ -1022,6 +1023,6 @@ if (!$session['sub']) {
         }
     });
     </script>
-    <script src="js/security.js?v=20260308n"></script>
+    <script src="js/security.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

@@ -1,168 +1,196 @@
 <?php
 /**
  * Mitigation Dashboard API
- * Serves security mitigation metrics and project status
+ * Serves security mitigation metrics from database
  */
 
 header('Content-Type: application/json');
 
-// Paths
-$base_dir = dirname(dirname(__DIR__));
-$state_dir = "$base_dir/.scan-state";
-$reports_dir = "$base_dir/reports";
-$metrics_file = "$state_dir/mitigation_metrics.json";
-$scan_log = "$state_dir/scan.log";
+// Universal database connection - works on any server
+// Tries multiple credential sources in order of priority
+try {
+    // Option 1: Environment variables (set by systemd, docker, or .env loader)
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $dbname = getenv('DB_NAME') ?: 'alfred_admin';
+    $user = getenv('DB_USER') ?: 'alfred_admin';
+    $pass = getenv('DB_PASS') ?: '';
 
-// Find latest codebase scan report
-$latest_report = null;
-if (is_dir($reports_dir)) {
-    $report_files = glob("$reports_dir/codebase-security-scan-*.md");
-    if ($report_files) {
-        sort($report_files);
-        $latest_report = end($report_files);
+    // Option 2: Load from admin/.env if available (for alfred server)
+    $envFiles = [
+        '/var/www/html/alfred/dashboard/admin/.env',
+        __DIR__ . '/../../../admin/.env',
+        $_SERVER['DOCUMENT_ROOT'] . '/admin/.env'
+    ];
+
+    foreach ($envFiles as $envFile) {
+        if (file_exists($envFile)) {
+            foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                if (strpos($line, '#') === 0 || strpos($line, '=') === false) continue;
+                list($key, $value) = explode('=', $line, 2);
+                $key = trim($key);
+                $value = trim($value);
+                if ($key === 'DB_HOST') $host = $value;
+                elseif ($key === 'DB_NAME') $dbname = $value;
+                elseif ($key === 'DB_USER') $user = $value;
+                elseif ($key === 'DB_PASS') $pass = $value;
+            }
+            break; // Use first found .env file
+        }
     }
-}
 
-// Response structure
-$response = [
-    'success' => true,
-    'summary' => [
-        'total_issues' => 0,
-        'critical' => 0,
-        'high' => 0,
-        'medium' => 0,
-        'net_improvement' => 0,
-        'last_updated' => null
-    ],
-    'projects' => [],
-    'activity' => [],
-    'trend' => []
-];
+    // Always use localhost when connecting from PHP-FPM (not Docker bridge)
+    if ($host === '172.200.1.1') {
+        $host = '127.0.0.1';
+    }
 
-// Load metrics
-if (file_exists($metrics_file)) {
-    $metrics = json_decode(file_get_contents($metrics_file), true);
-    if ($metrics && isset($metrics['current'])) {
-        $response['summary'] = [
-            'total_issues' => $metrics['current']['total_issues'] ?? 0,
-            'critical' => 0, // Will get from dashboard
-            'high' => 0,     // Will get from dashboard
-            'medium' => 0,   // Will get from dashboard
-            'net_improvement' => $metrics['current']['net_improvement'] ?? 0,
-            'last_updated' => $metrics['current']['last_updated'] ?? null
+    $pdo = new PDO(
+        "pgsql:host={$host};dbname={$dbname}",
+        $user,
+        $pass,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+    $db = $pdo;
+
+    // Get summary stats
+    $stmt = $db->query("
+        SELECT
+            COUNT(*) as total_issues,
+            SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END) as critical,
+            SUM(CASE WHEN severity = 'high' THEN 1 ELSE 0 END) as high,
+            SUM(CASE WHEN severity = 'medium' THEN 1 ELSE 0 END) as medium,
+            SUM(CASE WHEN severity = 'low' THEN 1 ELSE 0 END) as low,
+            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+            MAX(created_at) as last_updated
+        FROM blueteam.mitigation_issues
+        WHERE status != 'wont_fix'
+    ");
+    $summary = $stmt->fetch();
+
+    // Calculate net improvement (last 7 days)
+    $stmt = $db->query("
+        SELECT COUNT(*) as fixed_count
+        FROM blueteam.mitigation_issues
+        WHERE status = 'completed'
+        AND completed_at >= NOW() - INTERVAL '7 days'
+    ");
+    $improvement = $stmt->fetch();
+    $net_improvement = (int)$improvement['fixed_count'];
+
+    // Get projects list
+    $stmt = $db->query("
+        SELECT
+            mp.id,
+            mp.name,
+            mp.scan_date,
+            mp.status,
+            COUNT(mi.id) as total_issues,
+            SUM(CASE WHEN mi.severity = 'critical' THEN 1 ELSE 0 END) as critical,
+            SUM(CASE WHEN mi.severity = 'high' THEN 1 ELSE 0 END) as high,
+            SUM(CASE WHEN mi.severity = 'medium' THEN 1 ELSE 0 END) as medium
+        FROM blueteam.mitigation_projects mp
+        LEFT JOIN blueteam.mitigation_issues mi ON mp.id = mi.project_id AND mi.status != 'wont_fix'
+        GROUP BY mp.id, mp.name, mp.scan_date, mp.status
+        ORDER BY mp.scan_date DESC
+    ");
+    $projects = $stmt->fetchAll();
+
+    // Get recent activity (last 10 events)
+    $stmt = $db->query("
+        SELECT
+            ma.id,
+            ma.activity_type,
+            ma.old_value,
+            ma.new_value,
+            ma.comment,
+            ma.user_name,
+            ma.created_at,
+            mi.title as issue_title,
+            mi.severity
+        FROM blueteam.mitigation_activity ma
+        JOIN blueteam.mitigation_issues mi ON ma.issue_id = mi.id
+        ORDER BY ma.created_at DESC
+        LIMIT 10
+    ");
+    $activity_raw = $stmt->fetchAll();
+
+    // Format activity
+    $activity = [];
+    foreach ($activity_raw as $act) {
+        $timestamp = date('Y-m-d H:i:s', strtotime($act['created_at']));
+        $message = '';
+        $type = 'info';
+
+        switch ($act['activity_type']) {
+            case 'created':
+                $message = "New {$act['severity']} issue: {$act['issue_title']}";
+                $type = 'warning';
+                break;
+            case 'status_change':
+                $message = "Status changed: {$act['issue_title']} ({$act['old_value']} → {$act['new_value']})";
+                if ($act['new_value'] === 'completed') {
+                    $type = 'success';
+                }
+                break;
+            case 'comment':
+                $message = "Comment on: {$act['issue_title']}";
+                break;
+            case 'assignment':
+                $message = "Assigned: {$act['issue_title']} → {$act['new_value']}";
+                break;
+            case 'verification':
+                $message = "Verified fix: {$act['issue_title']}";
+                $type = 'success';
+                break;
+            default:
+                $message = "{$act['activity_type']}: {$act['issue_title']}";
+        }
+
+        $activity[] = [
+            'timestamp' => $timestamp,
+            'type' => $type,
+            'message' => $message
         ];
-
-        // Trend data (last 24 hours)
-        if (isset($metrics['history'])) {
-            $response['trend'] = array_slice($metrics['history'], -24);
-        }
-    }
-}
-
-// Parse latest scan report for project list and severity counts
-if ($latest_report && file_exists($latest_report)) {
-    $content = file_get_contents($latest_report);
-
-    // Extract overall severity counts from Executive Summary table
-    // Format: | **CRITICAL** | 149 |
-    if (preg_match('/\| \*\*CRITICAL\*\* \| (\d+) \|/', $content, $matches)) {
-        $response['summary']['critical'] = (int)$matches[1];
-    }
-    if (preg_match('/\| \*\*HIGH\*\* \| (\d+) \|/', $content, $matches)) {
-        $response['summary']['high'] = (int)$matches[1];
-    }
-    if (preg_match('/\| \*\*MEDIUM\*\* \| (\d+) \|/', $content, $matches)) {
-        $response['summary']['medium'] = (int)$matches[1];
-    }
-    if (preg_match('/\| \*\*Total Issues\*\* \| (\d+) \|/', $content, $matches)) {
-        $response['summary']['total_issues'] = (int)$matches[1];
     }
 
-    // Extract Projects Summary table
-    // Format: | Project | Files | Issues | CRITICAL | HIGH | MEDIUM | LOW |
-    $lines = explode("\n", $content);
-    $in_projects_table = false;
-    foreach ($lines as $line) {
-        if (strpos($line, '| Project | Files | Issues |') !== false) {
-            $in_projects_table = true;
-            continue;
-        }
-        if ($in_projects_table) {
-            if (strpos($line, '|') !== 0) break; // end of table
-            if (strpos($line, '---') !== false) continue; // separator row
-
-            // Parse: | project | files | issues | critical | high | medium | low |
-            $cols = array_map('trim', explode('|', trim($line, '|')));
-            if (count($cols) < 7) continue;
-
-            $project_name = $cols[0];
-            if ($project_name === '') continue;
-
-            $total    = (int)$cols[2];
-            $critical = (int)$cols[3];
-            $high     = (int)$cols[4];
-            $medium   = (int)$cols[5];
-
-            // Look for a TODO.md for this project in known plugin/project locations
-            $todo_link = null;
-            $plugin_todo = "/var/www/html/wordpress/wp-content/plugins/{$project_name}/TODO.md";
-            $project_todo = "/opt/claude-workspace/projects/{$project_name}/TODO.md";
-            if (file_exists($plugin_todo)) {
-                $todo_link = $plugin_todo;
-            } elseif (file_exists($project_todo)) {
-                $todo_link = $project_todo;
-            }
-
-            $response['projects'][] = [
-                'name'      => $project_name,
-                'critical'  => $critical,
-                'high'      => $high,
-                'medium'    => $medium,
-                'total'     => $total,
-                'todo_path' => $todo_link
+    // Build response
+    $response = [
+        'success' => true,
+        'summary' => [
+            'total_issues' => (int)$summary['total_issues'],
+            'critical' => (int)$summary['critical'],
+            'high' => (int)$summary['high'],
+            'medium' => (int)$summary['medium'],
+            'low' => (int)$summary['low'],
+            'completed' => (int)$summary['completed'],
+            'net_improvement' => $net_improvement,
+            'last_updated' => $summary['last_updated']
+        ],
+        'projects' => array_map(function($p) {
+            return [
+                'id' => (int)$p['id'],
+                'name' => $p['name'],
+                'scan_date' => $p['scan_date'],
+                'status' => $p['status'],
+                'total' => (int)$p['total_issues'],
+                'critical' => (int)$p['critical'],
+                'high' => (int)$p['high'],
+                'medium' => (int)$p['medium']
             ];
-        }
-    }
+        }, $projects),
+        'activity' => $activity,
+        'trend' => [] // TODO: Implement trend data from historical snapshots
+    ];
+
+    echo json_encode($response, JSON_PRETTY_PRINT);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage()
+    ]);
 }
-
-// Parse scan log for recent activity (last 10 entries)
-if (file_exists($scan_log)) {
-    $log_lines = file($scan_log, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $recent_lines = array_slice($log_lines, -20); // Last 20 lines
-
-    foreach (array_reverse($recent_lines) as $line) {
-        // Parse log format: [2026-03-07 21:00:55] Message
-        if (preg_match('/\[(.+?)\] (.+)/', $line, $matches)) {
-            $timestamp = $matches[1];
-            $message = $matches[2];
-
-            // Remove ANSI color codes (both literal \033 text and actual ESC character)
-            $message = preg_replace('/(?:\\\\033|\x1B)\[[0-9;]+m/', '', $message);
-
-            // Only include interesting events
-            if (strpos($message, 'FIXED:') !== false ||
-                strpos($message, 'NEW:') !== false ||
-                strpos($message, 'IMPROVEMENT:') !== false ||
-                strpos($message, 'ALERT:') !== false ||
-                strpos($message, 'Scan complete:') !== false) {
-
-                $event_type = 'info';
-                if (strpos($message, 'FIXED:') !== false) $event_type = 'success';
-                if (strpos($message, 'ALERT:') !== false) $event_type = 'warning';
-                if (strpos($message, 'NEW:') !== false) $event_type = 'warning';
-
-                $response['activity'][] = [
-                    'timestamp' => $timestamp,
-                    'type' => $event_type,
-                    'message' => $message
-                ];
-
-                // Limit to 10 activity items
-                if (count($response['activity']) >= 10) break;
-            }
-        }
-    }
-}
-
-// Output JSON
-echo json_encode($response, JSON_PRETTY_PRINT);
