@@ -70,7 +70,7 @@ Examples:
 
     parser.add_argument(
         "--report",
-        choices=["console", "json", "html"],
+        choices=["console", "json", "html", "hierarchical_json"],
         nargs="+",
         default=["console"],
         help="Report format(s) (default: console)",
