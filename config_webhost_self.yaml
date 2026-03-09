@@ -1,0 +1,78 @@
+target:
+  base_url: "https://keystone.quigs.com"
+  api_path: "/api"
+  origin_ip: null
+  source_path: null
+
+database:
+  host: "localhost"
+  port: 5432
+  database: "eqmon"
+  user: "eqmon"
+  password: ""
+
+redteam:
+  enabled: true
+  cleanup: false
+  auth:
+    test_users: {}
+  test_data:
+    session_id_prefix: "redteam-webhost-"
+  reporting:
+    formats: ["html", "json", "console"]
+    output_dir: "reports/"
+  ai_attacker:
+    enabled: false
+
+execution:
+  mode: "full"
+
+# Skip attacks not applicable to a production web host
+skip_categories:
+  - wordpress
+
+skip_attacks:
+  # WordPress
+  - wordpress.admin_exposure
+  - wordpress.brute_force
+  - wordpress.comment_xss
+  - wordpress.config_exposure
+  - wordpress.cron_abuse
+  - wordpress.debug_disclosure
+  - wordpress.file_upload
+  - wordpress.info_disclosure
+  - wordpress.plugin_audit
+  - wordpress.plugin_enumeration
+  - wordpress.rest_api_exposure
+  - wordpress.security_headers
+  - wordpress.user_enumeration
+  - wordpress.xmlrpc_abuse
+  - cve.wp_core_cve
+  - cve.wp_plugin_cve
+  - cve.wp_theme_cve
+  # Cloud
+  - cloud.s3_buckets
+  - cloud.security_groups
+  - cloud.iam_audit
+  # Skip DoS against production
+  - api.dos_resilience
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  verification:
+    enabled: true
+    mode: "http"
+    aggressiveness: "low"
+
+reporting:
+  formats: ["console", "json", "html"]
+  output_dir: "reports/"
+
+cleanup:
+  enabled: false
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "logs/webhost-self-redteam.log"
