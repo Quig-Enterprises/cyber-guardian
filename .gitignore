@@ -45,9 +45,8 @@ htmlcov/
 *.log
 logs/
 
-# Reports
-reports/*.html
-reports/*.json
+# Reports (all report files should be gitignored - sensitive data)
+reports/
 MITIGATION_DASHBOARD.md
 TODO_SECURITY.md
 **/TODO_SECURITY.md

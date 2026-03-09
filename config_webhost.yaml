@@ -1,0 +1,53 @@
+target:
+  type: "generic"
+  base_url: "https://cp.quigs.com"
+  timeout: 30
+  generic:
+    test_endpoints:
+      - "/"
+      - "/health"
+      - "/api/status"
+    login_endpoint: "/login"
+
+auth:
+  # No credentials for initial scan
+  test_users: {}
+
+execution:
+  mode: "aws"  # AWS-compliant mode (no infrastructure disruption)
+  parallel: true
+  max_workers: 4
+
+cve:
+  enabled: true
+  data_dir: "data/cve"
+  verification:
+    enabled: true
+    mode: "both"
+    aggressiveness: "low"  # Safe for production
+    config_endpoints:
+      nginx:
+        - "/admin/nginx/config"
+        - "/nginx-status"
+      php:
+        - "/phpinfo.php"
+        - "/info.php"
+    specific_cves:
+      CVE-2019-11043: true  # PHP-FPM RCE
+      CVE-2024-4577: true   # PHP CGI Argument Injection
+      CVE-2016-10033: true  # PHPMailer RCE
+      CVE-2013-4547: true   # Nginx Request Parsing
+
+reporting:
+  formats: ["console", "json", "html"]
+  output_dir: "redteam/reports/"
+
+cleanup:
+  enabled: false
+
+database:
+  host: "localhost"
+  port: 5432
+  name: "alfred_admin"
+  user: "alfred_admin"
+  password: ""
