@@ -18,6 +18,7 @@ from redteam.registry import AttackRegistry
 from redteam.scoring import aggregate_scores
 from redteam.reporters.console import ConsoleReporter
 from redteam.reporters.json_report import JsonReporter
+from redteam.reporters.hierarchical_json import HierarchicalJsonReporter
 from redteam.reporters.html import HtmlReporter
 from redteam.cleanup.db import DatabaseCleaner
 from redteam.state import ScanState
@@ -521,6 +522,9 @@ async def run(args):
             elif fmt == "json":
                 path = JsonReporter().write_report(summary, args.output)
                 logger.info(f"JSON report: {path}")
+            elif fmt == "hierarchical_json":
+                path = HierarchicalJsonReporter().write_report(summary, config, args.output)
+                logger.info(f"Hierarchical JSON report: {path}")
             elif fmt == "html":
                 path = HtmlReporter().write_report(summary, args.output)
                 logger.info(f"HTML report: {path}")
@@ -662,6 +666,9 @@ async def run(args):
             elif fmt == "json":
                 path = JsonReporter().write_report(summary, args.output)
                 logger.info(f"JSON report: {path}")
+            elif fmt == "hierarchical_json":
+                path = HierarchicalJsonReporter().write_report(summary, config, args.output)
+                logger.info(f"Hierarchical JSON report: {path}")
             elif fmt == "html":
                 path = HtmlReporter().write_report(summary, args.output)
                 logger.info(f"HTML report: {path}")
