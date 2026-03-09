@@ -344,7 +344,7 @@ class ScanImporter:
                     status, severity, duration_ms,
                     evidence_summary, evidence_details, evidence_proof,
                     request_data, response_data,
-                    recommendation, priority, references
+                    recommendation, priority, reference_urls
                 ) VALUES (
                     %s, %s, %s, %s, %s,
                     %s, %s, %s,
