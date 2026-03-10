@@ -1,0 +1,417 @@
+{
+  "generated": "2026-03-07T21:44:49.681948",
+  "total_attacks": 5,
+  "total_variants": 19,
+  "total_vulnerable": 5,
+  "total_partial": 4,
+  "total_defended": 7,
+  "total_errors": 0,
+  "worst_severity": "critical",
+  "by_category": {
+    "infrastructure": {
+      "attacks": 5,
+      "vulnerable": 5,
+      "partial": 4,
+      "defended": 7,
+      "errors": 0,
+      "duration_ms": 2169.079542160034
+    }
+  },
+  "by_severity": {
+    "critical": 1,
+    "high": 6,
+    "medium": 1,
+    "low": 1,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T21:44:47.499795",
+    "end": "2026-03-07T21:44:49.669388",
+    "duration_ms": 2169.6
+  },
+  "attacks": [
+    {
+      "name": "infrastructure.file_permissions",
+      "category": "infrastructure",
+      "duration_ms": 1828.1,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.firewall_audit",
+      "category": "infrastructure",
+      "duration_ms": 81.2,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.kernel_patch",
+      "category": "infrastructure",
+      "duration_ms": 252.8,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.service_enumeration",
+      "category": "infrastructure",
+      "duration_ms": 6.8,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.ssh_audit",
+      "category": "infrastructure",
+      "duration_ms": 0.1,
+      "vulnerable": 1,
+      "partial": 2,
+      "defended": 2,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "world_writable",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No world-writable files found in /etc or /var/www",
+      "details": "No world-writable files were detected in critical directories.",
+      "request": {
+        "search_dirs": [
+          "/etc",
+          "/var/www"
+        ]
+      },
+      "response": {
+        "count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "suid_binaries",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "2 unexpected SUID binary(ies) found out of 17 total",
+      "details": "SUID binaries run with elevated privileges and are common privilege escalation targets. The following SUID binaries are not in the expected list:\n  - /usr/lib/xorg/Xorg.wrap\n  - /usr/libexec/spice-client-glib-usb-acl-helper\nReview each binary and remove the SUID bit if not needed: chmod u-s <file>",
+      "request": {
+        "search_dirs": [
+          "/usr",
+          "/bin",
+          "/sbin"
+        ]
+      },
+      "response": {
+        "total_suid": 17,
+        "unexpected": [
+          "/usr/lib/xorg/Xorg.wrap",
+          "/usr/libexec/spice-client-glib-usb-acl-helper"
+        ],
+        "expected_matched": 15
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "sensitive_configs",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "1 sensitive file(s) with overly permissive permissions",
+      "details": "Sensitive configuration files have permissions that are too loose. This may allow unauthorized users to read credentials or private keys:\n  - /etc/ssl/private: 0o710 (should be 0o700 or stricter)",
+      "request": {
+        "files_checked": [
+          "/etc/shadow",
+          "/etc/shadow-",
+          "/etc/gshadow",
+          "/etc/gshadow-",
+          "/etc/ssh/ssh_host_rsa_key",
+          "/etc/ssh/ssh_host_ecdsa_key",
+          "/etc/ssh/ssh_host_ed25519_key",
+          "/etc/ssh/sshd_config",
+          "/etc/ssl/private"
+        ]
+      },
+      "response": {
+        "issues": [
+          "/etc/ssl/private: 0o710 (should be 0o700 or stricter)"
+        ],
+        "checked": 9
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "web_root_perms",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "7 permission issue(s) in web root",
+      "details": "Permission issues found in /var/www/html:\n  - /var/www/html: group-writable and world-executable (0o2775)\n  - /var/www/html/alfred/.env: world-readable (0o644), may contain credentials\n  - /var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials\n  - /var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials\n  - /var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials\n  - /var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials\n  - /var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials\nEnsure web files are owned by www-data with minimal permissions (644 for files, 755 for directories).",
+      "request": {
+        "web_root": "/var/www/html"
+      },
+      "response": {
+        "issues": [
+          "/var/www/html: group-writable and world-executable (0o2775)",
+          "/var/www/html/alfred/.env: world-readable (0o644), may contain credentials",
+          "/var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials",
+          "/var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials",
+          "/var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials",
+          "/var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials",
+          "/var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "firewall_active",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "No active firewall detected (checked ufw, nftables, iptables)",
+      "details": "No firewall is active on this system. All ports are exposed to the network. Enable a firewall immediately. On Ubuntu/Debian: 'sudo ufw enable'. Note: if this is an AWS instance, security groups provide network-level filtering but host-based firewall is still recommended for defense in depth.",
+      "request": {
+        "checked": [
+          "ufw",
+          "nftables",
+          "iptables"
+        ]
+      },
+      "response": {
+        "firewall": "none"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "default_policy",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "No firewall detected; cannot check default policy",
+      "details": "Enable a firewall first, then re-run this check.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "open_ports",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "No firewall detected; cannot enumerate open port rules",
+      "details": "Enable a firewall first, then re-run this check.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "unrestricted_input",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "No firewall detected",
+      "details": "Enable a firewall first, then re-run this check.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "kernel_version",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Kernel 6.14.0-37-generic (series 6.14) is not in known EOL list",
+      "details": "Running kernel 6.14.0-37-generic. The 6.14 series is not flagged as end-of-life. Verify with your distribution's support lifecycle.",
+      "request": {
+        "tool": "uname -r"
+      },
+      "response": {
+        "kernel_release": "6.14.0-37-generic",
+        "kernel_version": "#37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2",
+        "series": "6.14",
+        "eol": false
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "pending_updates",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "15 pending update(s), none flagged as security",
+      "details": "There are 15 pending package update(s), but none are explicitly flagged as security updates. Consider applying them:\n  - libvirt-clients/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-config-network/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-config-nwfilter/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-driver-qemu/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-system-systemd/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-system/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-l10n/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt0/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - linux-base/noble-updates 4.5ubuntu9+24.04.2 all [upgradable from: 4.5ubuntu9+24.04.1]",
+      "request": {
+        "tool": "apt list --upgradable"
+      },
+      "response": {
+        "total_upgradable": 15,
+        "security_upgradable": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "reboot_required",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "/var/run/reboot-required exists -- reboot required",
+      "details": "A system reboot is required to apply installed updates.\nPackages requiring reboot (5):\n  - gnome-shell\n  - libc6\n  - linux-image-6.17.0-14-generic\n  - linux-base\n  - evolution-data-server",
+      "request": {
+        "checked": "/var/run/reboot-required"
+      },
+      "response": {
+        "reboot_required": true,
+        "packages": [
+          "gnome-shell",
+          "libc6",
+          "linux-image-6.17.0-14-generic",
+          "linux-base",
+          "evolution-data-server"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "listening_services",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No listening TCP services detected",
+      "details": "No TCP services are listening. This may indicate a parsing issue.",
+      "request": {},
+      "response": {
+        "service_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "unnecessary_services",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No unnecessary/insecure services detected",
+      "details": "None of the flagged insecure services (telnet, FTP, rsh, rlogin, finger) are running.",
+      "request": {
+        "checked_ports": [
+          "23",
+          "21",
+          "514",
+          "513",
+          "79"
+        ]
+      },
+      "response": {
+        "found": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "unbound_services",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No database/cache services exposed on all interfaces",
+      "details": "All checked services (databases, caches) are either not running or properly bound to localhost.",
+      "request": {
+        "checked_ports": [
+          "3306",
+          "5432",
+          "6379",
+          "27017",
+          "11211",
+          "9200",
+          "2379",
+          "5601"
+        ]
+      },
+      "response": {
+        "exposed": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "root_login",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "PermitRootLogin not explicitly set in sshd_config",
+      "details": "PermitRootLogin is not explicitly configured. Modern OpenSSH defaults to 'prohibit-password', but explicit configuration is recommended.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "permitrootlogin": "not set (default)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "password_auth",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "PasswordAuthentication not set (defaults to yes)",
+      "details": "Password-based SSH authentication is enabled. This exposes the server to brute-force attacks. Disable PasswordAuthentication and use key-based authentication exclusively.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "passwordauthentication": "not set (default: yes)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "protocol_version",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Protocol directive not set (modern OpenSSH defaults to 2 only)",
+      "details": "The Protocol directive is absent, which is correct for modern OpenSSH (>= 7.4) where Protocol 1 support has been removed.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "protocol": "not set (default: 2)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "weak_ciphers",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No weak ciphers, MACs, or KEX algorithms found in sshd_config",
+      "details": "SSH cryptographic configuration does not include known weak algorithms. Note: if ciphers/MACs/KEX are not explicitly set, OpenSSH defaults apply.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "ciphers": "not set (defaults)",
+        "macs": "not set (defaults)",
+        "kexalgorithms": "not set (defaults)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "max_auth_tries",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "MaxAuthTries not set (OpenSSH default is 6)",
+      "details": "MaxAuthTries is not explicitly configured. OpenSSH defaults to 6, which allows more brute-force attempts per connection than recommended. Set MaxAuthTries to 3 or lower.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "maxauthtries": "not set (default: 6)"
+      },
+      "duration_ms": 0.0
+    }
+  ]
+}

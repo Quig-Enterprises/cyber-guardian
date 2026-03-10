@@ -1,0 +1,381 @@
+{
+  "generated": "2026-03-07T21:44:47.100316",
+  "total_attacks": 2,
+  "total_variants": 9,
+  "total_vulnerable": 2,
+  "total_partial": 2,
+  "total_defended": 5,
+  "total_errors": 0,
+  "worst_severity": "high",
+  "by_category": {
+    "exposure": {
+      "attacks": 2,
+      "vulnerable": 2,
+      "partial": 2,
+      "defended": 5,
+      "errors": 0,
+      "duration_ms": 66135.53929328918
+    }
+  },
+  "by_severity": {
+    "critical": 0,
+    "high": 3,
+    "medium": 0,
+    "low": 1,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T21:43:40.932978",
+    "end": "2026-03-07T21:44:47.069277",
+    "duration_ms": 66136.3
+  },
+  "attacks": [
+    {
+      "name": "exposure.backup_files",
+      "category": "exposure",
+      "duration_ms": 30460.1,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "exposure.sensitive_paths",
+      "category": "exposure",
+      "duration_ms": 35675.4,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "exposure.backup_files",
+      "variant": "database_dumps",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No database dump files found at 7 probed paths",
+      "details": "Probed 7 common dump paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.sql",
+          "/dump.sql",
+          "/db.sql",
+          "/database.sql",
+          "/backup.sql.gz",
+          "/site.sql",
+          "/data.sql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 3112.3557183891535
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "config_backups",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Config backup paths restricted (may exist): /.htaccess.bak, /.htaccess~",
+      "details": "Server returned 401/403 for 2 config backup path(s). Files may exist but access is blocked.",
+      "request": {
+        "paths_probed": [
+          "/wp-config.php.bak",
+          "/wp-config.php~",
+          "/wp-config.php.old",
+          "/wp-config.php.orig",
+          "/config.php.bak",
+          "/config.php~",
+          "/config.php.old",
+          "/.htaccess.bak",
+          "/.htaccess~",
+          "/web.config.bak",
+          "/web.config~",
+          "/settings.php.bak",
+          "/.env.bak",
+          "/.env~",
+          "/.env.old"
+        ]
+      },
+      "response": {
+        "restricted_paths": [
+          "/.htaccess.bak",
+          "/.htaccess~"
+        ]
+      },
+      "duration_ms": 6405.038820579648
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "archive_files",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No archive files found at 16 probed paths",
+      "details": "Probed 16 common archive paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.zip",
+          "/backup.tar.gz",
+          "/backup.tar",
+          "/backup.tgz",
+          "/site.zip",
+          "/site.tar.gz",
+          "/www.zip",
+          "/www.tar.gz",
+          "/public_html.zip",
+          "/public_html.tar.gz",
+          "/html.zip",
+          "/html.tar.gz",
+          "/web.zip",
+          "/web.tar.gz",
+          "/httpdocs.zip",
+          "/htdocs.zip"
+        ]
+      },
+      "response": {},
+      "duration_ms": 8205.764343962073
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "editor_backups",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Editor backup paths exist but are restricted: /.htaccess~, /.htaccess.swp, /.htaccess.swo, /.htaccess.bak",
+      "details": "Server returned 401/403 for 4 editor backup path(s). Files may exist but are access controlled.",
+      "request": {
+        "paths_probed": [
+          "/index.php~",
+          "/index.php.swp",
+          "/index.php.swo",
+          "/index.php.bak",
+          "/index.html~",
+          "/index.html.swp",
+          "/index.html.swo",
+          "/index.html.bak",
+          "/wp-config.php~",
+          "/wp-config.php.swp",
+          "/wp-config.php.swo",
+          "/wp-config.php.bak",
+          "/config.php~",
+          "/config.php.swp",
+          "/config.php.swo",
+          "/config.php.bak",
+          "/settings.php~",
+          "/settings.php.swp",
+          "/settings.php.swo",
+          "/settings.php.bak",
+          "/.htaccess~",
+          "/.htaccess.swp",
+          "/.htaccess.swo",
+          "/.htaccess.bak",
+          "/login.php~",
+          "/login.php.swp",
+          "/login.php.swo",
+          "/login.php.bak",
+          "/admin.php~",
+          "/admin.php.swp",
+          "/admin.php.swo",
+          "/admin.php.bak",
+          "/.wp-config.php.swp",
+          "/.index.php.swp",
+          "/wp-login.php~",
+          "/wp-login.php.swp"
+        ]
+      },
+      "response": {
+        "restricted_paths": [
+          "/.htaccess~",
+          "/.htaccess.swp",
+          "/.htaccess.swo",
+          "/.htaccess.bak"
+        ]
+      },
+      "duration_ms": 12736.647294834256
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "phpinfo",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No phpinfo() pages found at 7 probed paths",
+      "details": "Probed 7 common phpinfo paths; none returned phpinfo() output",
+      "request": {
+        "paths_probed": [
+          "/phpinfo.php",
+          "/info.php",
+          "/php_info.php",
+          "/test.php",
+          "/phptest.php",
+          "/php.php",
+          "/i.php"
+        ]
+      },
+      "response": {},
+      "duration_ms": 15.597114339470863
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "admin_panels",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Admin panel(s) accessible without authentication: /admin/, /admin, /wp-admin/",
+      "details": "Found 3 admin panel(s) returning 200 without authentication or login redirect. These may allow unauthorized access to administrative functions. Paths: /admin/, /admin, /wp-admin/",
+      "request": {
+        "paths_probed": [
+          "/admin/",
+          "/admin",
+          "/administrator/",
+          "/administrator",
+          "/phpmyadmin/",
+          "/phpmyadmin",
+          "/adminer.php",
+          "/adminer/",
+          "/pma/",
+          "/pma",
+          "/mysql/",
+          "/db/",
+          "/_profiler/",
+          "/_profiler",
+          "/manage/",
+          "/management/",
+          "/controlpanel/",
+          "/cpanel/",
+          "/wp-admin/"
+        ]
+      },
+      "response": {
+        "accessible_paths": [
+          {
+            "path": "/admin/",
+            "status": 200,
+            "preview": "<!DOCTYPE html>\n\t<html lang=\"en-US\">\n\t<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\t<title>Log In &lsaquo; NorthwoodsMail &#8212; WordPress</title>\n\t<meta name='robots"
+          },
+          {
+            "path": "/admin",
+            "status": 200,
+            "preview": "<!DOCTYPE html>\n\t<html lang=\"en-US\">\n\t<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\t<title>Log In &lsaquo; NorthwoodsMail &#8212; WordPress</title>\n\t<meta name='robots"
+          },
+          {
+            "path": "/wp-admin/",
+            "status": 200,
+            "preview": "<!DOCTYPE html>\n\t<html lang=\"en-US\">\n\t<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\t<title>Log In &lsaquo; NorthwoodsMail &#8212; WordPress</title>\n\t<meta name='robots"
+          }
+        ],
+        "auth_protected": []
+      },
+      "duration_ms": 8839.016137644649
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "debug_endpoints",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No exposed debug endpoints found at 18 probed paths",
+      "details": "Probed 18 common debug/status paths; none returned accessible sensitive content",
+      "request": {
+        "paths_probed": [
+          "/debug",
+          "/debug/",
+          "/trace",
+          "/status",
+          "/server-status",
+          "/server-info",
+          "/health",
+          "/healthz",
+          "/info",
+          "/_debug/",
+          "/__debug__/",
+          "/actuator",
+          "/actuator/env",
+          "/actuator/health",
+          "/actuator/info",
+          "/actuator/metrics",
+          "/.env",
+          "/env"
+        ]
+      },
+      "response": {},
+      "duration_ms": 9098.93455170095
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "version_files",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Version/info file(s) accessible: /license.txt",
+      "details": "Found 1 version disclosure file(s). These reveal software versions that attackers can use to target known CVEs. Restrict or remove these files. Paths: /license.txt",
+      "request": {
+        "paths_probed": [
+          "/VERSION",
+          "/version.txt",
+          "/version",
+          "/CHANGELOG",
+          "/CHANGELOG.md",
+          "/CHANGELOG.txt",
+          "/CHANGES",
+          "/CHANGES.md",
+          "/CHANGES.txt",
+          "/readme.html",
+          "/README.md",
+          "/README.txt",
+          "/readme.txt",
+          "/license.txt",
+          "/LICENSE",
+          "/LICENSE.txt",
+          "/INSTALL",
+          "/INSTALL.txt",
+          "/RELEASE",
+          "/release-notes.txt"
+        ]
+      },
+      "response": {
+        "vulnerable_paths": [
+          {
+            "path": "/license.txt",
+            "status": 200,
+            "content_type": "text/plain",
+            "preview": "WordPress - Web publishing software\r\n\r\nCopyright 2011-2025 by the contributors\r\n\r\nThis program is free software; you can redistribute it and/or modify\r\nit under the terms of the GNU General Public Lic"
+          }
+        ]
+      },
+      "duration_ms": 7767.2125631943345
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "api_docs",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No publicly accessible API documentation found at 23 probed paths",
+      "details": "Probed 23 common API doc paths; none were publicly accessible",
+      "request": {
+        "paths_probed": [
+          "/swagger-ui/",
+          "/swagger-ui",
+          "/swagger-ui.html",
+          "/swagger/",
+          "/swagger",
+          "/api-docs",
+          "/api-docs/",
+          "/api/docs",
+          "/api/docs/",
+          "/openapi.json",
+          "/openapi.yaml",
+          "/swagger.json",
+          "/swagger.yaml",
+          "/v1/api-docs",
+          "/v2/api-docs",
+          "/v3/api-docs",
+          "/redoc",
+          "/redoc/",
+          "/docs/",
+          "/graphql",
+          "/graphiql",
+          "/graphiql/",
+          "/__graphql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 9954.273376613855
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "generated": "2026-03-07T21:56:10.227354",
+  "total_attacks": 3,
+  "total_variants": 11,
+  "total_vulnerable": 4,
+  "total_partial": 0,
+  "total_defended": 5,
+  "total_errors": 0,
+  "worst_severity": "critical",
+  "by_category": {
+    "secrets": {
+      "attacks": 3,
+      "vulnerable": 4,
+      "partial": 0,
+      "defended": 5,
+      "errors": 0,
+      "duration_ms": 666659.8427295685
+    }
+  },
+  "by_severity": {
+    "critical": 4,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T21:45:03.556802",
+    "end": "2026-03-07T21:56:10.217777",
+    "duration_ms": 666661.0
+  },
+  "attacks": [
+    {
+      "name": "secrets.env_exposure",
+      "category": "secrets",
+      "duration_ms": 13722.8,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "secrets.git_history",
+      "category": "secrets",
+      "duration_ms": 960.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "secrets.source_code",
+      "category": "secrets",
+      "duration_ms": 651977.0,
+      "vulnerable": 4,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "dotenv",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 6 .env paths returned non-200 responses",
+      "details": "Tested paths: /.env, /.env.local, /.env.production, /.env.backup, /.env.prod, /.env.staging",
+      "request": {
+        "paths_tested": [
+          "/.env",
+          "/.env.local",
+          "/.env.production",
+          "/.env.backup",
+          "/.env.prod",
+          "/.env.staging"
+        ]
+      },
+      "response": {},
+      "duration_ms": 4990.348134189844
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "env_example",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 3 example env paths returned non-200 responses",
+      "details": "Tested: /.env.example, /.env.sample, /.env.template",
+      "request": {
+        "paths_tested": [
+          "/.env.example",
+          "/.env.sample",
+          "/.env.template"
+        ]
+      },
+      "response": {},
+      "duration_ms": 1743.133533746004
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "docker_env",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 5 Docker file paths returned non-200 responses",
+      "details": "Tested: /docker-compose.yml, /docker-compose.yaml, /docker-compose.prod.yml, /Dockerfile, /.dockerenv",
+      "request": {
+        "paths_tested": [
+          "/docker-compose.yml",
+          "/docker-compose.yaml",
+          "/docker-compose.prod.yml",
+          "/Dockerfile",
+          "/.dockerenv"
+        ]
+      },
+      "response": {},
+      "duration_ms": 2595.4333897680044
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "config_files",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 9 config file paths returned non-200 responses",
+      "details": "Tested: /config.php, /config.yml, /config.yaml, /settings.py, /application.properties, /app.config, /web.config, /database.yml, /secrets.yml",
+      "request": {
+        "paths_tested": [
+          "/config.php",
+          "/config.yml",
+          "/config.yaml",
+          "/settings.py",
+          "/application.properties",
+          "/app.config",
+          "/web.config",
+          "/database.yml",
+          "/secrets.yml"
+        ]
+      },
+      "response": {},
+      "duration_ms": 4393.453150056303
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_directory_web",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "/.git/HEAD and /.git/config are not accessible over HTTP",
+      "details": "Git directory is not served publicly (correct configuration)",
+      "request": {
+        "paths_tested": [
+          "/.git/HEAD",
+          "/.git/config"
+        ]
+      },
+      "response": {},
+      "duration_ms": 947.0868119969964
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_log_secrets",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "source_path is not a git repository: fatal: not a git repository (or any of the parent directories): .git",
+      "details": "/opt/claude-workspace/projects",
+      "request": {},
+      "response": {},
+      "duration_ms": 6.953597068786621
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_grep_secrets",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "source_path is not a git repository: fatal: not a git repository (or any of the parent directories): .git",
+      "details": "",
+      "request": {},
+      "response": {},
+      "duration_ms": 5.698877386748791
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "api_keys",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "cyber-guardian/reports/codebase-security-scan-20260307_091913.json:13775 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=AIza****7IOU\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:19589 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=3b55****c7d2\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:19734 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=c58x****qnvf\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:20420 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=c58x****qnvf\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32535 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=306b****09b1\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32547 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=e8d2****d415\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32595 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=306b****09b1\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32607 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=e8d2****d415\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32679 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=306b****09b1\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:32691 matched '(?:api[_-]?key|apikey)\\s*[:=]\\s*[\"\\']?([' \u2192 value=e8d2****d415",
+      "details": "Found 465 API key pattern(s) across 355571 files. Values redacted in evidence. Review and rotate any exposed keys immediately.",
+      "request": {
+        "source_path": "/opt/claude-workspace/projects",
+        "files_scanned": 355571
+      },
+      "response": {
+        "findings_count": 465
+      },
+      "duration_ms": 235598.56006782502
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "passwords",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "cyber-guardian/reports/codebase-security-scan-20260307_091913.json:4368 matched '(?:secret|auth_secret|app_secret)\\s*[:=]' \u2192 value= . $****) . \ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:9676 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=********\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:23554 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=Not ****tect\ncyber-guardian/reports/codebase-security-scan-20260307_091913.json:37147 matched '(?:secret|auth_secret|app_secret)\\s*[:=]' \u2192 value=v5UZ****OCu1\ncyber-guardian/reports/codebase-security-scan-20260307_180051.json:936 matched '(?:secret|auth_secret|app_secret)\\s*[:=]' \u2192 value= . $****) . \ncyber-guardian/reports/codebase-security-scan-20260307_180051.json:1116 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=inpu****me=\\\ncyber-guardian/reports/codebase-security-scan-20260307_180051.json:2043 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=********\ncyber-guardian/reports/codebase-security-scan-20260307_180051.json:6725 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=Not ****tect\ncyber-guardian/reports/codebase-security-scan-20260307_190055.json:936 matched '(?:secret|auth_secret|app_secret)\\s*[:=]' \u2192 value= . $****) . \ncyber-guardian/reports/codebase-security-scan-20260307_190055.json:1116 matched '(?:password|passwd|pwd)\\s*[:=]\\s*[\"\\'](?' \u2192 value=inpu****me=\\",
+      "details": "Found 149 hardcoded password pattern(s) across 355571 files. Test/example/placeholder values excluded. Values redacted in evidence.",
+      "request": {
+        "source_path": "/opt/claude-workspace/projects",
+        "files_scanned": 355571
+      },
+      "response": {
+        "findings_count": 149
+      },
+      "duration_ms": 148097.78831899166
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "private_keys",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "cyber-guardian/redteam/attacks/secrets/source_code.py:63 contains '-----BEGIN RSA PRIVATE KEY-----'\ncyber-guardian/redteam/attacks/secrets/source_code.py:64 contains '-----BEGIN OPENSSH PRIVATE KEY-----'\ncyber-guardian/redteam/attacks/secrets/source_code.py:65 contains '-----BEGIN EC PRIVATE KEY-----'\ncyber-guardian/redteam/attacks/secrets/source_code.py:66 contains '-----BEGIN PRIVATE KEY-----'\ncyber-guardian/redteam/attacks/secrets/source_code.py:67 contains '-----BEGIN DSA PRIVATE KEY-----'\npvfr-ems-notifier/venv/lib/python3.12/site-packages/cryptography/hazmat/primitives/serialization/ssh.py:78 contains '-----BEGIN OPENSSH PRIVATE KEY-----'\npvfr-ems-notifier/venv/lib/python3.12/site-packages/py_vapid/tests/test_vapid.py:27 contains '-----BEGIN PRIVATE KEY-----'\narchive/_shared/includes/api-clients/Google/Signer/P12.php:46 contains '-----BEGIN RSA PRIVATE KEY-----'",
+      "details": "Found 8 PEM/private key header(s) in source files. Private keys must never be committed to source control.",
+      "request": {
+        "source_path": "/opt/claude-workspace/projects",
+        "files_scanned": 355571
+      },
+      "response": {
+        "findings_count": 8
+      },
+      "duration_ms": 72774.51566420496
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "connection_strings",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "ecoeye-alert-relay/scripts/migrate_sqlite_to_postgres.py:10 matched connection string \u2192 post****t/db\necoeye-alert-relay/scripts/migrate_sqlite_to_postgres.py:299 matched connection string \u2192 post****/db)\necoeye-alert-relay/venv/lib/python3.12/site-packages/asyncpg/pool.py:525 matched connection string \u2192 post****e``.\necoeye-alert-relay/venv/lib/python3.12/site-packages/asyncpg/pool.py:1135 matched connection string \u2192 post****e``.\necoeye-alert-relay/venv/lib/python3.12/site-packages/asyncpg/connection.py:2117 matched connection string \u2192 post****e``.\necoeye-alert-relay/venv/lib/python3.12/site-packages/pydantic/networks.py:735 matched connection string \u2192 post****obar\necoeye-alert-relay/venv/lib/python3.12/site-packages/pydantic/networks.py:737 matched connection string \u2192 post****obar\necoeye-alert-relay/venv/lib/python3.12/site-packages/pydantic/networks.py:740 matched connection string \u2192 post****5432\necoeye-alert-relay/venv/lib/python3.12/site-packages/pydantic/networks.py:748 matched connection string \u2192 post****5432\ncyber-guardian/venv/lib/python3.12/site-packages/pydantic/networks.py:735 matched connection string \u2192 post****obar",
+      "details": "Found 58 database connection string(s) with embedded credentials. Passwords in URIs redacted. Use environment variables or a secrets manager instead.",
+      "request": {
+        "source_path": "/opt/claude-workspace/projects",
+        "files_scanned": 355571
+      },
+      "response": {
+        "findings_count": 58
+      },
+      "duration_ms": 195503.66111285985
+    }
+  ]
+}

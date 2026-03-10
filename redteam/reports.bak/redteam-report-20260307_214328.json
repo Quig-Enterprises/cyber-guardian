@@ -1,0 +1,2301 @@
+{
+  "generated": "2026-03-07T21:43:28.551006",
+  "total_attacks": 22,
+  "total_variants": 92,
+  "total_vulnerable": 20,
+  "total_partial": 25,
+  "total_defended": 28,
+  "total_errors": 18,
+  "worst_severity": "critical",
+  "by_category": {
+    "compliance": {
+      "attacks": 22,
+      "vulnerable": 20,
+      "partial": 25,
+      "defended": 28,
+      "errors": 18,
+      "duration_ms": 57314.60523605347
+    }
+  },
+  "by_severity": {
+    "critical": 3,
+    "high": 20,
+    "medium": 17,
+    "low": 5,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T21:42:31.167239",
+    "end": "2026-03-07T21:43:28.485861",
+    "duration_ms": 57318.6
+  },
+  "attacks": [
+    {
+      "name": "compliance.anomaly_detection_evasion",
+      "category": "compliance",
+      "duration_ms": 28.4,
+      "vulnerable": 1,
+      "partial": 3,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "compliance.audit_log_tamper",
+      "category": "compliance",
+      "duration_ms": 17.3,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 3
+    },
+    {
+      "name": "compliance.cui_data_flow",
+      "category": "compliance",
+      "duration_ms": 3.3,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "compliance.cui_retention",
+      "category": "compliance",
+      "duration_ms": 3.6,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 2,
+      "errors": 1
+    },
+    {
+      "name": "compliance.device_attestation",
+      "category": "compliance",
+      "duration_ms": 764.5,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "compliance.dual_authorization_bypass",
+      "category": "compliance",
+      "duration_ms": 8.6,
+      "vulnerable": 0,
+      "partial": 5,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "compliance.encryption_at_rest",
+      "category": "compliance",
+      "duration_ms": 47.2,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 1
+    },
+    {
+      "name": "compliance.hipaa_access_audit",
+      "category": "compliance",
+      "duration_ms": 22.5,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 1
+    },
+    {
+      "name": "compliance.hipaa_encryption",
+      "category": "compliance",
+      "duration_ms": 762.9,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 1,
+      "errors": 1
+    },
+    {
+      "name": "compliance.hipaa_session_auth",
+      "category": "compliance",
+      "duration_ms": 392.3,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 1,
+      "errors": 1
+    },
+    {
+      "name": "compliance.mfa_absence",
+      "category": "compliance",
+      "duration_ms": 1.8,
+      "vulnerable": 1,
+      "partial": 2,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "compliance.network_segmentation",
+      "category": "compliance",
+      "duration_ms": 2677.6,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 5,
+      "errors": 0
+    },
+    {
+      "name": "compliance.pci_access_control",
+      "category": "compliance",
+      "duration_ms": 94.4,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 0,
+      "errors": 2
+    },
+    {
+      "name": "compliance.pci_auth_controls",
+      "category": "compliance",
+      "duration_ms": 1418.5,
+      "vulnerable": 2,
+      "partial": 1,
+      "defended": 2,
+      "errors": 1
+    },
+    {
+      "name": "compliance.pci_data_protection",
+      "category": "compliance",
+      "duration_ms": 19958.3,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 1,
+      "errors": 2
+    },
+    {
+      "name": "compliance.pci_logging",
+      "category": "compliance",
+      "duration_ms": 1451.4,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 2,
+      "errors": 1
+    },
+    {
+      "name": "compliance.pci_secure_config",
+      "category": "compliance",
+      "duration_ms": 30.7,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "compliance.pci_tls_crypto",
+      "category": "compliance",
+      "duration_ms": 27.9,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 0,
+      "errors": 4
+    },
+    {
+      "name": "compliance.software_integrity",
+      "category": "compliance",
+      "duration_ms": 4892.3,
+      "vulnerable": 4,
+      "partial": 1,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "compliance.supply_chain_deps",
+      "category": "compliance",
+      "duration_ms": 8648.9,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "compliance.system_diversity",
+      "category": "compliance",
+      "duration_ms": 8178.5,
+      "vulnerable": 0,
+      "partial": 5,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "compliance.system_refresh",
+      "category": "compliance",
+      "duration_ms": 7883.7,
+      "vulnerable": 0,
+      "partial": 3,
+      "defended": 2,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "rapid_sequential_access",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "0 of 20 requests succeeded (non-200, non-blocked). Elapsed: 0.01s.",
+      "details": "Not all requests returned 200 but no explicit rate-limiting was detected. The system behavior under rapid sequential load is ambiguous.",
+      "request": {
+        "path": "/api/ai_chat.php",
+        "method": "GET",
+        "count": 20,
+        "mode": "asyncio.gather (concurrent)"
+      },
+      "response": {
+        "successful_200": 0,
+        "blocked_429_503_403": 0,
+        "errors": 0,
+        "elapsed_seconds": 0.008
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "impossible_travel",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "X-Forwarded-For: 203.0.113.1 \u2192 HTTP 404. X-Forwarded-For: 198.51.100.1 \u2192 HTTP 404. Responses were not clearly blocked but also not both 200.",
+      "details": "Inconclusive impossible travel test \u2014 requests did not both return 200, but no explicit block was observed. Manual review recommended.",
+      "request": {
+        "path": "/api/ai_chat.php",
+        "method": "GET",
+        "request_1_header": "X-Forwarded-For: 203.0.113.1",
+        "request_2_header": "X-Forwarded-For: 198.51.100.1",
+        "note": "Requests issued in immediate succession"
+      },
+      "response": {
+        "status_us": 404,
+        "status_other": 404
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "off_hours_access",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "All admin endpoints returned non-200 for requests from X-Forwarded-For: 185.220.101.1. /api/admin/users.php \u2192 404; /api/admin/settings.php \u2192 404; /api/admin/services.php \u2192 404",
+      "details": "Admin endpoints are not accessible from the tested unusual source IP. Access controls appear to restrict admin functionality regardless of X-Forwarded-For manipulation.",
+      "request": {
+        "paths_tested": [
+          "/api/admin/users.php",
+          "/api/admin/settings.php",
+          "/api/admin/services.php"
+        ],
+        "header": "X-Forwarded-For: 185.220.101.1",
+        "method": "GET"
+      },
+      "response": {
+        "endpoint_results": [
+          {
+            "path": "/api/admin/users.php",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          },
+          {
+            "path": "/api/admin/settings.php",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          },
+          {
+            "path": "/api/admin/services.php",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          }
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "bulk_data_enumeration",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Only 0 of 50 enumerated IDs returned HTTP 200. The majority were rejected, suggesting IDs do not exist or access is restricted.",
+      "details": "Bulk enumeration yielded few valid responses, likely because the resource IDs do not exist or are restricted. Enumeration risk is low.",
+      "request": {
+        "path": "/api/vessels.php",
+        "method": "GET",
+        "param": "id",
+        "range": "1-50",
+        "mode": "asyncio.gather (concurrent)"
+      },
+      "response": {
+        "ids_returned_200": [],
+        "ids_blocked": [],
+        "errors": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "failed_auth_flood",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "All 10 rapid failed login attempts to /api/auth/login.php completed without account lockout or throttling. Final attempt (attempt 10) returned HTTP 404. Response preview: File not found.\n",
+      "details": "The system does not detect or respond to a flood of failed authentication attempts. An APT conducting credential stuffing or password spraying would face no resistance. NIST SP 800-172 3.14.2e requires anomaly detection to identify repeated authentication failures as a suspicious pattern indicative of brute force attacks.",
+      "request": {
+        "path": "/api/auth/login.php",
+        "method": "POST",
+        "attempts": 10,
+        "email": "testuser@example.com",
+        "password": "(intentionally invalid)"
+      },
+      "response": {
+        "attempt_statuses": [
+          {
+            "attempt": 1,
+            "status": 404
+          },
+          {
+            "attempt": 2,
+            "status": 404
+          },
+          {
+            "attempt": 3,
+            "status": 404
+          },
+          {
+            "attempt": 4,
+            "status": 404
+          },
+          {
+            "attempt": 5,
+            "status": 404
+          },
+          {
+            "attempt": 6,
+            "status": 404
+          },
+          {
+            "attempt": 7,
+            "status": 404
+          },
+          {
+            "attempt": 8,
+            "status": 404
+          },
+          {
+            "attempt": 9,
+            "status": 404
+          },
+          {
+            "attempt": 10,
+            "status": 404
+          }
+        ],
+        "final_status": 404,
+        "final_body_preview": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.anomaly_detection_evasion",
+      "variant": "unusual_user_agent",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "0 of 4 suspicious UAs returned 200, 0 were blocked. 'sqlmap/1.0' \u2192 HTTP 404; 'nikto' \u2192 HTTP 404; 'python-requests/2.0 (automated)' \u2192 HTTP 404; '(empty string)' \u2192 HTTP 404",
+      "details": "Inconsistent user agent anomaly detection \u2014 some suspicious agents are blocked while others pass through. Coverage is partial.",
+      "request": {
+        "path": "/api/ai_chat.php",
+        "method": "GET",
+        "user_agents_tested": [
+          "sqlmap/1.0",
+          "nikto",
+          "python-requests/2.0 (automated)",
+          "(empty)"
+        ]
+      },
+      "response": {
+        "ua_results": [
+          {
+            "user_agent": "sqlmap/1.0",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          },
+          {
+            "user_agent": "nikto",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          },
+          {
+            "user_agent": "python-requests/2.0 (automated)",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          },
+          {
+            "user_agent": "(empty string)",
+            "status": 404,
+            "body_preview": "File not found.\n"
+          }
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.audit_log_tamper",
+      "variant": "delete_audit_events",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database to test audit log protection.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.audit_log_tamper",
+      "variant": "update_audit_events",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database to test audit log protection.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.audit_log_tamper",
+      "variant": "truncate_audit_events",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database to test audit log protection.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_data_flow",
+      "variant": "cui_in_cache_headers",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "/api/ai_chat.php: Cache-Control='' \u2014 missing 'no-store'. CUI responses may be cached by intermediaries.\n/api/admin/settings.php: Cache-Control='' \u2014 missing 'no-store'. CUI responses may be cached by intermediaries.",
+      "details": "CUI endpoints missing Cache-Control: no-store. Sensitive data may be cached by browsers or proxy servers. NIST 3.1.3 requires controlling CUI data flow.",
+      "request": {
+        "endpoints_checked": [
+          "/api/ai_chat.php",
+          "/api/admin/settings.php"
+        ]
+      },
+      "response": {
+        "issues": [
+          "/api/ai_chat.php: Cache-Control='' \u2014 missing 'no-store'. CUI responses may be cached by intermediaries.",
+          "/api/admin/settings.php: Cache-Control='' \u2014 missing 'no-store'. CUI responses may be cached by intermediaries."
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_data_flow",
+      "variant": "cui_in_error_responses",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No leaks detected",
+      "details": "Error responses do not leak CUI, system paths, or database details. Error handling properly sanitizes output.",
+      "request": {
+        "error_triggers_tested": 3
+      },
+      "response": {
+        "leaks_found": 0,
+        "details": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_data_flow",
+      "variant": "export_no_marking",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Export tested: False, CUI markings found: False",
+      "details": "No data export functionality detected. If CUI can be extracted via API responses, those responses should include CUI markings and handling instructions.",
+      "request": {
+        "export_endpoints_tested": 3
+      },
+      "response": {
+        "export_found": false,
+        "has_markings": false
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "error_response_leakage",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No internal info leaked",
+      "details": "Error responses do not expose internal paths, database details, or stack traces. Error handling properly sanitizes output.",
+      "request": {
+        "endpoints_probed": [
+          "/api/ai_chat.php (POST malformed)",
+          "/api/does_not_exist_redteam.php (GET)",
+          "/api/ai_chat.php (POST invalid action)"
+        ]
+      },
+      "response": {
+        "leaks_found": 0,
+        "details": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "cache_headers_missing",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "/api/ai_chat.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches.\n/api/admin/settings.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches.\n/api/admin/users.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches.",
+      "details": "No CUI endpoints include Cache-Control: no-store. CUI data may persist in browser, CDN, or proxy caches beyond session end. NIST 800-172 3.14.5e requires CUI not be retained beyond necessity.",
+      "request": {
+        "endpoints_checked": [
+          "/api/ai_chat.php",
+          "/api/admin/settings.php",
+          "/api/admin/users.php"
+        ]
+      },
+      "response": {
+        "issues": [
+          "/api/ai_chat.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches.",
+          "/api/admin/settings.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches.",
+          "/api/admin/users.php: Cache-Control='', Pragma='' \u2014 missing 'no-store'. CUI may persist in browser or proxy caches."
+        ],
+        "compliant_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "verbose_headers",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Server: nginx/1.24.0 (Ubuntu) \u2014 reveals server version",
+      "details": "1 verbose header(s) detected. These aid reconnaissance and may reveal CUI processing infrastructure details. NIST 800-172 3.14.5e requires minimizing retention and exposure of system metadata.",
+      "request": {
+        "endpoint": "/api/ai_chat.php",
+        "method": "GET"
+      },
+      "response": {
+        "verbose_headers": [
+          "Server: nginx/1.24.0 (Ubuntu) \u2014 reveals server version"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "session_data_after_logout",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "Login failed \u2014 cannot test session retention after logout.",
+      "details": "Could not authenticate to perform pre/post-logout CUI comparison.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "api_response_over_sharing",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No sensitive fields found (HTTP 404)",
+      "details": "No sensitive fields (password, hash, token, secret, etc.) detected in API response. Data minimization appears enforced.",
+      "request": {
+        "endpoint": "/api/admin/users.php",
+        "method": "GET"
+      },
+      "response": {
+        "sensitive_fields_found": [],
+        "http_status": 404
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.cui_retention",
+      "variant": "autocomplete_not_disabled",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "Login page returned HTTP 404 \u2014 could not inspect form fields.",
+      "details": "Could not retrieve login page to check autocomplete attributes.",
+      "request": {
+        "endpoint": "/admin/login.php",
+        "method": "GET"
+      },
+      "response": {
+        "http_status": 404,
+        "issues": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.device_attestation",
+      "variant": "unknown_user_agent_access",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "UA='curl/7.0' \u2192 404; UA='wget/1.0' \u2192 404; UA='python-urllib/3.11' \u2192 404; UA='PostmanRuntime/7.0' \u2192 404; UA='' \u2192 404",
+      "details": "All non-standard User-Agent strings were rejected. Device fingerprinting / User-Agent enforcement appears active.",
+      "request": {
+        "endpoint": "/api/equipment.php",
+        "user_agents_tested": [
+          "curl/7.0",
+          "wget/1.0",
+          "python-urllib/3.11",
+          "PostmanRuntime/7.0",
+          ""
+        ]
+      },
+      "response": {
+        "successes": 0,
+        "total": 5
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.device_attestation",
+      "variant": "spoofed_device_headers",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Status: 404, Response headers: {\"Server\": \"nginx/1.24.0 (Ubuntu)\", \"Date\": \"Sun, 08 Mar 2026 03:42:31 GMT\", \"Content-Type\": \"text/html; charset=UTF-8\", \"Transfer-Encoding\": \"chunked\", \"Connection\": \"keep-alive\", \"Content-Encoding\": \"gzip\"}",
+      "details": "Server returned 404 for spoofed device headers. Unable to confirm whether attestation headers are validated.",
+      "request": {
+        "endpoint": "/api/equipment.php",
+        "headers": {
+          "X-Device-Id": "unknown-device",
+          "X-Client-Cert": "none",
+          "X-Platform": "unauthorized"
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.device_attestation",
+      "variant": "missing_client_certificate",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Status: 404, Cert challenge detected: False, Headers: {\"Server\": \"nginx/1.24.0 (Ubuntu)\", \"Date\": \"Sun, 08 Mar 2026 03:42:31 GMT\", \"Content-Type\": \"text/html; charset=UTF-8\", \"Transfer-Encoding\": \"chunked\", \"Connection\": \"keep-alive\", \"Set-Cookie\": \"cxq_uxlog_session=4793f2d1-cb0e-432e-a55c-b2cef979285a; expires=Sun, 08 Mar 2026 04:12:31 GMT; Max-Age=1800; path=/; HttpOnly\", \"Expires\": \"Wed, 11 Jan 1984 05:00:00 GMT\", \"Cache-Control\": \"no-cache, must",
+      "details": "Protected endpoint returned 404 without requiring a client certificate or issuing a certificate challenge. No mutual TLS enforcement detected. NIST 800-172 3.5.3e recommends mTLS or equivalent device attestation for high-value CUI environments.",
+      "request": {
+        "endpoint": "/api/admin/",
+        "client_cert": "none"
+      },
+      "response": {
+        "status": 404,
+        "body": "<!DOCTYPE html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<link rel=\"pingback\" href=\"http://10.153.2.6/xmlrpc.php\" />\n\n\t<script type=\"text/javascript\">\n\t\tdocument.documentElement.className = 'js';\n\t</script>\n\n\t<title>Page not found &#"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.device_attestation",
+      "variant": "multiple_device_simulation",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "UA=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\u2026 \u2192 404; UA=Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605\u2026 \u2192 404; UA=Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Fir\u2026 \u2192 404; UA=Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Apple\u2026 \u2192 404",
+      "details": "Device-switching within the same session was rejected. Session device-consistency enforcement appears active.",
+      "request": {
+        "endpoint": "/api/equipment.php",
+        "session_id": "f7784088-210c-4f0d-98e1-5d3594294b35",
+        "device_user_agents": [
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like G",
+          "Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0",
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHT"
+        ]
+      },
+      "response": {
+        "successes": 0,
+        "total": 4
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.device_attestation",
+      "variant": "outdated_client_simulation",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "UA=Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\u2026 \u2192 404; UA=Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like\u2026 \u2192 404",
+      "details": "All outdated / EOL User-Agent strings were rejected. Minimum client-version enforcement appears active.",
+      "request": {
+        "endpoint": "/api/equipment.php",
+        "outdated_user_agents": [
+          "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
+          "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.0.0 Safari/537.36"
+        ]
+      },
+      "response": {
+        "successes": 0,
+        "total": 2
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.dual_authorization_bypass",
+      "variant": "single_admin_role_change",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Endpoint returned HTTP 404 \u2014 endpoint may not exist.",
+      "details": "POST /api/admin/users.php for role change returned 404. The endpoint should exist and enforce dual authorization per NIST 3.1.1e.",
+      "request": {
+        "method": "POST",
+        "endpoint": "/api/admin/users.php",
+        "body": {
+          "action": "change_role",
+          "user_id": "redteam-775adfe9",
+          "new_role": "system-admin"
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "raw": "File not found.\n"
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.dual_authorization_bypass",
+      "variant": "single_admin_user_delete",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Endpoint returned HTTP 404.",
+      "details": "DELETE /api/admin/users.php returned 404. Endpoint should exist and enforce dual authorization per NIST 3.1.1e.",
+      "request": {
+        "method": "POST",
+        "endpoint": "/api/admin/users.php",
+        "body": {
+          "action": "delete",
+          "user_id": "redteam-431c3b57"
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "raw": "File not found.\n"
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.dual_authorization_bypass",
+      "variant": "single_admin_service_config",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Endpoint returned HTTP 404.",
+      "details": "POST /api/admin/settings.php returned 404. Endpoint should exist and enforce dual authorization per NIST 3.1.1e.",
+      "request": {
+        "method": "POST",
+        "endpoint": "/api/admin/settings.php",
+        "body": {
+          "action": "update",
+          "key": "redteam_test_param_486542",
+          "value": "redteam-injected-value"
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "raw": "File not found.\n"
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.dual_authorization_bypass",
+      "variant": "single_admin_bulk_export",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Bulk export endpoint returned HTTP 404.",
+      "details": "GET /api/admin/users.php?action=export returned 404. A bulk export endpoint should exist and enforce dual authorization per NIST 3.1.1e.",
+      "request": {
+        "method": "GET",
+        "endpoint": "/api/admin/users.php",
+        "params": {
+          "action": "export"
+        }
+      },
+      "response": {
+        "status": 404,
+        "body_length": 16,
+        "body_preview": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.dual_authorization_bypass",
+      "variant": "single_admin_security_settings",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Security settings endpoint returned HTTP 404.",
+      "details": "POST /api/admin/settings.php with action=update_security returned 404. A security settings endpoint should exist and enforce dual authorization per NIST 3.1.1e.",
+      "request": {
+        "method": "POST",
+        "endpoint": "/api/admin/settings.php",
+        "body": {
+          "action": "update_security",
+          "mfa_required": false,
+          "password_min_length": 4,
+          "session_timeout_minutes": 10080
+        }
+      },
+      "response": {
+        "status": 404,
+        "body": {
+          "raw": "File not found.\n"
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.encryption_at_rest",
+      "variant": "db_column_encryption",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database to verify encryption at rest.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_access_audit",
+      "variant": "unique_user_ids",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database for HIPAA access audit checks.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_encryption",
+      "variant": "ephi_encryption_at_rest",
+      "status": "error",
+      "severity": "critical",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database to verify encryption at rest.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_encryption",
+      "variant": "ephi_encryption_in_transit",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "/api/ai_chat.php: TLS=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384; Port 80: redirects (likely to HTTPS)",
+      "details": "All 1 tested endpoint(s) use TLS 1.2+. ePHI in-transit encryption meets HIPAA requirements.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_encryption",
+      "variant": "backup_encryption",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "unencrypted backups: 36; encrypted backups: 0; unencrypted files: ['/var/backups/dpkg.status.5.gz', '/var/backups/apt.extended_states.3.gz', '/var/backups/alternatives.tar.6.gz', '/var/backups/dpkg.status.6.gz', '/var/backups/alternatives.tar.5.gz', '/var/backups/dpkg.diversions.5.gz', '/var/backups/dpkg.statoverride.5.gz', '/var/backups/dpkg.status.2.gz', '/var/backups/alternatives.tar.4.gz', '/var/backups/apt.extended_states.1.gz']; /etc/cron.daily/dpkg: backup script without encryption",
+      "details": "Found 36 unencrypted backup file(s) in standard backup directories. ePHI backups must be encrypted per HIPAA 164.312(a)(2)(iv). Files: ['/var/backups/dpkg.status.5.gz', '/var/backups/apt.extended_states.3.gz', '/var/backups/alternatives.tar.6.gz', '/var/backups/dpkg.status.6.gz', '/var/backups/alternatives.tar.5.gz']",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_encryption",
+      "variant": "key_management",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "key files found: 5; weak permission keys: ['/var/www/html/eqmon/support/files/usmmi_A735.key (mode=644)']; env key variables: none; hardcoded secrets in config: ['/opt/claude-workspace/projects/ecoeye-alert-relay/.env', '/opt/claude-workspace/projects/finance-manager/.env']",
+      "details": "Encryption key management fails HIPAA requirements. Issues: Weak permissions on /var/www/html/eqmon/support/files/usmmi_A735.key: 644; Hardcoded encryption keys in config files: ['/opt/claude-workspace/projects/ecoeye-alert-relay/.env', '/opt/claude-workspace/projects/finance-manager/.env']. Keys must be stored separately from encrypted data with restrictive file permissions (600 or 400).",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_session_auth",
+      "variant": "auto_logoff",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "PHP session.gc_maxlifetime = 1440s (24 min) in /etc/php/8.3/apache2/php.ini; PHP session.cookie_lifetime = 0s in /etc/php/8.3/apache2/php.ini",
+      "details": "Session timeout is 24 minutes. While functional, HIPAA best practice recommends <= 15 minutes for ePHI systems. Current setting is acceptable but not ideal.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_session_auth",
+      "variant": "mfa_ephi_access",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Could not connect to database for auth checks.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.hipaa_session_auth",
+      "variant": "entity_authentication",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "/api/ai_chat.php: HTTP 404; Unauthenticated API endpoints: 0; Authenticated API endpoints: 7; Auth config indicators: ['jwt in /var/www/html/eqmon/api/config.php', 'api_key in /opt/claude-workspace/projects/ecoeye-alert-relay/.env', 'api_key in /opt/claude-workspace/projects/finance-manager/.env', 'bearer in /opt/claude-workspace/projects/hestia-automation/config.php']",
+      "details": "All 7 tested API endpoint(s) require authentication. Service authentication appears properly configured.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.mfa_absence",
+      "variant": "login_no_mfa",
+      "status": "partial",
+      "severity": "critical",
+      "evidence": "Status: 404, MFA prompted: False, Body: File not found.\n",
+      "details": "Login returned 404. No clear MFA prompt detected.",
+      "request": {
+        "endpoint": "/api/auth/login.php",
+        "role": "viewer"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.mfa_absence",
+      "variant": "privileged_no_mfa",
+      "status": "partial",
+      "severity": "critical",
+      "evidence": "Status: 404, MFA prompted: False, Body: File not found.\n",
+      "details": "Admin login returned 404. No clear MFA prompt detected.",
+      "request": {
+        "endpoint": "/api/auth/login.php",
+        "role": "system-admin"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.mfa_absence",
+      "variant": "password_reset_no_mfa",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Status: 404, MFA prompted: False, Body: File not found.\n",
+      "details": "Password reset endpoint returned 404. No password reset flow exists, which also means no MFA on recovery.",
+      "request": {
+        "endpoint": "/api/auth/login.php",
+        "action": "reset_password"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "admin_api_public_access",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "All admin endpoints returned 401 or 403 without authentication.",
+      "details": "Admin API endpoints are protected \u2014 unauthenticated requests are rejected. Proper access control enforced at the API layer.",
+      "request": {
+        "paths_tested": [
+          {
+            "path": "/api/admin/users.php",
+            "status": 404
+          },
+          {
+            "path": "/api/admin/settings.php",
+            "status": 404
+          },
+          {
+            "path": "/api/admin/services.php",
+            "status": 404
+          }
+        ]
+      },
+      "response": {
+        "accessible": [],
+        "partial": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "internal_endpoints_exposed",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "All internal and debug endpoints returned 403 or 404.",
+      "details": "Internal/debug endpoints are not accessible from the public network. Attack surface is appropriately reduced.",
+      "request": {
+        "paths_tested": [
+          {
+            "path": "/api/phpinfo.php",
+            "status": 404
+          },
+          {
+            "path": "/api/debug.php",
+            "status": 404
+          },
+          {
+            "path": "/api/test.php",
+            "status": 404
+          },
+          {
+            "path": "/server-status",
+            "status": 404
+          },
+          {
+            "path": "/server-info",
+            "status": 404
+          },
+          {
+            "path": "/.env",
+            "status": 404
+          },
+          {
+            "path": "/api/.env",
+            "status": 404
+          }
+        ]
+      },
+      "response": {
+        "exposed": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "database_port_exposure",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "TCP port 5432 (PostgreSQL) on host 'localhost' accepted a connection from the web-accessible network.",
+      "details": "The database port 5432 is reachable from the same network context as the web application. The database tier should be isolated in a dedicated network segment with no direct inbound connectivity from the web/DMZ tier. NIST SP 800-172 3.13.4e requires CUI systems to be separated from other systems to limit lateral movement opportunities.",
+      "request": {
+        "host": "localhost",
+        "port": 5432,
+        "timeout_seconds": 3
+      },
+      "response": {
+        "reachable": true,
+        "error": ""
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "cors_segmentation",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No Access-Control-Allow-Origin header returned for Origin: https://evil.com on /api/ai_chat.php.",
+      "details": "No CORS header returned for the untrusted origin. Cross-origin access is implicitly denied.",
+      "request": {
+        "path": "/api/ai_chat.php",
+        "headers": {
+          "Origin": "https://evil.com"
+        }
+      },
+      "response": {
+        "status_code": 404,
+        "access_control_allow_origin": ""
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "http_method_exposure",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "OPTIONS returned HTTP 404 with Allow: ''. No dangerous methods detected. TRACE returned non-200.",
+      "details": "HTTP method exposure is controlled \u2014 dangerous methods (TRACE, PUT, DELETE) are not advertised or enabled on the CUI endpoint.",
+      "request": {
+        "path": "/api/ai_chat.php",
+        "methods_tested": [
+          "OPTIONS",
+          "TRACE"
+        ]
+      },
+      "response": {
+        "issues": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.network_segmentation",
+      "variant": "directory_traversal_segmentation",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "All directory traversal payloads were blocked (non-200 responses).",
+      "details": "Path traversal attempts are blocked by the web server or application. The API segment boundary is enforced against filesystem escape attempts.",
+      "request": {
+        "payloads_tested": [
+          {
+            "path": "/api/../../../etc/passwd",
+            "status": 404
+          },
+          {
+            "path": "/api/..%2f..%2f..%2fetc%2fpasswd",
+            "status": 400
+          }
+        ]
+      },
+      "response": {
+        "traversal_hits": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_access_control",
+      "variant": "default_deny_check",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "Denied: 0/4, Findings: ['GET /api/ai_chat.php returned 404 (expected 401/403)', 'POST /api/ai_chat.php returned 404 (expected 401/403)', 'PUT /api/ai_chat.php returned 404 (expected 401/403)', 'DELETE /api/ai_chat.php returned 404 (expected 401/403)']",
+      "details": "No unauthenticated requests were denied (4 tested). Default-deny is NOT enforced. PCI DSS Req 7.2.3 requires default 'deny all' unless explicitly allowed.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_access_control",
+      "variant": "excessive_privileges",
+      "status": "error",
+      "severity": "high",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Excessive privilege check failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_access_control",
+      "variant": "inactive_accounts",
+      "status": "error",
+      "severity": "high",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Inactive account check failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "password_min_length",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "8char(8 chars): status=404, accepted=False; 10char(10 chars): status=404, accepted=False; 11char(11 chars): status=404, accepted=False",
+      "details": "All short password attempts were rejected. 8char(8 chars): status=404, accepted=False; 10char(10 chars): status=404, accepted=False; 11char(11 chars): status=404, accepted=False",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "account_lockout",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "attempt 7: status=404, locked=False; attempt 8: status=404, locked=False; attempt 9: status=404, locked=False; attempt 10: status=404, locked=False; attempt 11: status=404, locked=False",
+      "details": "No account lockout detected after 11 failed attempts. PCI DSS Req 8.3.4 requires lockout after no more than 10 attempts.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "session_timeout_15min",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Login status: 404",
+      "details": "Could not extract session cookie to test timeout behavior.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "shared_account_detection",
+      "status": "error",
+      "severity": "high",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Shared account detection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "hardcoded_credentials",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "/etc/ImageMagick-6/delegates.xml:88: <delegate decode=\"pdf\" encode=\"eps\" mode=\"bi\" command=\"&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUS\n/etc/ImageMagick-6/delegates.xml:89: <delegate decode=\"pdf\" encode=\"ps\" mode=\"bi\" command=\"&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE\n/etc/samba/smb.conf:91: passwd chat = *Enter\\snew\\s*\\spassword:* %n\\n *Retype\\snew\\s*\\spassword:* %n\\n *password\\supdated\\ssuccessfully* .\n/etc/profile.d/vte-2.91.sh:36: local pwd='~'\n/etc/profile.d/vte-2.91.sh:37: [ \"$PWD\" != \"$HOME\" ] && pwd=${PWD/#$HOME\\//\\~\\/}\n/etc/profile.d/vte-2.91.sh:38: pwd=\"${pwd//[[:cntrl:]]}\"\n/opt/claude-workspace/scripts/site-monitor-crawler.py:38: SMTP_PASSWORD = '86,%,IONisTWa'\n/opt/claude-workspace/scripts/devteam-debug-login.py:19: print(f'  Token: {data[\"token\"][:40]}...')\n/opt/claude-workspace/scripts/check-email.py:14: PASSWORD = '86,%,IONisTWa'\n/opt/claude-workspace/projects/ecoeye-alert-relay/db-helper.php:22: $pgPassword = '';",
+      "details": "Found 50 potential hardcoded credential(s) in 925 files scanned. PCI DSS Req 8.6.2 prohibits hardcoded passwords in scripts/config.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_auth_controls",
+      "variant": "mfa_all_cde_access",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "Login returned status 404",
+      "details": "MFA challenge detected for CDE access.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_data_protection",
+      "variant": "pan_discovery_logs",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "Scanned 550 files",
+      "details": "No Luhn-valid PANs found in 550 log files. Log data appears free of unprotected cardholder data.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_data_protection",
+      "variant": "pan_discovery_db",
+      "status": "error",
+      "severity": "critical",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "PAN discovery in database failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_data_protection",
+      "variant": "encryption_algorithm",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'idea' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'des' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm '3des' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'rc4' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'blowfish' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'idea' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'des' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm '3des' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'rc4' configured\n/var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'blowfish' configured",
+      "details": "Found 15 weak encryption algorithm(s). PCI DSS Req 3.6.1 requires strong cryptography (AES-128+). /var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'idea' configured; /var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'des' configured; /var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm '3des' configured; /var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'rc4' configured; /var/www/html/wordpress/wp-content/plugins/worker/src/PHPSecLib/Net/SSH1.php: weak algorithm 'blowfish' configured",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_data_protection",
+      "variant": "cvv_storage_check",
+      "status": "error",
+      "severity": "critical",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "CVV storage check failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_logging",
+      "variant": "log_field_completeness",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Coverage: {'event_type': 0, 'timestamp': 15, 'source_ip': 6, 'user': 0, 'outcome': 1}, sample_size: 15",
+      "details": "Multiple required log fields missing: {'event_type', 'outcome', 'user'}. Only found: {'timestamp', 'source_ip'}. PCI DSS Req 10.3 requires comprehensive audit trail fields.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_logging",
+      "variant": "ntp_sync",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Local time: Sat 2026-03-07 21:42:58 CST\n           Universal time: Sun 2026-03-08 03:42:58 UTC\n                 RTC time: Sun 2026-03-08 03:42:58\n                Time zone: America/Chicago (CST, -0600)\nSystem clock synchronized: yes\n              NTP service: active\n          RTC in local TZ: no",
+      "details": "NTP is active and system clock is synchronized.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_logging",
+      "variant": "log_tamper_protection",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Append-only attribute set on log files",
+      "details": "Log tamper protection detected: Append-only attribute set on log files. PCI DSS Req 10.5 requirements appear met.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_logging",
+      "variant": "privileged_action_logging",
+      "status": "error",
+      "severity": "high",
+      "evidence": "connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "details": "Privileged action logging check failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"eqmon\"\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_secure_config",
+      "variant": "default_credentials",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "Tested 8, all rejected",
+      "details": "Tested 8 default credential combinations. No defaults accepted.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_secure_config",
+      "variant": "unnecessary_services",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Open: ['NetBIOS (port 139)', 'SMB (port 445)']",
+      "details": "Found 2 unnecessary/insecure service(s) running: NetBIOS (port 139), SMB (port 445). PCI DSS Req 2.2.4 requires disabling unnecessary services and protocols.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_secure_config",
+      "variant": "snmp_v1v2_check",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "SNMP not accessible",
+      "details": "SNMP port 161 is not listening. Service appears disabled.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_secure_config",
+      "variant": "ssh_config",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "All checks passed",
+      "details": "SSH configuration meets PCI DSS hardening requirements.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_tls_crypto",
+      "variant": "tls_version_check",
+      "status": "error",
+      "severity": "critical",
+      "evidence": "Host: localhost:80, connection failed",
+      "details": "Could not establish TLS connection to target.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_tls_crypto",
+      "variant": "cipher_suite_check",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Host: localhost:80",
+      "details": "Could not establish TLS connection for cipher check.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_tls_crypto",
+      "variant": "certificate_validity",
+      "status": "error",
+      "severity": "high",
+      "evidence": "[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)",
+      "details": "Certificate validity check failed: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1000)",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_tls_crypto",
+      "variant": "hsts_header",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "HSTS findings: [('/api/ai_chat.php', None)]",
+      "details": "No HSTS header found on any endpoint (1 checked). PCI DSS requires HSTS to prevent protocol downgrade attacks.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.pci_tls_crypto",
+      "variant": "perfect_forward_secrecy",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Host: localhost:80",
+      "details": "Could not establish TLS connection for PFS check.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.software_integrity",
+      "variant": "subresource_integrity_scripts",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Pages checked: ['/'], scripts with SRI: 0, without SRI: 24, external without SRI: ['http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670', 'http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1', 'http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.js?ver=2.1.4-wc.10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.js?ver=10.4.4', 'http://10.153.2.6/wp-includes/js/jquery/ui/core.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/mouse.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/resizable.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/draggable.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/controlgroup.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/checkboxradio.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/button.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/dialog.js?ver=1.13.3', 'http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/js/public.js?ver=1770184665', 'http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/js/feedback-button.js?ver=1.0.0', 'http://10.153.2.6/wp-content/themes/Divi/js/scripts.min.js?ver=4.27.5', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.js?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.js?ver=10.4.4', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyARns77Fwlw1ziezYyM8r3P6iLwc5mpAx0&amp;callback=initMemberMap&amp;loading=async&amp;libraries=marker', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-catalog-sidebar-filters.js?ver=1768931470', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-attribute-filters.js?ver=1768933814', 'http://10.153.2.6/wp-content/themes/Divi/core/admin/js/common.js?ver=4.27.5']",
+      "details": "Found 24 external script(s) lacking SRI integrity attribute: ['http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670', 'http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1', 'http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.js?ver=2.1.4-wc.10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.js?ver=10.4.4', 'http://10.153.2.6/wp-includes/js/jquery/ui/core.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/mouse.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/resizable.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/draggable.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/controlgroup.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/checkboxradio.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/button.js?ver=1.13.3', 'http://10.153.2.6/wp-includes/js/jquery/ui/dialog.js?ver=1.13.3', 'http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/js/public.js?ver=1770184665', 'http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/js/feedback-button.js?ver=1.0.0', 'http://10.153.2.6/wp-content/themes/Divi/js/scripts.min.js?ver=4.27.5', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.js?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.js?ver=10.4.4', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyARns77Fwlw1ziezYyM8r3P6iLwc5mpAx0&amp;callback=initMemberMap&amp;loading=async&amp;libraries=marker', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-catalog-sidebar-filters.js?ver=1768931470', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-attribute-filters.js?ver=1768933814', 'http://10.153.2.6/wp-content/themes/Divi/core/admin/js/common.js?ver=4.27.5']. External scripts without SRI can be tampered mid-transit without detection. NIST 800-172 3.14.1e requires cryptographic verification of software components.",
+      "request": {
+        "pages": [
+          "/",
+          "/admin/login.php",
+          "/admin/index.php"
+        ]
+      },
+      "response": {
+        "pages_checked": [
+          "/"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.software_integrity",
+      "variant": "subresource_integrity_stylesheets",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Pages checked: ['/'], CSS with SRI: 0, without SRI: 10, external without SRI: ['http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.4', 'http://10.153.2.6/wp-includes/css/dashicons.css?ver=6.9.1', 'http://10.153.2.6/wp-includes/css/jquery-ui-dialog.css?ver=6.9.1', 'http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/css/public.css?ver=1770184852', 'http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/css/feedback-button.css?ver=1.0.0', 'http://10.153.2.6/wp-content/plugins/cxq-google-hours/assets/css/public.css?ver=1768100724', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/css/member-catalog.css?ver=1770189049', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=1772755310']",
+      "details": "Found 10 external stylesheet(s) lacking SRI integrity attribute: ['http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.4', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.4', 'http://10.153.2.6/wp-includes/css/dashicons.css?ver=6.9.1', 'http://10.153.2.6/wp-includes/css/jquery-ui-dialog.css?ver=6.9.1', 'http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/css/public.css?ver=1770184852', 'http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/css/feedback-button.css?ver=1.0.0', 'http://10.153.2.6/wp-content/plugins/cxq-google-hours/assets/css/public.css?ver=1768100724', 'http://10.153.2.6/wp-content/plugins/cxq-membership/assets/css/member-catalog.css?ver=1770189049', 'http://10.153.2.6/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=1772755310']. External CSS without SRI can be used to inject malicious content via CSS exfiltration or UI redressing. NIST 800-172 3.14.1e requires integrity verification for all loaded software components.",
+      "request": {
+        "pages": [
+          "/",
+          "/admin/login.php",
+          "/admin/index.php"
+        ]
+      },
+      "response": {
+        "pages_checked": [
+          "/"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.software_integrity",
+      "variant": "content_security_policy",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "CSP headers: [], missing on: ['/'], unsafe on: [], strict on: []",
+      "details": "Content-Security-Policy header is absent on all checked pages: ['/']. Without CSP, browsers cannot enforce integrity restrictions on loaded scripts. NIST 800-172 3.14.1e requires mechanisms to detect and prevent unauthorised software execution.",
+      "request": {
+        "pages": [
+          "/",
+          "/admin/login.php",
+          "/admin/index.php"
+        ]
+      },
+      "response": {
+        "csp_headers": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.software_integrity",
+      "variant": "mixed_content",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Pages checked: ['/'], mixed content findings: [{\"page\": \"/\", \"url\": \"http://10.153.2.6/xmlrpc.php\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/feed/\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/comments/feed/\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F&#038;format=xml\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/css/dashicons.css?ver=6.9.1\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/css/jquery-ui-dialog.css?ver=6.9.1\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/css/public.css?ver=1770184852\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/css/feedback-button.css?ver=1.0.0\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/cxq-google-hours/assets/css/public.css?ver=1768100724\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/cxq-membership/assets/css/member-catalog.css?ver=1770189049\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.js?ver=2.1.4-wc.10.4.4\"}]",
+      "details": "Found 60 HTTP (non-secure) resource reference(s) on HTTPS pages: [{\"page\": \"/\", \"url\": \"http://10.153.2.6/xmlrpc.php\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/feed/\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/comments/feed/\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F&#038;format=xml\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.4\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/css/dashicons.css?ver=6.9.1\"}, {\"page\": \"/\", \"url\": \"http://10.153.2.6/wp-includes/css/jquery-ui-dialog.css?ver=6.9.1\"}]. Resources loaded over HTTP bypass TLS and cannot have their integrity verified. NIST 800-172 3.14.1e integrity controls require all resources be delivered over authenticated, encrypted channels.",
+      "request": {
+        "pages": [
+          "/",
+          "/admin/login.php",
+          "/admin/index.php"
+        ]
+      },
+      "response": {
+        "findings": [
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/xmlrpc.php"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/feed/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/comments/feed/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-json/oembed/1.0/embed?url=http%3A%2F%2F10.153.2.6%2F&#038;format=xml"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/css/dashicons.css?ver=6.9.1"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/css/jquery-ui-dialog.css?ver=6.9.1"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/css/public.css?ver=1770184852"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/css/feedback-button.css?ver=1.0.0"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-google-hours/assets/css/public.css?ver=1768100724"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-membership/assets/css/member-catalog.css?ver=1770189049"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.js?ver=2.1.4-wc.10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.js?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-json/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-json/wp/v2/pages/16"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/xmlrpc.php?rsd"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=1772755310"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/themes/Divi/images/logo.png"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/cart/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/checkout/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/help/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/member-catalog-with-contact/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/member-directory/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/my-account/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/sample-page/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/shop/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/category/uncategorized/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/cart/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/2026/01/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/category/uncategorized/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/feed/"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/core.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/mouse.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/resizable.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/draggable.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/controlgroup.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/checkboxradio.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/button.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-includes/js/jquery/ui/dialog.js?ver=1.13.3"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-event-calendar/assets/js/public.js?ver=1770184665"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-user-experience-logger/assets/js/feedback-button.js?ver=1.0.0"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/themes/Divi/js/scripts.min.js?ver=4.27.5"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.js?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.js?ver=10.4.4"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-catalog-sidebar-filters.js?ver=1768931470"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/member-attribute-filters.js?ver=1768933814"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/wp-content/themes/Divi/core/admin/js/common.js?ver=4.27.5"
+          },
+          {
+            "page": "/",
+            "url": "http://10.153.2.6/profile8Mnnz1vH.asp"
+          }
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.software_integrity",
+      "variant": "script_tampering_detection",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Pages with reporting: [], pages without: ['/']",
+      "details": "No CSP report-uri, report-to, or Reporting-Endpoints header found on any checked page (['/', '/admin/login.php', '/admin/index.php']). Without a reporting mechanism, script integrity violations will not be detected or logged. NIST 800-172 3.14.1e requires the ability to detect and respond to software tampering events.",
+      "request": {
+        "pages": [
+          "/",
+          "/admin/login.php",
+          "/admin/index.php"
+        ]
+      },
+      "response": {
+        "reporting_pages": [],
+        "no_reporting_pages": [
+          "/"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.supply_chain_deps",
+      "variant": "exposed_dependency_files",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Checked 7 paths, all returned non-200 status.",
+      "details": "No dependency manifest files were accessible at common web paths. Supply chain reconnaissance via file exposure is mitigated.",
+      "request": {
+        "paths_checked": [
+          "/composer.json",
+          "/composer.lock",
+          "/package.json",
+          "/package-lock.json",
+          "/requirements.txt",
+          "/Pipfile.lock",
+          "/.npmrc"
+        ]
+      },
+      "response": {
+        "exposed": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.supply_chain_deps",
+      "variant": "server_version_disclosure",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Server: 'nginx/1.24.0 (Ubuntu)', X-Powered-By: '', Detected versions: ['nginx 1.24.0']",
+      "details": "Detailed version information exposed in headers/responses: nginx 1.24.0. Attackers can cross-reference disclosed versions against CVE databases to identify exploitable vulnerabilities in dependencies.",
+      "request": {
+        "endpoint": "/",
+        "checked": [
+          "Server",
+          "X-Powered-By",
+          "body"
+        ]
+      },
+      "response": {
+        "status": 200,
+        "server": "nginx/1.24.0 (Ubuntu)",
+        "powered_by": ""
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.supply_chain_deps",
+      "variant": "outdated_javascript_libraries",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Checked 48 script sources across 3 pages.",
+      "details": "No outdated JavaScript libraries with known CVEs detected in script tags across checked pages.",
+      "request": {
+        "pages_checked": [
+          "/",
+          "/index.php",
+          "/admin/login.php"
+        ]
+      },
+      "response": {
+        "scripts_found": 48,
+        "outdated": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.supply_chain_deps",
+      "variant": "subresource_integrity_missing",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "External resources without SRI: ['script:http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670', 'script:http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1', 'script:http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1', 'script:http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4', 'script:http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4'], with SRI: 0",
+      "details": "90 external resource(s) loaded without Subresource Integrity (SRI) attributes: ['script:http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670', 'script:http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1', 'script:http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1', 'script:http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.js?ver=2.7.0-wc.10.4.4', 'script:http://10.153.2.6/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.js?ver=10.4.4']. An attacker who compromises a CDN or performs a MITM attack can inject malicious code. Add integrity and crossorigin attributes to all external resources per NIST 800-172 supply chain integrity requirements.",
+      "request": {
+        "pages_checked": [
+          "/admin/login.php",
+          "/",
+          "/index.php"
+        ]
+      },
+      "response": {
+        "external_without_sri": 90,
+        "external_with_sri": 0,
+        "samples": [
+          "script:http://10.153.2.6/wp-content/plugins/cxq-membership/assets/js/error-handler.js?ver=1769286670",
+          "script:http://10.153.2.6/wp-includes/js/jquery/jquery.js?ver=3.7.1",
+          "script:http://10.153.2.6/wp-includes/js/jquery/jquery-migrate.js?ver=3.4.1"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.supply_chain_deps",
+      "variant": "dependency_confusion_probing",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "CDN patterns checked across 3 pages, none found.",
+      "details": "No references to public CDN/package registries detected. Dependency confusion via CDN appears to be mitigated.",
+      "request": {
+        "pages_checked": [
+          "/",
+          "/index.php",
+          "/admin/login.php"
+        ],
+        "cdn_patterns": [
+          "npm (unpkg)",
+          "npm (jsdelivr)",
+          "cdnjs",
+          "jsdelivr (gh)",
+          "rawgit",
+          "skypack"
+        ]
+      },
+      "response": {
+        "cdns_found": [],
+        "unprotected_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_diversity",
+      "variant": "web_server_monoculture",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "All 4 responding endpoints report the same Server header: 'nginx/1.24.0 (Ubuntu)'. Endpoint detail: [{\"path\": \"/\", \"status\": 200, \"server\": \"nginx/1.24.0 (Ubuntu)\"}, {\"path\": \"/admin/\", \"status\": 200, \"server\": \"nginx/1.24.0 (Ubuntu)\"}, {\"path\": \"/api/ai_chat.php\", \"status\": 404, \"server\": \"nginx/1.24.0 (Ubuntu)\"}, {\"path\": \"/admin/login.php\", \"status\": 404, \"server\": \"nginx/1.24.0 (Ubuntu)\"}]",
+      "details": "The web tier is homogeneous \u2014 every probed endpoint advertises the same server software. A single exploit targeting this server software would affect all endpoints equally. NIST SP 800-172 3.13.1e recommends architectural diversity to limit common-mode vulnerability propagation. Consider introducing a reverse proxy or CDN layer with a different technology to reduce monoculture risk.",
+      "request": {
+        "endpoints_probed": [
+          "/",
+          "/admin/",
+          "/api/ai_chat.php",
+          "/admin/login.php"
+        ]
+      },
+      "response": {
+        "server_headers": {
+          "/": "nginx/1.24.0 (Ubuntu)",
+          "/admin/": "nginx/1.24.0 (Ubuntu)",
+          "/api/ai_chat.php": "nginx/1.24.0 (Ubuntu)",
+          "/admin/login.php": "nginx/1.24.0 (Ubuntu)"
+        },
+        "unique_values": [
+          "nginx/1.24.0 (Ubuntu)"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_diversity",
+      "variant": "technology_stack_fingerprint",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Technology stack fingerprint reveals a single-technology environment. Inventory: {\"cms\": [\"WordPress\"], \"file_extensions\": [\"php\"]}. Endpoint detail: [{\"path\": \"/\", \"status\": 200, \"tech_indicators\": [\"Body: WordPress indicators\"]}, {\"path\": \"/admin/\", \"status\": 200, \"tech_indicators\": [\"Body: WordPress indicators\"]}, {\"path\": \"/api/ai_chat.php\", \"status\": 404, \"tech_indicators\": [\"Path extension: .php\"]}, {\"path\": \"/admin/login.php\", \"status\": 404, \"tech_indicators\": [\"Path extension: .php\"]}]",
+      "details": "The detected technology stack is homogeneous \u2014 a single primary language/framework is present throughout. A single vulnerability in this technology (e.g., a PHP RCE, a framework deserialization flaw) would affect the entire application surface uniformly. NIST SP 800-172 3.13.1e recommends architectural diversity: consider introducing diverse components (e.g., a Go or Python microservice, a different CMS tier) to reduce monoculture risk and limit malicious-code propagation.",
+      "request": {
+        "endpoints_probed": [
+          "/",
+          "/admin/",
+          "/api/ai_chat.php",
+          "/admin/login.php"
+        ]
+      },
+      "response": {
+        "stack_inventory": {
+          "cms": [
+            "WordPress"
+          ],
+          "file_extensions": [
+            "php"
+          ]
+        },
+        "endpoint_detail": [
+          {
+            "path": "/",
+            "status": 200,
+            "tech_indicators": [
+              "Body: WordPress indicators"
+            ]
+          },
+          {
+            "path": "/admin/",
+            "status": 200,
+            "tech_indicators": [
+              "Body: WordPress indicators"
+            ]
+          },
+          {
+            "path": "/api/ai_chat.php",
+            "status": 404,
+            "tech_indicators": [
+              "Path extension: .php"
+            ]
+          },
+          {
+            "path": "/admin/login.php",
+            "status": 404,
+            "tech_indicators": [
+              "Path extension: .php"
+            ]
+          }
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_diversity",
+      "variant": "security_header_diversity",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Security header posture is inconsistent across endpoints. 3 endpoint(s) have a weaker posture than the strongest (2 headers): ['/', '/api/ai_chat.php', '/admin/login.php']. Posture gap: 2 missing header(s) on weaker endpoints. Detail: [{\"path\": \"/\", \"status\": 200, \"security_headers\": {\"x-frame-options\": \"SAMEORIGIN\"}}, {\"path\": \"/admin/\", \"status\": 200, \"security_headers\": {\"x-frame-options\": \"SAMEORIGIN\", \"content-security-policy\": \"frame-ancestors 'self';\"}}, {\"path\": \"/api/ai_chat.php\", \"status\": 404, \"security_headers\": {}}, {\"path\": \"/admin/login.php\", \"status\": 404, \"security_headers\": {}}]",
+      "details": "Different endpoints present different security header postures, indicating they may be served by distinct components with inconsistent hardening. While diversity itself is positive, inconsistent security policies suggest some components are inadequately hardened. Weaker endpoints may represent legacy or less-maintained technology components. NIST SP 800-172 3.13.1e \u2014 ensure all diverse components meet a consistent baseline security posture to avoid introducing weak links through architectural heterogeneity.",
+      "request": {
+        "endpoints_probed": [
+          "/",
+          "/admin/",
+          "/api/ai_chat.php",
+          "/admin/login.php"
+        ],
+        "headers_checked": [
+          "x-frame-options",
+          "content-security-policy",
+          "strict-transport-security"
+        ]
+      },
+      "response": {
+        "endpoint_postures": {
+          "/": {
+            "x-frame-options": "SAMEORIGIN"
+          },
+          "/admin/": {
+            "x-frame-options": "SAMEORIGIN",
+            "content-security-policy": "frame-ancestors 'self';"
+          },
+          "/api/ai_chat.php": {},
+          "/admin/login.php": {}
+        },
+        "unique_postures": 3
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_diversity",
+      "variant": "dns_infrastructure",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "No CDN or load-balancer headers detected across any probed endpoint. CDN headers checked: ['x-cdn', 'via', 'x-cache', 'cf-ray', 'x-amz-cf-id', 'x-varnish', 'x-cache-hits', 'x-cache-status', 'x-served-by', 'x-proxy-cache']. LB headers checked: ['x-request-id', 'x-upstream', 'x-forwarded-server', 'x-envoy-upstream-service-time']. Detail: [{\"path\": \"/\", \"status\": 200, \"cdn_headers\": [], \"lb_headers\": []}, {\"path\": \"/admin/\", \"status\": 200, \"cdn_headers\": [], \"lb_headers\": []}, {\"path\": \"/api/ai_chat.php\", \"status\": 404, \"cdn_headers\": [], \"lb_headers\": []}, {\"path\": \"/admin/login.php\", \"status\": 404, \"cdn_headers\": [], \"lb_headers\": []}]",
+      "details": "No CDN or load-balancing infrastructure was detected from HTTP response headers. The system appears to be served from a single origin without traffic distribution or CDN diversity. This represents a single point of failure and eliminates the geographic and infrastructure diversity that CDN/LB layers provide. NIST SP 800-172 3.13.1e \u2014 consider introducing CDN or load balancing to distribute risk and reduce the impact of single-node compromises or availability attacks.",
+      "request": {
+        "endpoints_probed": [
+          "/",
+          "/admin/",
+          "/api/ai_chat.php",
+          "/admin/login.php"
+        ],
+        "cdn_headers_checked": [
+          "x-cdn",
+          "via",
+          "x-cache",
+          "cf-ray",
+          "x-amz-cf-id",
+          "x-varnish",
+          "x-cache-hits",
+          "x-cache-status",
+          "x-served-by",
+          "x-proxy-cache"
+        ],
+        "lb_headers_checked": [
+          "x-request-id",
+          "x-upstream",
+          "x-forwarded-server",
+          "x-envoy-upstream-service-time"
+        ]
+      },
+      "response": {
+        "cdn_indicators": [],
+        "lb_indicators": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_diversity",
+      "variant": "error_handling_uniformity",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "All 3 error probes returned identical format: 'plaintext'. Detail: [{\"path\": \"/api/ai_chat.php\", \"method\": \"POST\", \"status\": 404, \"error_format\": \"plaintext\"}, {\"path\": \"/admin/login.php\", \"method\": \"POST\", \"status\": 404, \"error_format\": \"plaintext\"}, {\"path\": \"/api/nonexistent_endpoint_probe.php\", \"method\": \"GET\", \"status\": 404, \"error_format\": \"plaintext\"}]",
+      "details": "All probed endpoints return errors in an identical format, suggesting a single centralised error handler or framework is in use across the entire application. While consistent error handling reduces information leakage, it is also a monoculture indicator \u2014 a single exploit that bypasses this error handler would affect every endpoint uniformly. NIST SP 800-172 3.13.1e \u2014 uniform error handling suggests component monoculture; consider segmenting error handling across independently implemented service tiers.",
+      "request": {
+        "endpoints_probed": [
+          "/api/ai_chat.php",
+          "/admin/login.php",
+          "/api/nonexistent_endpoint_probe.php"
+        ]
+      },
+      "response": {
+        "error_responses": [
+          {
+            "path": "/api/ai_chat.php",
+            "status_code": 404,
+            "content_type": "text/html; charset=UTF-8",
+            "error_format": "plaintext",
+            "body_preview": "File not found.\n"
+          },
+          {
+            "path": "/admin/login.php",
+            "status_code": 404,
+            "content_type": "text/html; charset=UTF-8",
+            "error_format": "plaintext",
+            "body_preview": "File not found.\n"
+          },
+          {
+            "path": "/api/nonexistent_endpoint_probe.php",
+            "status_code": 404,
+            "content_type": "text/html; charset=UTF-8",
+            "error_format": "plaintext",
+            "body_preview": "File not found.\n"
+          }
+        ],
+        "unique_formats": [
+          "plaintext"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_refresh",
+      "variant": "server_uptime_disclosure",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No uptime disclosure found on status endpoints. Date header observed: 2026-03-08T03:43:22+00:00. Cannot determine server uptime from available headers.",
+      "details": "No explicit uptime information was disclosed. The Date header confirms the server is responding but does not reveal uptime. Manual verification of system refresh cadence is recommended to confirm NIST SP 800-172 3.14.4e compliance.",
+      "request": {
+        "status_endpoints_probed": [
+          {
+            "path": "/server-status",
+            "status": 404
+          },
+          {
+            "path": "/server-info",
+            "status": 404
+          },
+          {
+            "path": "/status",
+            "status": 404
+          },
+          {
+            "path": "/health",
+            "status": 404
+          },
+          {
+            "path": "/api/status",
+            "status": 404
+          },
+          {
+            "path": "/api/health",
+            "status": 404
+          }
+        ]
+      },
+      "response": {
+        "uptime_sources": [],
+        "date_samples": [
+          "2026-03-08T03:43:21+00:00",
+          "2026-03-08T03:43:22+00:00",
+          "2026-03-08T03:43:22+00:00"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_refresh",
+      "variant": "session_longevity",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Session cookie lifetime is 0 hours (1800s), within the acceptable threshold. Set-Cookie: cxq_uxlog_session=449d09a8-c797-481a-a157-95154573c601; expires=Sun, 08 Mar 2026 04:13:25 GMT; Max-Age=1800; path=/; HttpOnly",
+      "details": "Session expiry is set to 0 hours, which is within the 24-hour threshold. Short-lived sessions reduce the APT persistence window in line with NIST SP 800-172 3.14.4e intent.",
+      "request": {
+        "path": "/admin/login.php",
+        "method": "GET"
+      },
+      "response": {
+        "set_cookie": "cxq_uxlog_session=449d09a8-c797-481a-a157-95154573c601; expires=Sun, 08 Mar 2026 04:13:25 GMT; Max-Age=1800; path=/; HttpOnly",
+        "max_age_seconds": 1800,
+        "expires": null,
+        "no_expiry": false,
+        "session_lifetime_seconds": 1800
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_refresh",
+      "variant": "stale_response_detection",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No static resources returned Last-Modified headers. Staleness could not be assessed from available responses.",
+      "details": "None of the probed static resources returned Last-Modified headers, so content freshness cannot be determined via HTTP. Manual verification of system refresh cadence is recommended.",
+      "request": {
+        "resources_probed": [
+          {
+            "path": "/admin/login.php",
+            "status": 404
+          },
+          {
+            "path": "/admin/css/style.css",
+            "status": 404
+          },
+          {
+            "path": "/admin/js/app.js",
+            "status": 404
+          },
+          {
+            "path": "/js/app.js",
+            "status": 404
+          },
+          {
+            "path": "/css/style.css",
+            "status": 404
+          }
+        ]
+      },
+      "response": {
+        "resources": [
+          {
+            "path": "/admin/login.php",
+            "skipped": true
+          },
+          {
+            "path": "/admin/css/style.css",
+            "skipped": true
+          },
+          {
+            "path": "/admin/js/app.js",
+            "skipped": true
+          },
+          {
+            "path": "/js/app.js",
+            "skipped": true
+          },
+          {
+            "path": "/css/style.css",
+            "skipped": true
+          }
+        ],
+        "stale": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_refresh",
+      "variant": "component_version_staleness",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Server banner 'nginx/1.24.0 (Ubuntu)' does not match any known outdated version signatures.",
+      "details": "Detected server components do not match known outdated version patterns. The software appears to be on a current major release, consistent with periodic system refresh per NIST SP 800-172 3.14.4e. Note: version suppression would provide stronger assurance by not disclosing version information at all.",
+      "request": {
+        "path": "/",
+        "method": "GET"
+      },
+      "response": {
+        "server": "nginx/1.24.0 (Ubuntu)",
+        "x_powered_by": "",
+        "outdated_found": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "compliance.system_refresh",
+      "variant": "cache_persistence",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Dynamic endpoints returned no Cache-Control headers. Cache behavior is undefined \u2014 intermediate caches may apply their own heuristic TTLs.",
+      "details": "The absence of explicit Cache-Control headers on dynamic endpoints means that intermediate proxies and CDNs may cache responses using heuristic TTLs. This could allow stale or compromised data to persist in caches even after a system refresh. Explicit no-store or no-cache directives are recommended on dynamic API endpoints.",
+      "request": {
+        "endpoints_probed": [
+          {
+            "path": "/api/ai_chat.php",
+            "status": 404
+          },
+          {
+            "path": "/api/admin/users.php",
+            "status": 404
+          },
+          {
+            "path": "/api/admin/settings.php",
+            "status": 404
+          }
+        ]
+      },
+      "response": {
+        "endpoints": [
+          {
+            "path": "/api/ai_chat.php",
+            "status": 404,
+            "cache_control": null,
+            "pragma": null,
+            "max_age_seconds": null,
+            "public": false
+          },
+          {
+            "path": "/api/admin/users.php",
+            "status": 404,
+            "cache_control": null,
+            "pragma": null,
+            "max_age_seconds": null,
+            "public": false
+          },
+          {
+            "path": "/api/admin/settings.php",
+            "status": 404,
+            "cache_control": null,
+            "pragma": null,
+            "max_age_seconds": null,
+            "public": false
+          }
+        ],
+        "long_cache_findings": []
+      },
+      "duration_ms": 0.0
+    }
+  ]
+}

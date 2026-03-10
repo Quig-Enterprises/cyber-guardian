@@ -1,0 +1,1116 @@
+{
+  "generated": "2026-03-07T22:27:16.969663",
+  "total_attacks": 13,
+  "total_variants": 57,
+  "total_vulnerable": 8,
+  "total_partial": 10,
+  "total_defended": 39,
+  "total_errors": 0,
+  "worst_severity": "high",
+  "by_category": {
+    "web": {
+      "attacks": 13,
+      "vulnerable": 8,
+      "partial": 10,
+      "defended": 39,
+      "errors": 0,
+      "duration_ms": 572.6268291473389
+    }
+  },
+  "by_severity": {
+    "critical": 0,
+    "high": 1,
+    "medium": 12,
+    "low": 4,
+    "info": 1
+  },
+  "timing": {
+    "start": "2026-03-07T22:27:16.372682",
+    "end": "2026-03-07T22:27:16.949718",
+    "duration_ms": 577.0
+  },
+  "attacks": [
+    {
+      "name": "web.certificate",
+      "category": "web",
+      "duration_ms": 80.8,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "web.cors",
+      "category": "web",
+      "duration_ms": 19.7,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.csrf",
+      "category": "web",
+      "duration_ms": 9.4,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "web.deception_detection",
+      "category": "web",
+      "duration_ms": 116.1,
+      "vulnerable": 0,
+      "partial": 4,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "web.directory_traversal",
+      "category": "web",
+      "duration_ms": 98.9,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "web.http_methods",
+      "category": "web",
+      "duration_ms": 19.0,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.open_redirect",
+      "category": "web",
+      "duration_ms": 118.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "web.security_headers",
+      "category": "web",
+      "duration_ms": 4.4,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "web.server_fingerprint",
+      "category": "web",
+      "duration_ms": 44.5,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "web.session",
+      "category": "web",
+      "duration_ms": 2.2,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "web.sri",
+      "category": "web",
+      "duration_ms": 5.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.tls_security",
+      "category": "web",
+      "duration_ms": 27.5,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.xss",
+      "category": "web",
+      "duration_ms": 27.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 6,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "web.certificate",
+      "variant": "cert_expiry",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Certificate expires in 87 days on Jun  4 00:47:44 2026 GMT",
+      "details": "TLS certificate for 8qdj5it341kfv92u.brandonquig.com expires within 90 days - plan renewal",
+      "request": {
+        "hostname": "8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "notAfter": "Jun  4 00:47:44 2026 GMT",
+        "days_remaining": 87
+      },
+      "duration_ms": 1.4075199142098427
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_chain",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Certificate chain validated successfully via verified SSL context",
+      "details": "The certificate chain for 8qdj5it341kfv92u.brandonquig.com is complete and trusted",
+      "request": {
+        "hostname": "8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "issuer": "((('countryName', 'US'),), (('organizationName', \"Let's Encrypt\"),), (('commonName', 'E7'),))",
+        "subject": "((('commonName', '8qdj5it341kfv92u.brandonquig.com'),),)"
+      },
+      "duration_ms": 0.0072820112109184265
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_hostname",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Hostname 8qdj5it341kfv92u.brandonquig.com matches certificate names: ['8qdj5it341kfv92u.brandonquig.com']",
+      "details": "Certificate CN/SAN correctly covers 8qdj5it341kfv92u.brandonquig.com",
+      "request": {
+        "hostname": "8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "cn": "8qdj5it341kfv92u.brandonquig.com",
+        "sans": [
+          "8qdj5it341kfv92u.brandonquig.com"
+        ]
+      },
+      "duration_ms": 0.004104338586330414
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_key_size",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Weak RSA key: 1024 bits",
+      "details": "Certificate on 8qdj5it341kfv92u.brandonquig.com uses a RSA-1024 key. Minimum recommended: RSA-2048 or ECC-256.",
+      "request": {
+        "hostname": "8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "key_type": "RSA",
+        "key_size": 1024,
+        "cipher": "TLS_AES_256_GCM_SHA384"
+      },
+      "duration_ms": 0.018792226910591125
+    },
+    {
+      "attack": "web.cors",
+      "variant": "preflight_evil_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "ACAO: '' (not permissive)",
+      "details": "CORS properly configured - evil origin not allowed",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "ACAO": "not set",
+        "ACAC": "not set"
+      },
+      "duration_ms": 13.325592502951622
+    },
+    {
+      "attack": "web.cors",
+      "variant": "get_evil_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "ACAO: '' - evil origin not reflected",
+      "details": "GET CORS properly restricted",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "ACAO": "not set"
+      },
+      "duration_ms": 2.394336275756359
+    },
+    {
+      "attack": "web.cors",
+      "variant": "credentials_allowed",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No endpoints return Access-Control-Allow-Credentials: true",
+      "details": "Cross-origin requests cannot include cookies",
+      "request": {
+        "checked_endpoints": [
+          "/api/ai_chat.php",
+          "/api/ai_chat.php"
+        ]
+      },
+      "response": {
+        "credentials_allowed": false
+      },
+      "duration_ms": 3.8561606779694557
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "no_origin_header",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Server rejected POST without Origin header (HTTP 404)",
+      "details": "API requires valid Origin header",
+      "request": {
+        "headers": "no Origin"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 1.9098902121186256
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "forged_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Server rejected forged Origin (HTTP 404)",
+      "details": "API validates Origin header against whitelist",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 2.412009984254837
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "no_csrf_token",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No CSRF token found but POST returned 404",
+      "details": "CSRF token not detected but POST may have been rejected for other reasons",
+      "request": {
+        "checked_headers": true
+      },
+      "response": {
+        "has_token": false,
+        "post_status": 404
+      },
+      "duration_ms": 4.965697415173054
+    },
+    {
+      "attack": "web.deception_detection",
+      "variant": "honeypot_endpoints",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Plausible honeypot endpoints detected: /api/internal/debug (200, 5257 bytes), /wp-admin/ (200, 5257 bytes), /phpmyadmin/ (200, 5257 bytes), /.git/config (200, 287 bytes), /api/v1/tokens (200, 5257 bytes)",
+      "details": "Organization appears to have deployed decoy endpoints returning crafted content \u2014 consistent with NIST 800-172 3.13.3e deception controls.",
+      "request": {
+        "probed_paths": [
+          "/admin/backup.php",
+          "/api/internal/debug",
+          "/wp-admin/",
+          "/phpmyadmin/",
+          "/.git/config",
+          "/api/v1/tokens"
+        ]
+      },
+      "response": {
+        "honeypot_candidates": [
+          "/api/internal/debug (200, 5257 bytes)",
+          "/wp-admin/ (200, 5257 bytes)",
+          "/phpmyadmin/ (200, 5257 bytes)",
+          "/.git/config (200, 287 bytes)",
+          "/api/v1/tokens (200, 5257 bytes)"
+        ],
+        "missing_decoys": [
+          "/admin/backup.php (404)"
+        ]
+      },
+      "duration_ms": 24.711452424526215
+    },
+    {
+      "attack": "web.deception_detection",
+      "variant": "honeytoken_in_responses",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No honeytoken markers detected in API response fields",
+      "details": "No trackable honeytoken data found in API responses. NIST 800-172 3.13.3e recommends embedding trackable fake credentials or tokens that trigger alerts when accessed or exfiltrated.",
+      "request": {
+        "endpoints_checked": [
+          "/api/users",
+          "/api/user",
+          "/api/profile",
+          "/api/me",
+          "/api/account",
+          "/api/data"
+        ]
+      },
+      "response": {
+        "honeytoken_hits": []
+      },
+      "duration_ms": 35.70061735808849
+    },
+    {
+      "attack": "web.deception_detection",
+      "variant": "decoy_credentials_check",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No decoy credentials, tracking pixels, or beacon scripts found in login pages",
+      "details": "Login and auth pages contain no detectable deception elements. NIST 800-172 3.13.3e recommends deploying decoy content (tracking pixels, beacon scripts, hidden decoy fields) to detect unauthorized access.",
+      "request": {
+        "checked_paths": [
+          "/login",
+          "/signin",
+          "/auth",
+          "/admin/login",
+          "/api/login"
+        ]
+      },
+      "response": {
+        "indicators": []
+      },
+      "duration_ms": 24.52578116208315
+    },
+    {
+      "attack": "web.deception_detection",
+      "variant": "robots_txt_deception",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "robots.txt present but contains only standard/generic Disallow entries: []",
+      "details": "robots.txt exists but lacks deliberate deception lure paths. Per NIST 800-172 3.13.3e, robots.txt should include tempting decoy paths (/backup/, /internal/, /.git/) to detect and misdirect attacker enumeration.",
+      "request": {
+        "path": "/robots.txt"
+      },
+      "response": {
+        "disallow_entries": [],
+        "lure_entries": []
+      },
+      "duration_ms": 5.665935575962067
+    },
+    {
+      "attack": "web.deception_detection",
+      "variant": "fake_error_responses",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No error responses returned body content suitable for misdirection analysis",
+      "details": "Could not obtain error responses with body content. Unable to assess deceptive error handling per 800-172 3.13.3e.",
+      "request": {
+        "probed_paths": [
+          "/api/nonexistent-endpoint-xyz",
+          "/api/users/../../../../etc/passwd",
+          "/api/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "/api/users?id=1' OR '1'='1",
+          "/api/exec?cmd=id"
+        ]
+      },
+      "response": {
+        "error_response_samples": []
+      },
+      "duration_ms": 24.796186946332455
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "basic_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No traversal payloads returned sensitive file content",
+      "details": "Tested 5 basic traversal payloads, none succeeded",
+      "request": {
+        "payloads_tested": 5
+      },
+      "response": {},
+      "duration_ms": 30.042655766010284
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "windows_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No Windows traversal payloads returned sensitive file content",
+      "details": "Tested 3 Windows traversal payloads, none succeeded",
+      "request": {
+        "payloads_tested": 3
+      },
+      "response": {},
+      "duration_ms": 15.933633781969547
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "null_byte_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Null byte traversal payloads did not return sensitive content",
+      "details": "Tested 3 null byte payloads, none succeeded",
+      "request": {
+        "payloads_tested": 3
+      },
+      "response": {},
+      "duration_ms": 24.235324002802372
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "dot_dot_slash_in_params",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No parameter traversal succeeded on /api/ai_chat.php",
+      "details": "Tested 6 parameter names on /api/ai_chat.php",
+      "request": {
+        "endpoint": "/api/ai_chat.php",
+        "params_tested": [
+          "file",
+          "path",
+          "page",
+          "template",
+          "doc",
+          "include"
+        ]
+      },
+      "response": {},
+      "duration_ms": 28.650769963860512
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "options_check",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No Allow header in OPTIONS response",
+      "details": "OPTIONS returned 404 with no Allow header",
+      "request": {
+        "method": "OPTIONS",
+        "endpoint": "/api/ai_chat.php"
+      },
+      "response": {
+        "status": 404,
+        "Allow": "",
+        "methods": []
+      },
+      "duration_ms": 1.9146129488945007
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "trace_enabled",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "TRACE returned 405",
+      "details": "TRACE method properly disabled or rejected",
+      "request": {
+        "method": "TRACE"
+      },
+      "response": {
+        "status": 405
+      },
+      "duration_ms": 1.5925094485282898
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "put_enabled",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "PUT returned unexpected status 404",
+      "details": "Server returned 404 for PUT request; review manually",
+      "request": {
+        "method": "PUT"
+      },
+      "response": {
+        "status": 404,
+        "body_preview": "File not found.\n"
+      },
+      "duration_ms": 10.917983017861843
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "delete_enabled",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "DELETE returned unexpected status 404",
+      "details": "Server returned 404 for DELETE; review manually",
+      "request": {
+        "method": "DELETE"
+      },
+      "response": {
+        "status": 404,
+        "body_preview": "File not found.\n"
+      },
+      "duration_ms": 2.337556332349777
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "arbitrary_methods",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "FOOBAR method returned 404",
+      "details": "Server returned 404 for unknown method",
+      "request": {
+        "method": "FOOBAR"
+      },
+      "response": {
+        "status": 404
+      },
+      "duration_ms": 1.9298847764730453
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "common_params",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No open redirects found via common URL parameters",
+      "details": "Tested 10 parameter names across 1 endpoints",
+      "request": {
+        "endpoints_tested": [
+          "/api/ai_chat.php"
+        ],
+        "params_tested": [
+          "redirect",
+          "url",
+          "next",
+          "return",
+          "returnTo",
+          "goto",
+          "dest",
+          "continue",
+          "redirect_uri",
+          "redir"
+        ]
+      },
+      "response": {},
+      "duration_ms": 20.83367481827736
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "login_redirect",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Login endpoint does not redirect to external domains",
+      "details": "Tested 6 redirect parameters on /api/auth/login.php",
+      "request": {
+        "endpoint": "/api/auth/login.php",
+        "params_tested": [
+          "redirect_to",
+          "next",
+          "return",
+          "returnTo",
+          "redirect",
+          "continue"
+        ]
+      },
+      "response": {},
+      "duration_ms": 12.85009365528822
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "protocol_bypass",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No protocol bypass payloads caused an external redirect",
+      "details": "Tested 6 bypass payloads across 1 endpoints",
+      "request": {
+        "payloads_tested": [
+          "//evil.com",
+          "\\/\\/evil.com",
+          "https:evil.com",
+          "%2f%2fevil.com",
+          "/evil.com",
+          "\\evil.com"
+        ]
+      },
+      "response": {},
+      "duration_ms": 51.54974851757288
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "javascript_redirect",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No javascript: URI reflected in redirect headers",
+      "details": "Tested 4 javascript/data URI payloads across endpoints",
+      "request": {
+        "payloads_tested": [
+          "javascript:alert(1)",
+          "javascript:alert(document.domain)",
+          "jAvAsCrIpT:alert(1)",
+          "data:text/html,<script>alert(1)</script>"
+        ]
+      },
+      "response": {},
+      "duration_ms": 32.72196836769581
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "content_security_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Content-Security-Policy header missing",
+      "details": "No CSP header; the site is vulnerable to XSS and data injection attacks",
+      "request": {},
+      "response": {
+        "Content-Security-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "strict_transport_security",
+      "status": "defended",
+      "severity": "low",
+      "evidence": "HSTS present with max-age=31536000",
+      "details": "Strict-Transport-Security properly configured",
+      "request": {},
+      "response": {
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "x_frame_options",
+      "status": "defended",
+      "severity": "low",
+      "evidence": "X-Frame-Options: SAMEORIGIN",
+      "details": "Clickjacking protection active (SAMEORIGIN)",
+      "request": {},
+      "response": {
+        "X-Frame-Options": "SAMEORIGIN"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "x_content_type_options",
+      "status": "defended",
+      "severity": "low",
+      "evidence": "X-Content-Type-Options: nosniff",
+      "details": "MIME type sniffing protection is active",
+      "request": {},
+      "response": {
+        "X-Content-Type-Options": "nosniff"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "referrer_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Referrer-Policy header missing",
+      "details": "No Referrer-Policy; full URLs may leak via Referer header to third parties",
+      "request": {},
+      "response": {
+        "Referrer-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "permissions_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Neither Permissions-Policy nor Feature-Policy header present",
+      "details": "No permissions policy; browser features like camera, microphone, geolocation are unrestricted",
+      "request": {},
+      "response": {
+        "Permissions-Policy": "missing",
+        "Feature-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "server_header",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Server: nginx (no version)",
+      "details": "Server identified as nginx but no version disclosed",
+      "request": {},
+      "response": {
+        "Server": "nginx"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "server_header",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Server: nginx (no version number)",
+      "details": "Server identified as 'nginx' but version number is not disclosed",
+      "request": {},
+      "response": {
+        "Server": "nginx"
+      },
+      "duration_ms": 4.839323461055756
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "powered_by_header",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "X-Powered-By: PHP/8.3.30",
+      "details": "Technology and version exposed: PHP/8.3.30. Remove this header to reduce attack surface.",
+      "request": {},
+      "response": {
+        "X-Powered-By": "PHP/8.3.30"
+      },
+      "duration_ms": 4.680279642343521
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "common_files",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Found 5 common files: /robots.txt, /sitemap.xml, /humans.txt, /crossdomain.xml, /.well-known/security.txt",
+      "details": "Common web files detected; review for sensitive information disclosure",
+      "request": {
+        "probed_paths": [
+          "/robots.txt",
+          "/sitemap.xml",
+          "/humans.txt",
+          "/crossdomain.xml",
+          "/.well-known/security.txt"
+        ]
+      },
+      "response": {
+        "findings": [
+          {
+            "path": "/robots.txt",
+            "status": 200,
+            "summary": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/sitemap.xml",
+            "status": 200,
+            "summary": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/humans.txt",
+            "status": 200,
+            "summary": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/crossdomain.xml",
+            "status": 200,
+            "summary": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/.well-known/security.txt",
+            "status": 200,
+            "summary": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          }
+        ]
+      },
+      "duration_ms": 23.703020066022873
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "error_page_fingerprint",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Error page (200) does not reveal technology",
+      "details": "The error page does not contain recognizable technology signatures",
+      "request": {
+        "path": "/nonexistent_redteam_probe_xyz123"
+      },
+      "response": {
+        "status": 200,
+        "body_preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+      },
+      "duration_ms": 4.549261182546616
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "response_header_analysis",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No known technology markers found in response headers",
+      "details": "Response headers do not contain recognized technology-identifying headers",
+      "request": {
+        "method": "GET",
+        "path": "/"
+      },
+      "response": {
+        "total_headers": 13
+      },
+      "duration_ms": 4.976644180715084
+    },
+    {
+      "attack": "web.session",
+      "variant": "httponly_flag",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "HttpOnly flag MISSING from Set-Cookie: ",
+      "details": "Session cookie accessible via document.cookie - XSS can steal sessions",
+      "request": {
+        "checked": "HttpOnly flag"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 2.1152356639504433
+    },
+    {
+      "attack": "web.session",
+      "variant": "secure_flag",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Secure flag MISSING from Set-Cookie: ",
+      "details": "Session cookie can be sent over plain HTTP - network sniffing possible",
+      "request": {
+        "checked": "Secure flag"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 2.1152356639504433
+    },
+    {
+      "attack": "web.session",
+      "variant": "samesite_attribute",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "SameSite attribute MISSING from Set-Cookie: ",
+      "details": "No SameSite attribute - browser defaults apply (Lax in modern browsers)",
+      "request": {
+        "checked": "SameSite attribute"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 2.1152356639504433
+    },
+    {
+      "attack": "web.sri",
+      "variant": "external_scripts",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No external scripts found",
+      "details": "Page does not load any scripts from external domains",
+      "request": {
+        "checked": "/"
+      },
+      "response": {
+        "total_external_scripts": 0
+      },
+      "duration_ms": 4.961849190294743
+    },
+    {
+      "attack": "web.sri",
+      "variant": "external_styles",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No external stylesheets found",
+      "details": "Page does not load any stylesheets from external domains",
+      "request": {
+        "checked": "/"
+      },
+      "response": {
+        "total_external_styles": 0
+      },
+      "duration_ms": 4.97468002140522
+    },
+    {
+      "attack": "web.sri",
+      "variant": "cdn_resources",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No resources from known CDNs detected",
+      "details": "Page does not load resources from common CDN domains",
+      "request": {
+        "checked": "/"
+      },
+      "response": {
+        "total_cdn_resources": 0
+      },
+      "duration_ms": 4.967465065419674
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "https_available",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Site served over HTTPS (status 200)",
+      "details": "Target is accessible via HTTPS",
+      "request": {},
+      "response": {
+        "status": 200,
+        "scheme": "https"
+      },
+      "duration_ms": 5.348954349756241
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "http_redirect",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "HTTP redirects to HTTPS (301 -> https://8qdj5it341kfv92u.brandonquig.com/)",
+      "details": "HTTP requests are properly redirected to HTTPS",
+      "request": {},
+      "response": {
+        "status": 301,
+        "Location": "https://8qdj5it341kfv92u.brandonquig.com/"
+      },
+      "duration_ms": 9.078138507902622
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "mixed_content_headers",
+      "status": "partial",
+      "severity": "info",
+      "evidence": "No mixed content CSP directives found",
+      "details": "CSP does not include upgrade-insecure-requests or block-all-mixed-content; browsers may still load HTTP resources on HTTPS pages",
+      "request": {},
+      "response": {
+        "CSP": "missing"
+      },
+      "duration_ms": 5.395454354584217
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "hsts_preload",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "HSTS present but no preload directive: max-age=31536000; includeSubDomains",
+      "details": "HSTS is set but without preload; site is not eligible for browser HSTS preload lists",
+      "request": {},
+      "response": {
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+      },
+      "duration_ms": 4.873902536928654
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "secure_cookies",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No Set-Cookie headers returned from login endpoint",
+      "details": "GET /api/auth/login.php did not set any cookies",
+      "request": {
+        "endpoint": "/api/auth/login.php"
+      },
+      "response": {
+        "status": 404
+      },
+      "duration_ms": 2.5020381435751915
+    },
+    {
+      "attack": "web.xss",
+      "variant": "script_tag",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Basic script tag injection in chat message - payload not reflected",
+      "request": {
+        "payload": "<script>alert('XSS')</script>",
+        "target": "chat",
+        "session_id": "redteam-xss-c37fe765"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 4.467608407139778
+    },
+    {
+      "attack": "web.xss",
+      "variant": "event_handler",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Event handler injection in bearing note - payload not reflected",
+      "request": {
+        "payload": "<img src=x onerror=alert('XSS')>",
+        "target": "note"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 4.804492928087711
+    },
+    {
+      "attack": "web.xss",
+      "variant": "svg_onload",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "SVG onload injection in chat message - payload not reflected",
+      "request": {
+        "payload": "<svg onload=alert('XSS')>",
+        "target": "chat",
+        "session_id": "redteam-xss-c37fe765"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 5.026436410844326
+    },
+    {
+      "attack": "web.xss",
+      "variant": "markdown_javascript",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Markdown link with javascript: URI - payload not reflected",
+      "request": {
+        "payload": "[Click me](javascript:alert('XSS'))",
+        "target": "chat",
+        "session_id": "redteam-xss-c37fe765"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 3.906319849193096
+    },
+    {
+      "attack": "web.xss",
+      "variant": "html_entity_bypass",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "HTML entity encoding bypass attempt - payload not reflected",
+      "request": {
+        "payload": "<scr&#x69;pt>alert('XSS')</script>",
+        "target": "chat",
+        "session_id": "redteam-xss-c37fe765"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 4.39989659935236
+    },
+    {
+      "attack": "web.xss",
+      "variant": "css_injection",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "CSS injection via style attribute in bearing note - payload not reflected",
+      "request": {
+        "payload": "<div style=\"background:url(javascript:alert('XSS'))\">",
+        "target": "note"
+      },
+      "response": {
+        "status": 404,
+        "body": "File not found.\n"
+      },
+      "duration_ms": 4.298520274460316
+    }
+  ]
+}

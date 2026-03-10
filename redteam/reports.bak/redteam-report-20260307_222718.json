@@ -1,0 +1,637 @@
+{
+  "generated": "2026-03-07T22:27:18.300748",
+  "total_attacks": 2,
+  "total_variants": 9,
+  "total_vulnerable": 2,
+  "total_partial": 2,
+  "total_defended": 5,
+  "total_errors": 0,
+  "worst_severity": "critical",
+  "by_category": {
+    "exposure": {
+      "attacks": 2,
+      "vulnerable": 2,
+      "partial": 2,
+      "defended": 5,
+      "errors": 0,
+      "duration_ms": 843.7385559082031
+    }
+  },
+  "by_severity": {
+    "critical": 1,
+    "high": 1,
+    "medium": 1,
+    "low": 1,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T22:27:17.445239",
+    "end": "2026-03-07T22:27:18.289338",
+    "duration_ms": 844.1
+  },
+  "attacks": [
+    {
+      "name": "exposure.backup_files",
+      "category": "exposure",
+      "duration_ms": 358.2,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "exposure.sensitive_paths",
+      "category": "exposure",
+      "duration_ms": 485.5,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 3,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "exposure.backup_files",
+      "variant": "database_dumps",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No database dump files found at 7 probed paths",
+      "details": "Probed 7 common dump paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.sql",
+          "/dump.sql",
+          "/db.sql",
+          "/database.sql",
+          "/backup.sql.gz",
+          "/site.sql",
+          "/data.sql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 45.33896595239639
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "config_backups",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "Configuration backup(s) accessible: /wp-config.php.bak, /wp-config.php~, /wp-config.php.old, /wp-config.php.orig, /config.php.bak, /config.php~, /config.php.old, /web.config.bak, /web.config~, /settings.php.bak, /.env.bak, /.env~, /.env.old",
+      "details": "Found 13 exposed configuration backup(s). These may contain database credentials, API keys, and secrets. Paths: /wp-config.php.bak, /wp-config.php~, /wp-config.php.old, /wp-config.php.orig, /config.php.bak, /config.php~, /config.php.old, /web.config.bak, /web.config~, /settings.php.bak, /.env.bak, /.env~, /.env.old",
+      "request": {
+        "paths_probed": [
+          "/wp-config.php.bak",
+          "/wp-config.php~",
+          "/wp-config.php.old",
+          "/wp-config.php.orig",
+          "/config.php.bak",
+          "/config.php~",
+          "/config.php.old",
+          "/.htaccess.bak",
+          "/.htaccess~",
+          "/web.config.bak",
+          "/web.config~",
+          "/settings.php.bak",
+          "/.env.bak",
+          "/.env~",
+          "/.env.old"
+        ]
+      },
+      "response": {
+        "vulnerable_paths": [
+          {
+            "path": "/wp-config.php.bak",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/wp-config.php~",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/wp-config.php.old",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/wp-config.php.orig",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/config.php.bak",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/config.php~",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/config.php.old",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/web.config.bak",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/web.config~",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/settings.php.bak",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/.env.bak",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/.env~",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          },
+          {
+            "path": "/.env.old",
+            "status": 200,
+            "content_type": "text/html; charset=UTF-8",
+            "size": 5257,
+            "preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login - KEYSTONE</title>\n    <link rel=\"stylesh"
+          }
+        ]
+      },
+      "duration_ms": 67.77231674641371
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "archive_files",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No archive files found at 16 probed paths",
+      "details": "Probed 16 common archive paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.zip",
+          "/backup.tar.gz",
+          "/backup.tar",
+          "/backup.tgz",
+          "/site.zip",
+          "/site.tar.gz",
+          "/www.zip",
+          "/www.tar.gz",
+          "/public_html.zip",
+          "/public_html.tar.gz",
+          "/html.zip",
+          "/html.tar.gz",
+          "/web.zip",
+          "/web.tar.gz",
+          "/httpdocs.zip",
+          "/htdocs.zip"
+        ]
+      },
+      "response": {},
+      "duration_ms": 78.34897004067898
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "editor_backups",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "Editor backup paths exist but are restricted: /.htaccess~, /.htaccess.swp, /.htaccess.swo, /.htaccess.bak",
+      "details": "Server returned 401/403 for 4 editor backup path(s). Files may exist but are access controlled.",
+      "request": {
+        "paths_probed": [
+          "/index.php~",
+          "/index.php.swp",
+          "/index.php.swo",
+          "/index.php.bak",
+          "/index.html~",
+          "/index.html.swp",
+          "/index.html.swo",
+          "/index.html.bak",
+          "/wp-config.php~",
+          "/wp-config.php.swp",
+          "/wp-config.php.swo",
+          "/wp-config.php.bak",
+          "/config.php~",
+          "/config.php.swp",
+          "/config.php.swo",
+          "/config.php.bak",
+          "/settings.php~",
+          "/settings.php.swp",
+          "/settings.php.swo",
+          "/settings.php.bak",
+          "/.htaccess~",
+          "/.htaccess.swp",
+          "/.htaccess.swo",
+          "/.htaccess.bak",
+          "/login.php~",
+          "/login.php.swp",
+          "/login.php.swo",
+          "/login.php.bak",
+          "/admin.php~",
+          "/admin.php.swp",
+          "/admin.php.swo",
+          "/admin.php.bak",
+          "/.wp-config.php.swp",
+          "/.index.php.swp",
+          "/wp-login.php~",
+          "/wp-login.php.swp"
+        ]
+      },
+      "response": {
+        "restricted_paths": [
+          "/.htaccess~",
+          "/.htaccess.swp",
+          "/.htaccess.swo",
+          "/.htaccess.bak"
+        ]
+      },
+      "duration_ms": 166.57632868736982
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "phpinfo",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No phpinfo() pages found at 7 probed paths",
+      "details": "Probed 7 common phpinfo paths; none returned phpinfo() output",
+      "request": {
+        "paths_probed": [
+          "/phpinfo.php",
+          "/info.php",
+          "/php_info.php",
+          "/test.php",
+          "/phptest.php",
+          "/php.php",
+          "/i.php"
+        ]
+      },
+      "response": {},
+      "duration_ms": 15.650385990738869
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "admin_panels",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Admin path(s) found but authentication required: /admin/, /admin, /administrator/, /administrator, /phpmyadmin/",
+      "details": "Found 18 admin path(s) that require authentication (login form or 401/403). Access is properly restricted.",
+      "request": {
+        "paths_probed": [
+          "/admin/",
+          "/admin",
+          "/administrator/",
+          "/administrator",
+          "/phpmyadmin/",
+          "/phpmyadmin",
+          "/adminer.php",
+          "/adminer/",
+          "/pma/",
+          "/pma",
+          "/mysql/",
+          "/db/",
+          "/_profiler/",
+          "/_profiler",
+          "/manage/",
+          "/management/",
+          "/controlpanel/",
+          "/cpanel/",
+          "/wp-admin/"
+        ]
+      },
+      "response": {
+        "auth_protected": [
+          {
+            "path": "/admin/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/admin",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/administrator/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/administrator",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/phpmyadmin/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/phpmyadmin",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/adminer/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/pma/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/pma",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/mysql/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/db/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/_profiler/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/_profiler",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/manage/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/management/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/controlpanel/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/cpanel/",
+            "status": 200,
+            "note": "login form present"
+          },
+          {
+            "path": "/wp-admin/",
+            "status": 200,
+            "note": "login form present"
+          }
+        ]
+      },
+      "duration_ms": 108.76999516040087
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "debug_endpoints",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Debug/status endpoint(s) accessible (no obvious sensitive data): /debug, /debug/, /trace, /status, /server-status, /server-info, /health, /healthz, /info, /_debug/, /__debug__/, /actuator, /actuator/env, /actuator/health, /actuator/info, /actuator/metrics, /.env, /env",
+      "details": "Found 18 accessible debug/status endpoint(s). While no obviously sensitive data was detected, these paths should be restricted. Review manually. Paths: /debug, /debug/, /trace, /status, /server-status, /server-info, /health, /healthz, /info, /_debug/, /__debug__/, /actuator, /actuator/env, /actuator/health, /actuator/info, /actuator/metrics, /.env, /env",
+      "request": {
+        "paths_probed": [
+          "/debug",
+          "/debug/",
+          "/trace",
+          "/status",
+          "/server-status",
+          "/server-info",
+          "/health",
+          "/healthz",
+          "/info",
+          "/_debug/",
+          "/__debug__/",
+          "/actuator",
+          "/actuator/env",
+          "/actuator/health",
+          "/actuator/info",
+          "/actuator/metrics",
+          "/.env",
+          "/env"
+        ]
+      },
+      "response": {
+        "accessible_paths": [
+          {
+            "path": "/debug",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/debug/",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/trace",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/status",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/server-status",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/server-info",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/health",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/healthz",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/info",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/_debug/",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/__debug__/",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/actuator",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/actuator/env",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/actuator/health",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/actuator/info",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/actuator/metrics",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/.env",
+            "status": 200,
+            "size": 5257
+          },
+          {
+            "path": "/env",
+            "status": 200,
+            "size": 5257
+          }
+        ]
+      },
+      "duration_ms": 122.94305302202702
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "version_files",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Version/info file(s) accessible: /README.md",
+      "details": "Found 1 version disclosure file(s). These reveal software versions that attackers can use to target known CVEs. Restrict or remove these files. Paths: /README.md",
+      "request": {
+        "paths_probed": [
+          "/VERSION",
+          "/version.txt",
+          "/version",
+          "/CHANGELOG",
+          "/CHANGELOG.md",
+          "/CHANGELOG.txt",
+          "/CHANGES",
+          "/CHANGES.md",
+          "/CHANGES.txt",
+          "/readme.html",
+          "/README.md",
+          "/README.txt",
+          "/readme.txt",
+          "/license.txt",
+          "/LICENSE",
+          "/LICENSE.txt",
+          "/INSTALL",
+          "/INSTALL.txt",
+          "/RELEASE",
+          "/release-notes.txt"
+        ]
+      },
+      "response": {
+        "vulnerable_paths": [
+          {
+            "path": "/README.md",
+            "status": 200,
+            "content_type": "application/octet-stream",
+            "preview": "# Project Keystone Dashboard\n\nWeb dashboard and admin portal for Project Keystone deployments.\n\n## Overview\n\nThe Project Keystone Dashboard is the central management interface for Keystone infrastruct"
+          }
+        ]
+      },
+      "duration_ms": 126.62459071725607
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "api_docs",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No publicly accessible API documentation found at 23 probed paths",
+      "details": "Probed 23 common API doc paths; none were publicly accessible",
+      "request": {
+        "paths_probed": [
+          "/swagger-ui/",
+          "/swagger-ui",
+          "/swagger-ui.html",
+          "/swagger/",
+          "/swagger",
+          "/api-docs",
+          "/api-docs/",
+          "/api/docs",
+          "/api/docs/",
+          "/openapi.json",
+          "/openapi.yaml",
+          "/swagger.json",
+          "/swagger.yaml",
+          "/v1/api-docs",
+          "/v2/api-docs",
+          "/v3/api-docs",
+          "/redoc",
+          "/redoc/",
+          "/docs/",
+          "/graphql",
+          "/graphiql",
+          "/graphiql/",
+          "/__graphql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 111.39466427266598
+    }
+  ]
+}

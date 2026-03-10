@@ -1,0 +1,3310 @@
+{
+  "generated": "2026-03-08T19:22:55.539477",
+  "total_attacks": 44,
+  "total_variants": 158,
+  "total_vulnerable": 23,
+  "total_partial": 20,
+  "total_defended": 80,
+  "total_errors": 4,
+  "worst_severity": "critical",
+  "by_category": {
+    "api": {
+      "attacks": 6,
+      "vulnerable": 3,
+      "partial": 9,
+      "defended": 7,
+      "errors": 0,
+      "skipped": 1,
+      "not_assessed": 0,
+      "duration_ms": 13820.522546768188
+    },
+    "cloud": {
+      "attacks": 3,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0,
+      "skipped": 9,
+      "not_assessed": 0,
+      "duration_ms": 2898.568630218506
+    },
+    "cve": {
+      "attacks": 4,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0,
+      "skipped": 4,
+      "not_assessed": 0,
+      "duration_ms": 211.20381355285645
+    },
+    "dns": {
+      "attacks": 3,
+      "vulnerable": 4,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0,
+      "skipped": 0,
+      "not_assessed": 0,
+      "duration_ms": 1613.201379776001
+    },
+    "exposure": {
+      "attacks": 2,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 7,
+      "errors": 0,
+      "skipped": 0,
+      "not_assessed": 0,
+      "duration_ms": 21760.007858276367
+    },
+    "infrastructure": {
+      "attacks": 8,
+      "vulnerable": 4,
+      "partial": 5,
+      "defended": 14,
+      "errors": 1,
+      "skipped": 11,
+      "not_assessed": 0,
+      "duration_ms": 9203.277111053467
+    },
+    "malware": {
+      "attacks": 3,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 4,
+      "errors": 0,
+      "skipped": 0,
+      "not_assessed": 0,
+      "duration_ms": 570984.4431877136
+    },
+    "secrets": {
+      "attacks": 3,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 5,
+      "errors": 0,
+      "skipped": 6,
+      "not_assessed": 0,
+      "duration_ms": 3408.7252616882324
+    },
+    "web": {
+      "attacks": 12,
+      "vulnerable": 9,
+      "partial": 4,
+      "defended": 38,
+      "errors": 3,
+      "skipped": 0,
+      "not_assessed": 0,
+      "duration_ms": 8338.976383209229
+    }
+  },
+  "by_severity": {
+    "critical": 1,
+    "high": 12,
+    "medium": 18,
+    "low": 11,
+    "info": 1
+  },
+  "timing": {
+    "start": "2026-03-08T19:12:23.217578",
+    "end": "2026-03-08T19:22:55.493570",
+    "duration_ms": 632276.0
+  },
+  "attacks": [
+    {
+      "name": "api.dos_resilience",
+      "category": "api",
+      "duration_ms": 0.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "api.error_leakage",
+      "category": "api",
+      "duration_ms": 697.1,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "api.excessive_data",
+      "category": "api",
+      "duration_ms": 2692.4,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "api.input_validation",
+      "category": "api",
+      "duration_ms": 406.7,
+      "vulnerable": 0,
+      "partial": 6,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "api.mass_assignment",
+      "category": "api",
+      "duration_ms": 5022.8,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "api.rate_limiting",
+      "category": "api",
+      "duration_ms": 5001.5,
+      "vulnerable": 0,
+      "partial": 3,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cloud.iam_audit",
+      "category": "cloud",
+      "duration_ms": 939.5,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cloud.s3_buckets",
+      "category": "cloud",
+      "duration_ms": 885.8,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cloud.security_groups",
+      "category": "cloud",
+      "duration_ms": 1073.2,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cve.dependency_cve",
+      "category": "cve",
+      "duration_ms": 135.6,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "cve.dependency_freshness",
+      "category": "cve",
+      "duration_ms": 40.6,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cve.server_cve",
+      "category": "cve",
+      "duration_ms": 35.0,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "cve.config_verification",
+      "category": "cve",
+      "duration_ms": 0.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "dns.dnssec",
+      "category": "dns",
+      "duration_ms": 37.3,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "dns.email_auth",
+      "category": "dns",
+      "duration_ms": 329.3,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "dns.subdomain_takeover",
+      "category": "dns",
+      "duration_ms": 1246.6,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "exposure.backup_files",
+      "category": "exposure",
+      "duration_ms": 9878.2,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "exposure.sensitive_paths",
+      "category": "exposure",
+      "duration_ms": 11881.9,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.file_permissions",
+      "category": "infrastructure",
+      "duration_ms": 1045.0,
+      "vulnerable": 2,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.firewall_audit",
+      "category": "infrastructure",
+      "duration_ms": 257.9,
+      "vulnerable": 1,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.kernel_patch",
+      "category": "infrastructure",
+      "duration_ms": 504.9,
+      "vulnerable": 0,
+      "partial": 2,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.mqtt_audit",
+      "category": "infrastructure",
+      "duration_ms": 4005.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 1
+    },
+    {
+      "name": "infrastructure.postgres_audit",
+      "category": "infrastructure",
+      "duration_ms": 3003.5,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.service_enumeration",
+      "category": "infrastructure",
+      "duration_ms": 42.8,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.ssh_audit",
+      "category": "infrastructure",
+      "duration_ms": 0.1,
+      "vulnerable": 1,
+      "partial": 2,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "infrastructure.webserver_inventory",
+      "category": "infrastructure",
+      "duration_ms": 344.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "malware.clamav_scan",
+      "category": "malware",
+      "duration_ms": 551164.2,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "malware.rootkit_check",
+      "category": "malware",
+      "duration_ms": 8.3,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "malware.webshell_detect",
+      "category": "malware",
+      "duration_ms": 19812.0,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "secrets.env_exposure",
+      "category": "secrets",
+      "duration_ms": 3147.5,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "secrets.git_history",
+      "category": "secrets",
+      "duration_ms": 261.2,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "secrets.source_code",
+      "category": "secrets",
+      "duration_ms": 0.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "web.certificate",
+      "category": "web",
+      "duration_ms": 204.4,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.cors",
+      "category": "web",
+      "duration_ms": 126.6,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0
+    },
+    {
+      "name": "web.csrf",
+      "category": "web",
+      "duration_ms": 124.8,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "web.directory_traversal",
+      "category": "web",
+      "duration_ms": 1245.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 6,
+      "errors": 0
+    },
+    {
+      "name": "web.http_methods",
+      "category": "web",
+      "duration_ms": 242.2,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 5,
+      "errors": 0
+    },
+    {
+      "name": "web.open_redirect",
+      "category": "web",
+      "duration_ms": 5448.3,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 4,
+      "errors": 0
+    },
+    {
+      "name": "web.security_headers",
+      "category": "web",
+      "duration_ms": 31.6,
+      "vulnerable": 5,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "web.server_fingerprint",
+      "category": "web",
+      "duration_ms": 282.9,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 5,
+      "errors": 0
+    },
+    {
+      "name": "web.session",
+      "category": "web",
+      "duration_ms": 31.0,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "web.sri",
+      "category": "web",
+      "duration_ms": 31.5,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 0,
+      "errors": 3
+    },
+    {
+      "name": "web.tls_security",
+      "category": "web",
+      "duration_ms": 193.6,
+      "vulnerable": 1,
+      "partial": 2,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "web.xss",
+      "category": "web",
+      "duration_ms": 377.1,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 6,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "api.dos_resilience",
+      "variant": "skipped_aws_mode",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "Attack skipped: execution mode is 'aws'.",
+      "details": "DoS resilience tests are disabled in AWS mode to prevent resource exhaustion on EC2 instances and avoid triggering AWS abuse detection.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.error_leakage",
+      "variant": "trigger_pdo_exception",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Findings: [\"BODY: Web server identity exposed (matched 'nginx')\", \"HEADER: Web server identity exposed (matched 'nginx')\"], Status: 414, Body: <html>\r\n<head><title>414 Request-URI Too Large</title></head>\r\n<body>\r\n<center><h1>414 Request-URI Too Large</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n",
+      "details": "Sent malformed analysis_id values to trigger database errors. Found 2 leakage indicators. Details: BODY: Web server identity exposed (matched 'nginx'); HEADER: Web server identity exposed (matched 'nginx')",
+      "request": {
+        "payloads": [
+          "' ; --",
+          "not-a-uuid-at-all-!@#$%^&*()",
+          "\u0000\u0001\u0002\u0003",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      "response": {
+        "status": 414,
+        "body": "<html>\r\n<head><title>414 Request-URI Too Large</title></head>\r\n<body>\r\n<center><h1>414 Request-URI Too Large</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.error_leakage",
+      "variant": "trigger_type_error",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Findings: [\"HEADER: Web server identity exposed (matched 'nginx')\"], Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1",
+      "details": "Sent payloads with wrong types (arrays, objects, null, numbers) to trigger type errors. Found 1 leakage indicators. Details: HEADER: Web server identity exposed (matched 'nginx')",
+      "request": {
+        "payloads": [
+          "{'action': ['send_message'], 'message': {'nested': 'object'}, 'session_id': 42}",
+          "{'action': None}",
+          "{'action': 'send_message', 'message': ['array', 'of', 'strings']}"
+        ]
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.error_leakage",
+      "variant": "stack_traces_in_errors",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Stack traces found: [], Body: ",
+      "details": "Triggered 3 error conditions and checked for stack trace patterns. Found 0 stack trace occurrences. No stack traces detected.",
+      "request": {
+        "triggers": [
+          "{'action': 'delete_note'}",
+          "{'action': 'nonexistent_action_12345'}",
+          "{'action': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        ]
+      },
+      "response": {
+        "status": 0,
+        "body": ""
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.error_leakage",
+      "variant": "internal_details_in_errors",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Total findings: 1, Details: [\"HEADER: Web server identity exposed (matched 'nginx')\"]",
+      "details": "Sent 5 probe requests to trigger error conditions. Scanned all responses for file paths, DB names, table names, and server info. Found 1 unique leakage indicators. Indicators: HEADER: Web server identity exposed (matched 'nginx')",
+      "request": {
+        "probes": [
+          "GET {'analysis_id': 'invalid'}",
+          "GET {'session_id': ''}",
+          "POST {'action': 'send_message'}",
+          "DELETE {'action': 'delete_note', 'id': 'not_a_number'}",
+          "POST {'action': 'add_note'}"
+        ]
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.excessive_data",
+      "variant": "sensitive_fields_in_response",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No sensitive fields found in 3 endpoint responses",
+      "details": "API responses do not contain sensitive field names",
+      "request": {
+        "endpoints_checked": [
+          "/",
+          "/health",
+          "/api/status"
+        ]
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 395.4393994063139
+    },
+    {
+      "attack": "api.excessive_data",
+      "variant": "verbose_errors",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No verbose error details found in error responses",
+      "details": "Sent 4 malformed payloads to 3 endpoints - no stack traces or internal details leaked",
+      "request": {
+        "endpoints_checked": [
+          "/",
+          "/health",
+          "/api/status"
+        ],
+        "payloads_sent": 4
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 1613.394028507173
+    },
+    {
+      "attack": "api.excessive_data",
+      "variant": "user_data_leakage",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No excessive user data leakage detected",
+      "details": "Probed 5 user-related endpoints - none returned excessive PII fields or were not accessible",
+      "request": {
+        "endpoints_probed": [
+          "/api/users",
+          "/api/v1/users",
+          "/wp-json/wp/v2/users",
+          "/api/accounts",
+          "/api/members"
+        ]
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 683.4251983091235
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "oversized_message_1mb",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent 1MB message (1048576 chars). Got 403. Server should reject with 413 or 400.",
+      "request": {
+        "message_size": "1048576 chars (1MB)"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "null_bytes_in_message",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent message with embedded null bytes (\\x00). Got 403. Null bytes can cause string truncation or DB errors.",
+      "request": {
+        "message": "'Hello\\x00World\\x00INJECTED'"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "unicode_control_chars",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent message with Unicode control characters (RTL override U+202E, zero-width space U+200B, BOM U+FEFF). Got 403. These can enable text spoofing in UI.",
+      "request": {
+        "message": "'Normal text \\u202eHIDDEN REVERSED TEXT\\u202c\\u200b\\u200d\\ufeff end of message'"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "empty_json_body",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent POST with empty JSON body {}. Got 403. Server should return 400 for missing required fields.",
+      "request": {
+        "body": "{}"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "malformed_json",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent POST with malformed JSON body. Got 403. Server should return 400 for unparseable JSON.",
+      "request": {
+        "body": "{not valid json at all"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.input_validation",
+      "variant": "wrong_types",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Status: 403, Body: <!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, ",
+      "details": "Sent message=12345 (int), session_id=true (bool). Got 403. Server should validate input types.",
+      "request": {
+        "message": 12345,
+        "session_id": true
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.mass_assignment",
+      "variant": "role_escalation",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No privilege escalation fields accepted by the API",
+      "details": "Sent 3 payloads with admin/role fields to 3 endpoints - none were reflected in responses",
+      "request": {
+        "endpoints_tested": [
+          "/",
+          "/health",
+          "/api/status"
+        ]
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 2111.9385892525315
+    },
+    {
+      "attack": "api.mass_assignment",
+      "variant": "field_injection",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No metadata field injection accepted",
+      "details": "Sent 3 payloads with server-controlled fields to 3 endpoints - none were reflected",
+      "request": {
+        "endpoints_tested": [
+          "/",
+          "/health",
+          "/api/status"
+        ]
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 2108.7745558470488
+    },
+    {
+      "attack": "api.mass_assignment",
+      "variant": "parameter_pollution",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No parameter pollution inconsistencies detected",
+      "details": "Tested 3 endpoints with duplicate parameters - behavior was consistent",
+      "request": {
+        "endpoints_tested": [
+          "/",
+          "/health",
+          "/api/status"
+        ]
+      },
+      "response": {
+        "findings": []
+      },
+      "duration_ms": 801.9445044919848
+    },
+    {
+      "attack": "api.rate_limiting",
+      "variant": "rapid_fire_50_gets",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Sent 50 requests in 1.6s. 429 count: 0, 200 count: 0",
+      "details": "Mixed responses (no 429). Statuses: {403}.",
+      "request": {
+        "num_requests": 50,
+        "elapsed_sec": 1.6
+      },
+      "response": {
+        "status_distribution": {
+          "403": 50
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.rate_limiting",
+      "variant": "concurrent_sse_10_streams",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Sent 10 concurrent requests in 0.1s. Statuses: [403, 403, 403, 403, 403, 403, 403, 403, 403, 403]",
+      "details": "Mixed responses under concurrent load. Statuses: {403}.",
+      "request": {
+        "num_concurrent": 10,
+        "elapsed_sec": 0.13
+      },
+      "response": {
+        "status_distribution": {
+          "403": 10
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "api.rate_limiting",
+      "variant": "note_spam_100",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Created 0 of 100 notes in 3.3s. 429 count: 0",
+      "details": "Mixed responses during note spam. Statuses: {403}.",
+      "request": {
+        "num_notes": 100,
+        "device_id": "redteam-ratelimit-device-ccd283b2",
+        "elapsed_sec": 3.27
+      },
+      "response": {
+        "status_distribution": {
+          "403": 100
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.iam_audit",
+      "variant": "mfa_disabled",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:policy/AWSCompromisedKeyQuarantineV3\n",
+      "details": "Unable to list IAM users. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:poli",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.iam_audit",
+      "variant": "access_key_age",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:policy/AWSCompromisedKeyQuarantineV3\n",
+      "details": "Unable to list IAM users. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:poli",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.iam_audit",
+      "variant": "root_access_keys",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:policy/AWSCompromisedKeyQuarantineV3\n",
+      "details": "Unable to list IAM users. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListUsers operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::051951709252:user/ with an explicit deny in an identity-based policy: arn:aws:iam::aws:poli",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.s3_buckets",
+      "variant": "public_buckets",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "details": "Unable to list S3 buckets. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.s3_buckets",
+      "variant": "bucket_encryption",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "details": "Unable to list S3 buckets. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.s3_buckets",
+      "variant": "bucket_logging",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "\nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "details": "Unable to list S3 buckets. Ensure AWS credentials are configured (run `aws configure` or set AWS_PROFILE / AWS_ACCESS_KEY_ID env vars).\nError: \nAn error occurred (AccessDenied) when calling the ListBuckets operation: User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: s3:ListAllMyBuckets with an explicit deny in an identity-based policy\n",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.security_groups",
+      "variant": "unrestricted_ingress",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy allows the ec2:DescribeSecurityGroups action\n",
+      "details": "Unable to describe EC2 security groups. Ensure AWS credentials are configured and the ec2:DescribeSecurityGroups permission is granted.\nError: \nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.security_groups",
+      "variant": "default_sg_rules",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy allows the ec2:DescribeSecurityGroups action\n",
+      "details": "Unable to describe EC2 security groups. Ensure AWS credentials are configured and the ec2:DescribeSecurityGroups permission is granted.\nError: \nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cloud.security_groups",
+      "variant": "wide_port_ranges",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "\nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy allows the ec2:DescribeSecurityGroups action\n",
+      "details": "Unable to describe EC2 security groups. Ensure AWS credentials are configured and the ec2:DescribeSecurityGroups permission is granted.\nError: \nAn error occurred (UnauthorizedOperation) when calling the DescribeSecurityGroups operation: You are not authorized to perform this operation. User: arn:aws:iam::051951709252:user/groundtruth-studio-dev-server is not authorized to perform: ec2:DescribeSecurityGroups because no identity-based policy",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cve.dependency_cve",
+      "variant": "dependency/no_manifests",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No dependency manifests exposed",
+      "details": "Probed package.json, composer.json, requirements.txt, and Gemfile.lock \u2014 none are publicly accessible.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "cve.dependency_freshness",
+      "variant": "npm_outdated",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "",
+      "details": "No source_path configured - cannot check npm packages",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0005913898348808289
+    },
+    {
+      "attack": "cve.dependency_freshness",
+      "variant": "composer_outdated",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "",
+      "details": "No source_path configured - cannot check Composer packages",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0006603077054023743
+    },
+    {
+      "attack": "cve.dependency_freshness",
+      "variant": "python_outdated",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "",
+      "details": "No source_path configured - cannot check Python dependencies",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0002896413207054138
+    },
+    {
+      "attack": "cve.dependency_freshness",
+      "variant": "php_version",
+      "status": "skipped",
+      "severity": "medium",
+      "evidence": "",
+      "details": "Could not determine PHP version from headers or local binary",
+      "request": {},
+      "response": {},
+      "duration_ms": 40.523504838347435
+    },
+    {
+      "attack": "cve.server_cve",
+      "variant": "server/nginx/no_version",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Server software 'nginx' detected but no version",
+      "details": "The server identifies as 'nginx' but does not disclose a specific version. CVE lookup skipped.",
+      "request": {
+        "method": "GET",
+        "path": "/"
+      },
+      "response": {
+        "headers": {
+          "Server": "nginx",
+          "X-Powered-By": ""
+        }
+      },
+      "duration_ms": 0.00288989394903183
+    },
+    {
+      "attack": "cve.config_verification",
+      "variant": "config_verification/no_findings",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No CVEs found by previous attacks",
+      "details": "Configuration verification skipped (no CVEs to verify)",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.014951452612876892
+    },
+    {
+      "attack": "dns.dnssec",
+      "variant": "dnssec_enabled",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "No RRSIG records found for cp.quigs.com",
+      "details": "DNSSEC is not enabled for this domain. Without DNSSEC, DNS responses can be forged (DNS spoofing/cache poisoning attacks).",
+      "request": {
+        "command": "dig +dnssec cp.quigs.com A"
+      },
+      "response": {
+        "has_rrsig": false,
+        "has_ad_flag": false,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> +dnssec cp.quigs.com A\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 39417\n;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;cp.quigs.com.\t\t\tIN\tA\n\n;; ANSWER SECTION:\ncp.quigs.com.\t\t103\tIN\tCNAME\tec2-3-17-162-37.us-east-2.compute.amazonaws.com.\nec2-3-17-162-37.us-east-2.compute.amazonaws.com. 103 IN\tA 3."
+      },
+      "duration_ms": 18.520585261285305
+    },
+    {
+      "attack": "dns.dnssec",
+      "variant": "ds_record",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "DS record found at parent zone for cp.quigs.com",
+      "details": "DS record is present at the parent zone \u2014 the DNSSEC chain of trust is established",
+      "request": {
+        "command": "dig DS cp.quigs.com"
+      },
+      "response": {
+        "has_ds": true,
+        "nxdomain": false,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> DS cp.quigs.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 50978\n;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 2\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;cp.quigs.com.\t\t\tIN\tDS\n\n;; ANSWER SECTION:\ncp.quigs.com.\t\t103\tIN\tCNAME\tec2-3-17-162-37.us-east-2.compute.amazonaws.com.\n\n;; ADDITIONAL SECTION:\nec2-3-17-162-37.us-east-2.compute.amaz"
+      },
+      "duration_ms": 18.608358688652515
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "spf",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No SPF record found for cp.quigs.com",
+      "details": "No SPF TXT record exists. Without SPF, anyone can send email claiming to be from this domain (email spoofing).",
+      "request": {
+        "command": "dig TXT cp.quigs.com"
+      },
+      "response": {
+        "spf_record": null,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> TXT cp.quigs.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 37420\n;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;cp.quigs.com.\t\t\tIN\tTXT\n\n;; ANSWER SECTION:\ncp.quigs.com.\t\t103\tIN\tCNAME\tec2-3-17-162-37.us-east-2.compute.amazonaws.com.\n\n;; AUTHORITY SECTION:\nus-east-2.compute.amazonaws.com. 60 IN\tSOA\tns-1855.awsdns-39.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 60\n\n;; ADDITIONAL SECTIO"
+      },
+      "duration_ms": 40.363081730902195
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "dkim",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No DKIM records found for any of the common selectors on cp.quigs.com",
+      "details": "No DKIM TXT records found at common selectors (default, google, selector1, selector2, mail, k1). Without DKIM, recipients cannot verify that emails were sent by authorised servers and email contents may be modified in transit.",
+      "request": {
+        "command": "dig TXT <selector>._domainkey.cp.quigs.com",
+        "selectors_checked": [
+          "default",
+          "google",
+          "selector1",
+          "selector2",
+          "mail",
+          "k1"
+        ]
+      },
+      "response": {
+        "found_selectors": [],
+        "missing_selectors": [
+          "default",
+          "google",
+          "selector1",
+          "selector2",
+          "mail",
+          "k1"
+        ]
+      },
+      "duration_ms": 247.57722485810518
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "dmarc",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No DMARC record found at _dmarc.cp.quigs.com",
+      "details": "No DMARC record exists. Without DMARC, email receivers have no policy guidance for handling SPF/DKIM failures, enabling phishing and email spoofing.",
+      "request": {
+        "command": "dig TXT _dmarc.cp.quigs.com"
+      },
+      "response": {
+        "dmarc_record": null,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> TXT _dmarc.cp.quigs.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 61692\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;_dmarc.cp.quigs.com.\t\tIN\tTXT\n\n;; AUTHORITY SECTION:\nquigs.com.\t\t1800\tIN\tSOA\tdayana.ns.cloudflare.com. dns.cloudflare.com. 2398484352 10000 2400 604800 1800\n\n;; Query time: 21 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: Sun Mar 08 19:12:40 CDT 2026\n;; MSG SIZE  rc"
+      },
+      "duration_ms": 41.20944533497095
+    },
+    {
+      "attack": "dns.subdomain_takeover",
+      "variant": "dangling_cname",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "CNAME cp.quigs.com -> ec2-3-17-162-37.us-east-2.compute.amazonaws.com resolves correctly",
+      "details": "CNAME target resolves \u2014 no dangling CNAME detected for primary hostname",
+      "request": {
+        "command": "dig CNAME cp.quigs.com && dig A <cname_target>"
+      },
+      "response": {
+        "has_cname": true,
+        "cname_target": "ec2-3-17-162-37.us-east-2.compute.amazonaws.com",
+        "is_dangling": false
+      },
+      "duration_ms": 37.14667074382305
+    },
+    {
+      "attack": "dns.subdomain_takeover",
+      "variant": "common_subdomains",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No CNAME records found on common subdomains of cp.quigs.com",
+      "details": "None of the common subdomains use CNAME records \u2014 no subdomain takeover risk via CNAMEs",
+      "request": {
+        "command": "dig CNAME <subdomain>.<domain> && dig A <cname_target>",
+        "subdomains_checked": [
+          "www",
+          "mail",
+          "ftp",
+          "dev",
+          "staging"
+        ],
+        "aws_mode": true
+      },
+      "response": {
+        "vulnerable": [],
+        "defended": [],
+        "no_cname": [
+          "www.cp.quigs.com",
+          "mail.cp.quigs.com",
+          "ftp.cp.quigs.com",
+          "dev.cp.quigs.com",
+          "staging.cp.quigs.com"
+        ]
+      },
+      "duration_ms": 1209.2819679528475
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "database_dumps",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No database dump files found at 7 probed paths",
+      "details": "Probed 7 common dump paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.sql",
+          "/dump.sql",
+          "/db.sql",
+          "/database.sql",
+          "/backup.sql.gz",
+          "/site.sql",
+          "/data.sql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 931.6600877791643
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "config_backups",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No configuration backup files found at 15 probed paths",
+      "details": "Probed 15 common config backup paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/wp-config.php.bak",
+          "/wp-config.php~",
+          "/wp-config.php.old",
+          "/wp-config.php.orig",
+          "/config.php.bak",
+          "/config.php~",
+          "/config.php.old",
+          "/.htaccess.bak",
+          "/.htaccess~",
+          "/web.config.bak",
+          "/web.config~",
+          "/settings.php.bak",
+          "/.env.bak",
+          "/.env~",
+          "/.env.old"
+        ]
+      },
+      "response": {},
+      "duration_ms": 1988.0024455487728
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "archive_files",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No archive files found at 16 probed paths",
+      "details": "Probed 16 common archive paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/backup.zip",
+          "/backup.tar.gz",
+          "/backup.tar",
+          "/backup.tgz",
+          "/site.zip",
+          "/site.tar.gz",
+          "/www.zip",
+          "/www.tar.gz",
+          "/public_html.zip",
+          "/public_html.tar.gz",
+          "/html.zip",
+          "/html.tar.gz",
+          "/web.zip",
+          "/web.tar.gz",
+          "/httpdocs.zip",
+          "/htdocs.zip"
+        ]
+      },
+      "response": {},
+      "duration_ms": 2131.0869604349136
+    },
+    {
+      "attack": "exposure.backup_files",
+      "variant": "editor_backups",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "No editor backup files found at 36 probed paths",
+      "details": "Probed 36 common editor backup paths; none returned accessible content",
+      "request": {
+        "paths_probed": [
+          "/index.php~",
+          "/index.php.swp",
+          "/index.php.swo",
+          "/index.php.bak",
+          "/index.html~",
+          "/index.html.swp",
+          "/index.html.swo",
+          "/index.html.bak",
+          "/wp-config.php~",
+          "/wp-config.php.swp",
+          "/wp-config.php.swo",
+          "/wp-config.php.bak",
+          "/config.php~",
+          "/config.php.swp",
+          "/config.php.swo",
+          "/config.php.bak",
+          "/settings.php~",
+          "/settings.php.swp",
+          "/settings.php.swo",
+          "/settings.php.bak",
+          "/.htaccess~",
+          "/.htaccess.swp",
+          "/.htaccess.swo",
+          "/.htaccess.bak",
+          "/login.php~",
+          "/login.php.swp",
+          "/login.php.swo",
+          "/login.php.bak",
+          "/admin.php~",
+          "/admin.php.swp",
+          "/admin.php.swo",
+          "/admin.php.bak",
+          "/.wp-config.php.swp",
+          "/.index.php.swp",
+          "/wp-login.php~",
+          "/wp-login.php.swp"
+        ]
+      },
+      "response": {},
+      "duration_ms": 4827.260361984372
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "phpinfo",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No phpinfo() pages found at 7 probed paths",
+      "details": "Probed 7 common phpinfo paths; none returned phpinfo() output",
+      "request": {
+        "paths_probed": [
+          "/phpinfo.php",
+          "/info.php",
+          "/php_info.php",
+          "/test.php",
+          "/phptest.php",
+          "/php.php",
+          "/i.php"
+        ]
+      },
+      "response": {},
+      "duration_ms": 959.8479382693768
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "admin_panels",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Admin panel(s) accessible without authentication: /phpmyadmin/, /phpmyadmin",
+      "details": "Found 2 admin panel(s) returning 200 without authentication or login redirect. These may allow unauthorized access to administrative functions. Paths: /phpmyadmin/, /phpmyadmin",
+      "request": {
+        "paths_probed": [
+          "/admin/",
+          "/admin",
+          "/administrator/",
+          "/administrator",
+          "/phpmyadmin/",
+          "/phpmyadmin",
+          "/adminer.php",
+          "/adminer/",
+          "/pma/",
+          "/pma",
+          "/mysql/",
+          "/db/",
+          "/_profiler/",
+          "/_profiler",
+          "/manage/",
+          "/management/",
+          "/controlpanel/",
+          "/cpanel/",
+          "/wp-admin/"
+        ]
+      },
+      "response": {
+        "accessible_paths": [
+          {
+            "path": "/phpmyadmin/",
+            "status": 200,
+            "preview": "<!doctype html>\n<html lang=\"en\" dir=\"ltr\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"referrer\" content=\"same-origin\">\n  <meta"
+          },
+          {
+            "path": "/phpmyadmin",
+            "status": 200,
+            "preview": "<!doctype html>\n<html lang=\"en\" dir=\"ltr\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"referrer\" content=\"same-origin\">\n  <meta"
+          }
+        ],
+        "auth_protected": []
+      },
+      "duration_ms": 2772.8058733046055
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "debug_endpoints",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "Debug/status endpoint(s) expose sensitive data: /server-status. Indicators: Server MPM, phpinfo, Apache Server Status, Server Version, requests currently being processed",
+      "details": "Found 1 debug/status endpoint(s) that expose sensitive server information. These may reveal environment variables, credentials, stack traces, or server internals. Paths: /server-status",
+      "request": {
+        "paths_probed": [
+          "/debug",
+          "/debug/",
+          "/trace",
+          "/status",
+          "/server-status",
+          "/server-info",
+          "/health",
+          "/healthz",
+          "/info",
+          "/_debug/",
+          "/__debug__/",
+          "/actuator",
+          "/actuator/env",
+          "/actuator/health",
+          "/actuator/info",
+          "/actuator/metrics",
+          "/.env",
+          "/env"
+        ]
+      },
+      "response": {
+        "vulnerable_paths": [
+          {
+            "path": "/server-status",
+            "status": 200,
+            "indicators": [
+              "phpinfo",
+              "Server Version",
+              "Server MPM",
+              "Apache Server Status",
+              "requests currently being processed"
+            ],
+            "preview": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<html><head>\n<title>Apache Status</title>\n</head><body>\n<h1>Apache Server Status for cp.quigs.com (via 172.31.3.116)</h1>\n\n<dl><dt>Server Version: Apache/2.4.58 (Ubuntu) mod_fcgid/2.3.9 OpenSSL/3.0.13</dt>\n<dt>Server MPM: event</dt>\n<dt>Server "
+          }
+        ]
+      },
+      "duration_ms": 2400.648391805589
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "version_files",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No version disclosure files found at 20 probed paths",
+      "details": "Probed 20 common version/info file paths; none were accessible",
+      "request": {
+        "paths_probed": [
+          "/VERSION",
+          "/version.txt",
+          "/version",
+          "/CHANGELOG",
+          "/CHANGELOG.md",
+          "/CHANGELOG.txt",
+          "/CHANGES",
+          "/CHANGES.md",
+          "/CHANGES.txt",
+          "/readme.html",
+          "/README.md",
+          "/README.txt",
+          "/readme.txt",
+          "/license.txt",
+          "/LICENSE",
+          "/LICENSE.txt",
+          "/INSTALL",
+          "/INSTALL.txt",
+          "/RELEASE",
+          "/release-notes.txt"
+        ]
+      },
+      "response": {},
+      "duration_ms": 2671.4919544756413
+    },
+    {
+      "attack": "exposure.sensitive_paths",
+      "variant": "api_docs",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No publicly accessible API documentation found at 23 probed paths",
+      "details": "Probed 23 common API doc paths; none were publicly accessible",
+      "request": {
+        "paths_probed": [
+          "/swagger-ui/",
+          "/swagger-ui",
+          "/swagger-ui.html",
+          "/swagger/",
+          "/swagger",
+          "/api-docs",
+          "/api-docs/",
+          "/api/docs",
+          "/api/docs/",
+          "/openapi.json",
+          "/openapi.yaml",
+          "/swagger.json",
+          "/swagger.yaml",
+          "/v1/api-docs",
+          "/v2/api-docs",
+          "/v3/api-docs",
+          "/redoc",
+          "/redoc/",
+          "/docs/",
+          "/graphql",
+          "/graphiql",
+          "/graphiql/",
+          "/__graphql"
+        ]
+      },
+      "response": {},
+      "duration_ms": 3076.856505125761
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "world_writable",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No world-writable files found in /etc or /var/www",
+      "details": "No world-writable files were detected in critical directories.",
+      "request": {
+        "search_dirs": [
+          "/etc",
+          "/var/www"
+        ]
+      },
+      "response": {
+        "count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "suid_binaries",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "12 SUID binary(ies) found, all in expected list",
+      "details": "All SUID binaries are recognized as standard system binaries.",
+      "request": {
+        "search_dirs": [
+          "/usr/bin",
+          "/usr/sbin",
+          "/usr/local/bin"
+        ]
+      },
+      "response": {
+        "total_suid": 12,
+        "unexpected": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "sensitive_configs",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "1 sensitive file(s) with overly permissive permissions",
+      "details": "Sensitive configuration files have permissions that are too loose. This may allow unauthorized users to read credentials or private keys:\n  - /etc/ssl/private: 0o710 (should be 0o700 or stricter)",
+      "request": {
+        "files_checked": [
+          "/etc/shadow",
+          "/etc/shadow-",
+          "/etc/gshadow",
+          "/etc/gshadow-",
+          "/etc/ssh/ssh_host_rsa_key",
+          "/etc/ssh/ssh_host_ecdsa_key",
+          "/etc/ssh/ssh_host_ed25519_key",
+          "/etc/ssh/sshd_config",
+          "/etc/ssl/private"
+        ]
+      },
+      "response": {
+        "issues": [
+          "/etc/ssl/private: 0o710 (should be 0o700 or stricter)"
+        ],
+        "checked": 9
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.file_permissions",
+      "variant": "web_root_perms",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "6 permission issue(s) in web root",
+      "details": "Permission issues found in /var/www/html:\n  - /var/www/html: group-writable and world-executable (0o2775)\n  - /var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials\n  - /var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials\n  - /var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials\n  - /var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials\n  - /var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials\nEnsure web files are owned by www-data with minimal permissions (644 for files, 755 for directories).",
+      "request": {
+        "web_root": "/var/www/html"
+      },
+      "response": {
+        "issues": [
+          "/var/www/html: group-writable and world-executable (0o2775)",
+          "/var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials",
+          "/var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials",
+          "/var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials",
+          "/var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials",
+          "/var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "firewall_active",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Firewall active: ufw",
+      "details": "ufw firewall is active and running.",
+      "request": {
+        "checked": [
+          "ufw",
+          "nftables",
+          "iptables"
+        ]
+      },
+      "response": {
+        "firewall": "ufw",
+        "output_preview": "Status: active\n\nTo                         Action      From\n--                         ------      ----\n22/tcp                     ALLOW       Anywhere                   # SSH\n80/tcp                     ALLOW       Anywhere                   # HTTP\n443/tcp                    ALLOW       Anywhere                   # HTTPS\n8765/tcp                   ALLOW       Anywhere                   # claude-worker\nAnywhere on tailscale0     ALLOW       Anywhere                  \n172.200.1.1 5432/tcp on br-a4"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "default_policy",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "INPUT policy: unknown, FORWARD policy: unknown",
+      "details": "Default firewall policies are restrictive (DROP/REJECT).",
+      "request": {
+        "firewall": "ufw"
+      },
+      "response": {
+        "input_policy": "unknown",
+        "forward_policy": "unknown"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "open_ports",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "11 ACCEPT rule(s), 3 on sensitive ports",
+      "details": "Found 11 port ACCEPT rule(s). Sensitive ports with ACCEPT rules:\n  - Port 22 (SSH): 22/tcp                     ALLOW       Anywhere                   # SSH\n  - Port 5432 (PostgreSQL): 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere\n  - Port 22 (SSH): 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH\nReview whether all of these ports need to be accessible.",
+      "request": {
+        "firewall": "ufw"
+      },
+      "response": {
+        "total_rules": 11,
+        "flagged": [
+          "Port 22 (SSH): 22/tcp                     ALLOW       Anywhere                   # SSH",
+          "Port 5432 (PostgreSQL): 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere",
+          "Port 22 (SSH): 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.firewall_audit",
+      "variant": "unrestricted_input",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "3 unrestricted rule(s) on sensitive ports",
+      "details": "Sensitive ports are accessible from any source IP (0.0.0.0/0). Restrict these rules to specific IP ranges:\n  - Port 22 (SSH) allowed from Anywhere: 22/tcp                     ALLOW       Anywhere                   # SSH\n  - Port 5432 (PostgreSQL) allowed from Anywhere: 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere\n  - Port 22 (SSH) allowed from Anywhere: 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH",
+      "request": {
+        "firewall": "ufw"
+      },
+      "response": {
+        "unrestricted_rules": [
+          "Port 22 (SSH) allowed from Anywhere: 22/tcp                     ALLOW       Anywhere                   # SSH",
+          "Port 5432 (PostgreSQL) allowed from Anywhere: 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere",
+          "Port 22 (SSH) allowed from Anywhere: 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "kernel_version",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Kernel 6.14.0-37-generic (series 6.14) is not in known EOL list",
+      "details": "Running kernel 6.14.0-37-generic. The 6.14 series is not flagged as end-of-life. Verify with your distribution's support lifecycle.",
+      "request": {
+        "tool": "uname -r"
+      },
+      "response": {
+        "kernel_release": "6.14.0-37-generic",
+        "kernel_version": "#37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2",
+        "series": "6.14",
+        "eol": false
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "pending_updates",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "15 pending update(s), none flagged as security",
+      "details": "There are 15 pending package update(s), but none are explicitly flagged as security updates. Consider applying them:\n  - libvirt-clients/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-config-network/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-config-nwfilter/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-driver-qemu/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-system-systemd/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon-system/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-daemon/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt-l10n/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]\n  - libvirt0/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]\n  - linux-base/noble-updates 4.5ubuntu9+24.04.2 all [upgradable from: 4.5ubuntu9+24.04.1]",
+      "request": {
+        "tool": "apt list --upgradable"
+      },
+      "response": {
+        "total_upgradable": 15,
+        "security_upgradable": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.kernel_patch",
+      "variant": "reboot_required",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "/var/run/reboot-required exists -- reboot required",
+      "details": "A system reboot is required to apply installed updates.\nPackages requiring reboot (5):\n  - gnome-shell\n  - libc6\n  - linux-image-6.17.0-14-generic\n  - linux-base\n  - evolution-data-server",
+      "request": {
+        "checked": "/var/run/reboot-required"
+      },
+      "response": {
+        "reboot_required": true,
+        "packages": [
+          "gnome-shell",
+          "libc6",
+          "linux-image-6.17.0-14-generic",
+          "linux-base",
+          "evolution-data-server"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "anonymous_connect",
+      "status": "error",
+      "severity": "high",
+      "evidence": "Could not reach cp.quigs.com:1883 \u2014 connection timed out",
+      "details": "Broker port unreachable. Verify host/port and network path.",
+      "request": {
+        "host": "cp.quigs.com",
+        "port": 1883
+      },
+      "response": {
+        "error": "connection timed out"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "default_credentials",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Broker cp.quigs.com:1883 unreachable \u2014 skipped",
+      "details": "Broker port could not be reached. Remaining MQTT checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "credential_brute",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Broker cp.quigs.com:1883 unreachable \u2014 skipped",
+      "details": "Broker port could not be reached. Remaining MQTT checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "acl_wildcard_subscribe",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Broker cp.quigs.com:1883 unreachable \u2014 skipped",
+      "details": "Broker port could not be reached. Remaining MQTT checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "plaintext_transport",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Broker cp.quigs.com:1883 unreachable \u2014 skipped",
+      "details": "Broker port could not be reached. Remaining MQTT checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.mqtt_audit",
+      "variant": "websocket_exposure",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Broker cp.quigs.com:1883 unreachable \u2014 skipped",
+      "details": "Broker port could not be reached. Remaining MQTT checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "port_exposure",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "TCP port 5432 on cp.quigs.com is not reachable: port closed or filtered",
+      "details": "PostgreSQL port is not accessible from this network context. DB port is properly firewalled from untrusted segments.",
+      "request": {
+        "host": "cp.quigs.com",
+        "port": 5432
+      },
+      "response": {
+        "open": false,
+        "error": "port closed or filtered"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "trust_auth_exposure",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "default_credentials",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "superuser_enumeration",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "dangerous_extensions",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "public_schema_writeable",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.postgres_audit",
+      "variant": "pg_version_disclosure",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "Port 5432 unreachable on cp.quigs.com \u2014 skipped",
+      "details": "PostgreSQL port not reachable; remaining audit checks skipped.",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "listening_services",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "44 listening service(s) enumerated",
+      "details": "Found 44 listening TCP service(s):\n  - 127.0.0.53%lo:53 (users:((\"systemd-resolve\",pid=1816643,fd=15)))\n  - 127.0.0.1:3306 (users:((\"mysqld\",pid=945406,fd=33)))\n  - 0.0.0.0:8082 (users:((\"python\",pid=1097914,fd=16)))\n  - 0.0.0.0:8081 (users:((\"docker-proxy\",pid=3216998,fd=7)))\n  - 127.0.0.1:631 (users:((\"cupsd\",pid=3245352,fd=7)))\n  - 0.0.0.0:5000 (users:((\"python\",pid=1080807,fd=3)))\n  - 127.0.0.1:33060 (users:((\"mysqld\",pid=945406,fd=32)))\n  - 127.0.0.1:6379 (users:((\"redis-server\",pid=491553,fd=6)))\n  - 0.0.0.0:3002 (users:((\"finance-manager\",pid=3112412,fd=12)))\n  - 0.0.0.0:25 (users:((\"master\",pid=2301699,fd=13)))\n  - 0.0.0.0:22 (users:((\"sshd\",pid=3147837,fd=3),(\"systemd\",pid=1,fd=399)))\n  - 0.0.0.0:80 (users:((\"nginx\",pid=3655514,fd=5),(\"nginx\",pid=3655513,fd=5),(\"nginx\",pid=3655512,fd=5),(\"nginx\",pid=3655511,fd=5),(\"nginx\",pid=3655510,fd=5),(\"nginx\",pid=3655509,fd=5),(\"nginx\",pid=3655507,fd=5),(\"nginx\",pid=3655506,fd=5),(\"nginx\",pid=3655505,fd=5),(\"nginx\",pid=3655504,fd=5),(\"nginx\",pid=3655502,fd=5),(\"nginx\",pid=3655501,fd=5),(\"nginx\",pid=2188371,fd=5)))\n  - 0.0.0.0:443 (users:((\"nginx\",pid=3655514,fd=37),(\"nginx\",pid=3655513,fd=37),(\"nginx\",pid=3655512,fd=37),(\"nginx\",pid=3655511,fd=37),(\"nginx\",pid=3655510,fd=37),(\"nginx\",pid=3655509,fd=37),(\"nginx\",pid=3655507,fd=37),(\"nginx\",pid=3655506,fd=37),(\"nginx\",pid=3655505,fd=37),(\"nginx\",pid=3655504,fd=37),(\"nginx\",pid=3655502,fd=37),(\"nginx\",pid=3655501,fd=37),(\"nginx\",pid=2188371,fd=37)))\n  - 127.0.0.54:53 (users:((\"systemd-resolve\",pid=1816643,fd=17)))\n  - 127.0.0.1:5174 (users:((\"node\",pid=3577650,fd=31)))\n  - 127.0.0.1:5432 (users:((\"postgres\",pid=3702094,fd=6)))\n  - 172.200.1.1:5432 (users:((\"postgres\",pid=3702094,fd=7)))\n  - 192.168.122.1:53 (users:((\"dnsmasq\",pid=1538557,fd=6)))\n  - 0.0.0.0:8444 (users:((\"nginx\",pid=3655514,fd=7),(\"nginx\",pid=3655513,fd=7),(\"nginx\",pid=3655512,fd=7),(\"nginx\",pid=3655511,fd=7),(\"nginx\",pid=3655510,fd=7),(\"nginx\",pid=3655509,fd=7),(\"nginx\",pid=3655507,fd=7),(\"nginx\",pid=3655506,fd=7),(\"nginx\",pid=3655505,fd=7),(\"nginx\",pid=3655504,fd=7),(\"nginx\",pid=3655502,fd=7),(\"nginx\",pid=3655501,fd=7),(\"nginx\",pid=2188371,fd=7)))\n  - 0.0.0.0:8443 (users:((\"nginx\",pid=3655514,fd=9),(\"nginx\",pid=3655513,fd=9),(\"nginx\",pid=3655512,fd=9),(\"nginx\",pid=3655511,fd=9),(\"nginx\",pid=3655510,fd=9),(\"nginx\",pid=3655509,fd=9),(\"nginx\",pid=3655507,fd=9),(\"nginx\",pid=3655506,fd=9),(\"nginx\",pid=3655505,fd=9),(\"nginx\",pid=3655504,fd=9),(\"nginx\",pid=3655502,fd=9),(\"nginx\",pid=3655501,fd=9),(\"nginx\",pid=2188371,fd=9)))\n  - 100.94.77.110:42943 (users:((\"tailscaled\",pid=485488,fd=22)))\n  - 0.0.0.0:8883 (users:((\"mosquitto\",pid=1816485,fd=5)))\n  - 0.0.0.0:8765 (users:((\"python\",pid=491489,fd=6)))\n  - 0.0.0.0:9090 (users:((\"docker-proxy\",pid=2181334,fd=7)))\n  - 127.0.0.1:63150 (users:((\"wifiman-desktop\",pid=1816564,fd=10)))\n  - 127.0.0.1:46271 (users:((\"containerd\",pid=1274871,fd=9)))\n  - [::]:8081 (users:((\"docker-proxy\",pid=3217004,fd=7)))\n  - *:3000 ((v1\",pid=491676,fd=19)))\n  - *:3001 ((v1\",pid=503951,fd=18)))\n  - [fd7a:115c:a1e0::e301:4d93]:49299 (users:((\"tailscaled\",pid=485488,fd=23)))\n\nWeb servers detected:\n  - Port 80: users:((\"nginx\",pid=3655514,fd=6),(\"nginx\",pid=3655513,fd=6),(\"nginx\",pid=3655512,fd=6),(\"nginx\",pid=3655511,fd=6),(\"nginx\",pid=3655510,fd=6),(\"nginx\",pid=3655509,fd=6),(\"nginx\",pid=3655507,fd=6),(\"nginx\",pid=3655506,fd=6),(\"nginx\",pid=3655505,fd=6),(\"nginx\",pid=3655504,fd=6),(\"nginx\",pid=3655502,fd=6),(\"nginx\",pid=3655501,fd=6),(\"nginx\",pid=2188371,fd=6)) ([::])\n  - Port 443: users:((\"nginx\",pid=3655514,fd=38),(\"nginx\",pid=3655513,fd=38),(\"nginx\",pid=3655512,fd=38),(\"nginx\",pid=3655511,fd=38),(\"nginx\",pid=3655510,fd=38),(\"nginx\",pid=3655509,fd=38),(\"nginx\",pid=3655507,fd=38),(\"nginx\",pid=3655506,fd=38),(\"nginx\",pid=3655505,fd=38),(\"nginx\",pid=3655504,fd=38),(\"nginx\",pid=3655502,fd=38),(\"nginx\",pid=3655501,fd=38),(\"nginx\",pid=2188371,fd=38)) ([::])\n  - Port 8443: users:((\"nginx\",pid=3655514,fd=10),(\"nginx\",pid=3655513,fd=10),(\"nginx\",pid=3655512,fd=10),(\"nginx\",pid=3655511,fd=10),(\"nginx\",pid=3655510,fd=10),(\"nginx\",pid=3655509,fd=10),(\"nginx\",pid=3655507,fd=10),(\"nginx\",pid=3655506,fd=10),(\"nginx\",pid=3655505,fd=10),(\"nginx\",pid=3655504,fd=10),(\"nginx\",pid=3655502,fd=10),(\"nginx\",pid=3655501,fd=10),(\"nginx\",pid=2188371,fd=10)) ([::])\n",
+      "request": {
+        "tool": "ss -tlnp"
+      },
+      "response": {
+        "service_count": 44,
+        "services": [
+          "127.0.0.53%lo:53 (users:((\"systemd-resolve\",pid=1816643,fd=15)))",
+          "127.0.0.1:3306 (users:((\"mysqld\",pid=945406,fd=33)))",
+          "0.0.0.0:8082 (users:((\"python\",pid=1097914,fd=16)))",
+          "0.0.0.0:8081 (users:((\"docker-proxy\",pid=3216998,fd=7)))",
+          "127.0.0.1:631 (users:((\"cupsd\",pid=3245352,fd=7)))",
+          "0.0.0.0:5000 (users:((\"python\",pid=1080807,fd=3)))",
+          "127.0.0.1:33060 (users:((\"mysqld\",pid=945406,fd=32)))",
+          "127.0.0.1:6379 (users:((\"redis-server\",pid=491553,fd=6)))",
+          "0.0.0.0:3002 (users:((\"finance-manager\",pid=3112412,fd=12)))",
+          "0.0.0.0:25 (users:((\"master\",pid=2301699,fd=13)))",
+          "0.0.0.0:22 (users:((\"sshd\",pid=3147837,fd=3),(\"systemd\",pid=1,fd=399)))",
+          "0.0.0.0:80 (users:((\"nginx\",pid=3655514,fd=5),(\"nginx\",pid=3655513,fd=5),(\"nginx\",pid=3655512,fd=5),(\"nginx\",pid=3655511,fd=5),(\"nginx\",pid=3655510,fd=5),(\"nginx\",pid=3655509,fd=5),(\"nginx\",pid=3655507,fd=5),(\"nginx\",pid=3655506,fd=5),(\"nginx\",pid=3655505,fd=5),(\"nginx\",pid=3655504,fd=5),(\"nginx\",pid=3655502,fd=5),(\"nginx\",pid=3655501,fd=5),(\"nginx\",pid=2188371,fd=5)))",
+          "0.0.0.0:443 (users:((\"nginx\",pid=3655514,fd=37),(\"nginx\",pid=3655513,fd=37),(\"nginx\",pid=3655512,fd=37),(\"nginx\",pid=3655511,fd=37),(\"nginx\",pid=3655510,fd=37),(\"nginx\",pid=3655509,fd=37),(\"nginx\",pid=3655507,fd=37),(\"nginx\",pid=3655506,fd=37),(\"nginx\",pid=3655505,fd=37),(\"nginx\",pid=3655504,fd=37),(\"nginx\",pid=3655502,fd=37),(\"nginx\",pid=3655501,fd=37),(\"nginx\",pid=2188371,fd=37)))",
+          "127.0.0.54:53 (users:((\"systemd-resolve\",pid=1816643,fd=17)))",
+          "127.0.0.1:5174 (users:((\"node\",pid=3577650,fd=31)))",
+          "127.0.0.1:5432 (users:((\"postgres\",pid=3702094,fd=6)))",
+          "172.200.1.1:5432 (users:((\"postgres\",pid=3702094,fd=7)))",
+          "192.168.122.1:53 (users:((\"dnsmasq\",pid=1538557,fd=6)))",
+          "0.0.0.0:8444 (users:((\"nginx\",pid=3655514,fd=7),(\"nginx\",pid=3655513,fd=7),(\"nginx\",pid=3655512,fd=7),(\"nginx\",pid=3655511,fd=7),(\"nginx\",pid=3655510,fd=7),(\"nginx\",pid=3655509,fd=7),(\"nginx\",pid=3655507,fd=7),(\"nginx\",pid=3655506,fd=7),(\"nginx\",pid=3655505,fd=7),(\"nginx\",pid=3655504,fd=7),(\"nginx\",pid=3655502,fd=7),(\"nginx\",pid=3655501,fd=7),(\"nginx\",pid=2188371,fd=7)))",
+          "0.0.0.0:8443 (users:((\"nginx\",pid=3655514,fd=9),(\"nginx\",pid=3655513,fd=9),(\"nginx\",pid=3655512,fd=9),(\"nginx\",pid=3655511,fd=9),(\"nginx\",pid=3655510,fd=9),(\"nginx\",pid=3655509,fd=9),(\"nginx\",pid=3655507,fd=9),(\"nginx\",pid=3655506,fd=9),(\"nginx\",pid=3655505,fd=9),(\"nginx\",pid=3655504,fd=9),(\"nginx\",pid=3655502,fd=9),(\"nginx\",pid=3655501,fd=9),(\"nginx\",pid=2188371,fd=9)))",
+          "100.94.77.110:42943 (users:((\"tailscaled\",pid=485488,fd=22)))",
+          "0.0.0.0:8883 (users:((\"mosquitto\",pid=1816485,fd=5)))",
+          "0.0.0.0:8765 (users:((\"python\",pid=491489,fd=6)))",
+          "0.0.0.0:9090 (users:((\"docker-proxy\",pid=2181334,fd=7)))",
+          "127.0.0.1:63150 (users:((\"wifiman-desktop\",pid=1816564,fd=10)))",
+          "127.0.0.1:46271 (users:((\"containerd\",pid=1274871,fd=9)))",
+          "[::]:8081 (users:((\"docker-proxy\",pid=3217004,fd=7)))",
+          "*:3000 ((v1\",pid=491676,fd=19)))",
+          "*:3001 ((v1\",pid=503951,fd=18)))",
+          "[fd7a:115c:a1e0::e301:4d93]:49299 (users:((\"tailscaled\",pid=485488,fd=23)))"
+        ],
+        "webservers": {
+          "80": {
+            "process": "users:((\"nginx\",pid=3655514,fd=6),(\"nginx\",pid=3655513,fd=6),(\"nginx\",pid=3655512,fd=6),(\"nginx\",pid=3655511,fd=6),(\"nginx\",pid=3655510,fd=6),(\"nginx\",pid=3655509,fd=6),(\"nginx\",pid=3655507,fd=6),(\"nginx\",pid=3655506,fd=6),(\"nginx\",pid=3655505,fd=6),(\"nginx\",pid=3655504,fd=6),(\"nginx\",pid=3655502,fd=6),(\"nginx\",pid=3655501,fd=6),(\"nginx\",pid=2188371,fd=6))",
+            "address": "[::]"
+          },
+          "443": {
+            "process": "users:((\"nginx\",pid=3655514,fd=38),(\"nginx\",pid=3655513,fd=38),(\"nginx\",pid=3655512,fd=38),(\"nginx\",pid=3655511,fd=38),(\"nginx\",pid=3655510,fd=38),(\"nginx\",pid=3655509,fd=38),(\"nginx\",pid=3655507,fd=38),(\"nginx\",pid=3655506,fd=38),(\"nginx\",pid=3655505,fd=38),(\"nginx\",pid=3655504,fd=38),(\"nginx\",pid=3655502,fd=38),(\"nginx\",pid=3655501,fd=38),(\"nginx\",pid=2188371,fd=38))",
+            "address": "[::]"
+          },
+          "8443": {
+            "process": "users:((\"nginx\",pid=3655514,fd=10),(\"nginx\",pid=3655513,fd=10),(\"nginx\",pid=3655512,fd=10),(\"nginx\",pid=3655511,fd=10),(\"nginx\",pid=3655510,fd=10),(\"nginx\",pid=3655509,fd=10),(\"nginx\",pid=3655507,fd=10),(\"nginx\",pid=3655506,fd=10),(\"nginx\",pid=3655505,fd=10),(\"nginx\",pid=3655504,fd=10),(\"nginx\",pid=3655502,fd=10),(\"nginx\",pid=3655501,fd=10),(\"nginx\",pid=2188371,fd=10))",
+            "address": "[::]"
+          }
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "unnecessary_services",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No unnecessary/insecure services detected",
+      "details": "None of the flagged insecure services (telnet, FTP, rsh, rlogin, finger) are running.",
+      "request": {
+        "checked_ports": [
+          "23",
+          "21",
+          "514",
+          "513",
+          "79"
+        ]
+      },
+      "response": {
+        "found": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.service_enumeration",
+      "variant": "unbound_services",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No database/cache services exposed on all interfaces",
+      "details": "All checked services (databases, caches) are either not running or properly bound to localhost.",
+      "request": {
+        "checked_ports": [
+          "3306",
+          "5432",
+          "6379",
+          "27017",
+          "11211",
+          "9200",
+          "2379",
+          "5601"
+        ]
+      },
+      "response": {
+        "exposed": []
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "root_login",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "PermitRootLogin not explicitly set in sshd_config",
+      "details": "PermitRootLogin is not explicitly configured. Modern OpenSSH defaults to 'prohibit-password', but explicit configuration is recommended.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "permitrootlogin": "not set (default)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "password_auth",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "PasswordAuthentication not set (defaults to yes)",
+      "details": "Password-based SSH authentication is enabled. This exposes the server to brute-force attacks. Disable PasswordAuthentication and use key-based authentication exclusively.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "passwordauthentication": "not set (default: yes)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "protocol_version",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Protocol directive not set (modern OpenSSH defaults to 2 only)",
+      "details": "The Protocol directive is absent, which is correct for modern OpenSSH (>= 7.4) where Protocol 1 support has been removed.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "protocol": "not set (default: 2)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "weak_ciphers",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No weak ciphers, MACs, or KEX algorithms found in sshd_config",
+      "details": "SSH cryptographic configuration does not include known weak algorithms. Note: if ciphers/MACs/KEX are not explicitly set, OpenSSH defaults apply.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "ciphers": "not set (defaults)",
+        "macs": "not set (defaults)",
+        "kexalgorithms": "not set (defaults)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.ssh_audit",
+      "variant": "max_auth_tries",
+      "status": "partial",
+      "severity": "high",
+      "evidence": "MaxAuthTries not set (OpenSSH default is 6)",
+      "details": "MaxAuthTries is not explicitly configured. OpenSSH defaults to 6, which allows more brute-force attempts per connection than recommended. Set MaxAuthTries to 3 or lower.",
+      "request": {
+        "config_file": "/etc/ssh/sshd_config"
+      },
+      "response": {
+        "maxauthtries": "not set (default: 6)"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.webserver_inventory",
+      "variant": "installed_webservers",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "nginx installed (nginx)",
+      "details": "Web server: nginx",
+      "request": {},
+      "response": {
+        "installed": {
+          "nginx": [
+            {
+              "package": "nginx",
+              "version": "1.24.0-2ubuntu7.6"
+            }
+          ]
+        }
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.webserver_inventory",
+      "variant": "running_webservers",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "nginx active (inactive: none)",
+      "details": "Web server nginx is running. Inactive: none",
+      "request": {},
+      "response": {
+        "running": {
+          "nginx": {
+            "service": "nginx",
+            "status": "active"
+          }
+        },
+        "inactive": {}
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "infrastructure.webserver_inventory",
+      "variant": "port_ownership",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Port 80: nginx; Port 443: nginx",
+      "details": "Web server ports are active and owned by specific processes.",
+      "request": {},
+      "response": {
+        "80": [
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx"
+        ],
+        "443": [
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx",
+          "nginx"
+        ]
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.clamav_scan",
+      "variant": "clamav_var_www_html",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Exit code: 0",
+      "details": "ClamAV scan of /var/www/html: clean (no malware detected)",
+      "request": {
+        "scan_path": "/var/www/html",
+        "tool": "clamscan"
+      },
+      "response": {
+        "exit_code": 0,
+        "infected_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.clamav_scan",
+      "variant": "clamav_opt_artemis_www",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Exit code: 2",
+      "details": "ClamAV scan returned exit code 2: /opt/artemis/www: No such file or directory\nWARNING: /opt/artemis/www: Can't access file\n",
+      "request": {
+        "scan_path": "/opt/artemis/www",
+        "tool": "clamscan"
+      },
+      "response": {
+        "exit_code": 2,
+        "infected_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.rootkit_check",
+      "variant": "rkhunter",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "rkhunter: clean (exit code 1)",
+      "details": "rkhunter found no rootkit indicators",
+      "request": {
+        "tool": "rkhunter --check"
+      },
+      "response": {
+        "exit_code": 1,
+        "warnings": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.rootkit_check",
+      "variant": "chkrootkit",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "chkrootkit: clean (exit code 1)",
+      "details": "chkrootkit found no rootkit indicators",
+      "request": {
+        "tool": "chkrootkit -q"
+      },
+      "response": {
+        "exit_code": 1,
+        "infections": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.webshell_detect",
+      "variant": "webshell_var_www_html",
+      "status": "vulnerable",
+      "severity": "critical",
+      "evidence": "wordpress/wp-includes/compat-utf8.php:64 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/kses.php:2030 -- preg_replace /e modifier -- PHP code runner\nwordpress/wp-includes/kses.php:2018 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/utf8.php:91 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/class-wp-simplepie-sanitize-kses.php:42 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/functions.php:4841 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/formatting.php:1994 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/Requests/src/Iri.php:342 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/Requests/src/Requests.php:1054 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/IRI.php:307 -- Hex-encoded payload (4+ consecutive)",
+      "details": "Found 55 suspicious pattern(s) in /var/www/html (25022 files scanned):\nwordpress/wp-includes/compat-utf8.php:64 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/kses.php:2030 -- preg_replace /e modifier -- PHP code runner\nwordpress/wp-includes/kses.php:2018 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/utf8.php:91 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/class-wp-simplepie-sanitize-kses.php:42 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/functions.php:4841 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/formatting.php:1994 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/Requests/src/Iri.php:342 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/Requests/src/Requests.php:1054 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/IRI.php:307 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/Misc.php:94 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/SimplePie.php:239 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/Parser.php:91 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/File.php:253 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/Sanitize.php:421 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/Content/Type/Sniffer.php:112 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/src/XML/Declaration/Parser.php:149 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/SimplePie/library/SimplePie/Decode/HTML/Entities.php:152 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/PHPMailer/PHPMailer.php:1491 -- Hex-encoded payload (4+ consecutive)\nwordpress/wp-includes/ID3/module.audio-video.riff.php:70 -- Hex-encoded payload (4+ consecutive)",
+      "request": {
+        "scan_path": "/var/www/html",
+        "files_scanned": 25022
+      },
+      "response": {
+        "findings_count": 55
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.webshell_detect",
+      "variant": "webshell_opt_artemis_www",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Clean: 0 files scanned",
+      "details": "No webshell patterns detected in /opt/artemis/www (0 files scanned)",
+      "request": {
+        "scan_path": "/opt/artemis/www",
+        "files_scanned": 0
+      },
+      "response": {
+        "findings_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "dotenv",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 6 .env paths returned non-200 responses",
+      "details": "Tested paths: /.env, /.env.local, /.env.production, /.env.backup, /.env.prod, /.env.staging",
+      "request": {
+        "paths_tested": [
+          "/.env",
+          "/.env.local",
+          "/.env.production",
+          "/.env.backup",
+          "/.env.prod",
+          "/.env.staging"
+        ]
+      },
+      "response": {},
+      "duration_ms": 885.7523296028376
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "env_example",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 3 example env paths returned non-200 responses",
+      "details": "Tested: /.env.example, /.env.sample, /.env.template",
+      "request": {
+        "paths_tested": [
+          "/.env.example",
+          "/.env.sample",
+          "/.env.template"
+        ]
+      },
+      "response": {},
+      "duration_ms": 391.32211450487375
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "docker_env",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 5 Docker file paths returned non-200 responses",
+      "details": "Tested: /docker-compose.yml, /docker-compose.yaml, /docker-compose.prod.yml, /Dockerfile, /.dockerenv",
+      "request": {
+        "paths_tested": [
+          "/docker-compose.yml",
+          "/docker-compose.yaml",
+          "/docker-compose.prod.yml",
+          "/Dockerfile",
+          "/.dockerenv"
+        ]
+      },
+      "response": {},
+      "duration_ms": 669.4935113191605
+    },
+    {
+      "attack": "secrets.env_exposure",
+      "variant": "config_files",
+      "status": "defended",
+      "severity": "critical",
+      "evidence": "All 9 config file paths returned non-200 responses",
+      "details": "Tested: /config.php, /config.yml, /config.yaml, /settings.py, /application.properties, /app.config, /web.config, /database.yml, /secrets.yml",
+      "request": {
+        "paths_tested": [
+          "/config.php",
+          "/config.yml",
+          "/config.yaml",
+          "/settings.py",
+          "/application.properties",
+          "/app.config",
+          "/web.config",
+          "/database.yml",
+          "/secrets.yml"
+        ]
+      },
+      "response": {},
+      "duration_ms": 1200.7898231968284
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_directory_web",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "/.git/HEAD and /.git/config are not accessible over HTTP",
+      "details": "Git directory is not served publicly (correct configuration)",
+      "request": {
+        "paths_tested": [
+          "/.git/HEAD",
+          "/.git/config"
+        ]
+      },
+      "response": {},
+      "duration_ms": 261.13580726087093
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_log_secrets",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "No source_path configured \u2014 cannot scan git history",
+      "details": "Set target.source_path to enable git history scanning",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.003400258719921112
+    },
+    {
+      "attack": "secrets.git_history",
+      "variant": "git_grep_secrets",
+      "status": "skipped",
+      "severity": "high",
+      "evidence": "No source_path configured \u2014 cannot scan git history",
+      "details": "Set target.source_path to enable git history scanning",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0011557713150978088
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "api_keys",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "No source_path configured in target config",
+      "details": "Set target.source_path to enable source code scanning",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0019026920199394226
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "passwords",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "No source_path configured in target config",
+      "details": "",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0009182840585708618
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "private_keys",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "No source_path configured in target config",
+      "details": "",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.0004591420292854309
+    },
+    {
+      "attack": "secrets.source_code",
+      "variant": "connection_strings",
+      "status": "skipped",
+      "severity": "critical",
+      "evidence": "No source_path configured in target config",
+      "details": "",
+      "request": {},
+      "response": {},
+      "duration_ms": 0.00035297125577926636
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_expiry",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "Certificate expires in 40 days on Apr 18 06:11:46 2026 GMT",
+      "details": "TLS certificate for cp.quigs.com expires within 90 days - plan renewal",
+      "request": {
+        "hostname": "cp.quigs.com"
+      },
+      "response": {
+        "notAfter": "Apr 18 06:11:46 2026 GMT",
+        "days_remaining": 40
+      },
+      "duration_ms": 1.1535147204995155
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_chain",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Certificate chain validated successfully via verified SSL context",
+      "details": "The certificate chain for cp.quigs.com is complete and trusted",
+      "request": {
+        "hostname": "cp.quigs.com"
+      },
+      "response": {
+        "issuer": "((('countryName', 'US'),), (('organizationName', \"Let's Encrypt\"),), (('commonName', 'R13'),))",
+        "subject": "((('commonName', 'cp.quigs.com'),),)"
+      },
+      "duration_ms": 0.007284805178642273
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_hostname",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Hostname cp.quigs.com matches certificate names: ['cp.quigs.com']",
+      "details": "Certificate CN/SAN correctly covers cp.quigs.com",
+      "request": {
+        "hostname": "cp.quigs.com"
+      },
+      "response": {
+        "cn": "cp.quigs.com",
+        "sans": [
+          "cp.quigs.com"
+        ]
+      },
+      "duration_ms": 0.004416331648826599
+    },
+    {
+      "attack": "web.certificate",
+      "variant": "cert_key_size",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "RSA key size: 2048 bits (adequate)",
+      "details": "Certificate key size on cp.quigs.com meets minimum requirements",
+      "request": {
+        "hostname": "cp.quigs.com"
+      },
+      "response": {
+        "key_type": "RSA",
+        "key_size": 2048,
+        "cipher": "TLS_AES_128_GCM_SHA256"
+      },
+      "duration_ms": 0.018537044525146484
+    },
+    {
+      "attack": "web.cors",
+      "variant": "preflight_evil_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "ACAO: '' (not permissive)",
+      "details": "CORS properly configured - evil origin not allowed",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "ACAO": "not set",
+        "ACAC": "not set"
+      },
+      "duration_ms": 31.629333272576332
+    },
+    {
+      "attack": "web.cors",
+      "variant": "get_evil_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "ACAO: '' - evil origin not reflected",
+      "details": "GET CORS properly restricted",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "ACAO": "not set"
+      },
+      "duration_ms": 32.09096100181341
+    },
+    {
+      "attack": "web.cors",
+      "variant": "credentials_allowed",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No endpoints return Access-Control-Allow-Credentials: true",
+      "details": "Cross-origin requests cannot include cookies",
+      "request": {
+        "checked_endpoints": [
+          "/",
+          "/health"
+        ]
+      },
+      "response": {
+        "credentials_allowed": false
+      },
+      "duration_ms": 62.77450080960989
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "no_origin_header",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Server rejected POST without Origin header (HTTP 403)",
+      "details": "API requires valid Origin header",
+      "request": {
+        "headers": "no Origin"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, "
+      },
+      "duration_ms": 31.384792178869247
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "forged_origin",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Server rejected forged Origin (HTTP 404)",
+      "details": "API validates Origin header against whitelist",
+      "request": {
+        "Origin": "https://evil.com"
+      },
+      "response": {
+        "status": 404,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Page Not Found</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system,"
+      },
+      "duration_ms": 31.35533817112446
+    },
+    {
+      "attack": "web.csrf",
+      "variant": "no_csrf_token",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "No CSRF token found but POST returned 403",
+      "details": "CSRF token not detected but POST may have been rejected for other reasons",
+      "request": {
+        "checked_headers": true
+      },
+      "response": {
+        "has_token": false,
+        "post_status": 403
+      },
+      "duration_ms": 62.00223695486784
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "basic_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No traversal payloads returned sensitive file content",
+      "details": "Tested 5 basic traversal payloads, none succeeded",
+      "request": {
+        "payloads_tested": 5
+      },
+      "response": {},
+      "duration_ms": 231.16635158658028
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "windows_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No Windows traversal payloads returned sensitive file content",
+      "details": "Tested 3 Windows traversal payloads, none succeeded",
+      "request": {
+        "payloads_tested": 3
+      },
+      "response": {},
+      "duration_ms": 90.0361081585288
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "null_byte_traversal",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Null byte traversal payloads did not return sensitive content",
+      "details": "Tested 3 null byte payloads, none succeeded",
+      "request": {
+        "payloads_tested": 3
+      },
+      "response": {},
+      "duration_ms": 237.31687851250172
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "dot_dot_slash_in_params",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No parameter traversal succeeded on /",
+      "details": "Tested 6 parameter names on /",
+      "request": {
+        "endpoint": "/",
+        "params_tested": [
+          "file",
+          "path",
+          "page",
+          "template",
+          "doc",
+          "include"
+        ]
+      },
+      "response": {},
+      "duration_ms": 276.09844505786896
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "dot_dot_slash_in_params",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No parameter traversal succeeded on /health",
+      "details": "Tested 6 parameter names on /health",
+      "request": {
+        "endpoint": "/health",
+        "params_tested": [
+          "file",
+          "path",
+          "page",
+          "template",
+          "doc",
+          "include"
+        ]
+      },
+      "response": {},
+      "duration_ms": 206.30616508424282
+    },
+    {
+      "attack": "web.directory_traversal",
+      "variant": "dot_dot_slash_in_params",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "No parameter traversal succeeded on /api/status",
+      "details": "Tested 6 parameter names on /api/status",
+      "request": {
+        "endpoint": "/api/status",
+        "params_tested": [
+          "file",
+          "path",
+          "page",
+          "template",
+          "doc",
+          "include"
+        ]
+      },
+      "response": {},
+      "duration_ms": 203.97921930998564
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "options_check",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "OPTIONS returned Allow: OPTIONS,HEAD,GET,POST,TRACE",
+      "details": "Server advertises methods: OPTIONS, HEAD, GET, POST, TRACE",
+      "request": {
+        "method": "OPTIONS",
+        "endpoint": "/"
+      },
+      "response": {
+        "status": 200,
+        "Allow": "OPTIONS,HEAD,GET,POST,TRACE",
+        "methods": [
+          "OPTIONS",
+          "HEAD",
+          "GET",
+          "POST",
+          "TRACE"
+        ]
+      },
+      "duration_ms": 33.45832135528326
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "trace_enabled",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "TRACE returned 405",
+      "details": "TRACE method properly disabled or rejected",
+      "request": {
+        "method": "TRACE"
+      },
+      "response": {
+        "status": 405
+      },
+      "duration_ms": 32.239291816949844
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "put_enabled",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "PUT returned 405",
+      "details": "PUT method properly rejected",
+      "request": {
+        "method": "PUT"
+      },
+      "response": {
+        "status": 405
+      },
+      "duration_ms": 108.47821366041899
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "delete_enabled",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "DELETE returned 405",
+      "details": "DELETE method properly rejected",
+      "request": {
+        "method": "DELETE"
+      },
+      "response": {
+        "status": 405
+      },
+      "duration_ms": 33.927918411791325
+    },
+    {
+      "attack": "web.http_methods",
+      "variant": "arbitrary_methods",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "FOOBAR method returned 501",
+      "details": "Server properly rejects unknown HTTP methods",
+      "request": {
+        "method": "FOOBAR"
+      },
+      "response": {
+        "status": 501
+      },
+      "duration_ms": 33.884577453136444
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "common_params",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No open redirects found via common URL parameters",
+      "details": "Tested 10 parameter names across 3 endpoints",
+      "request": {
+        "endpoints_tested": [
+          "/",
+          "/health",
+          "/api/status"
+        ],
+        "params_tested": [
+          "redirect",
+          "url",
+          "next",
+          "return",
+          "returnTo",
+          "goto",
+          "dest",
+          "continue",
+          "redirect_uri",
+          "redir"
+        ]
+      },
+      "response": {},
+      "duration_ms": 1016.0139491781592
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "login_redirect",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Login endpoint does not redirect to external domains",
+      "details": "Tested 6 redirect parameters on /login",
+      "request": {
+        "endpoint": "/login",
+        "params_tested": [
+          "redirect_to",
+          "next",
+          "return",
+          "returnTo",
+          "redirect",
+          "continue"
+        ]
+      },
+      "response": {},
+      "duration_ms": 202.84807588905096
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "protocol_bypass",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No protocol bypass payloads caused an external redirect",
+      "details": "Tested 6 bypass payloads across 3 endpoints",
+      "request": {
+        "payloads_tested": [
+          "//evil.com",
+          "\\/\\/evil.com",
+          "https:evil.com",
+          "%2f%2fevil.com",
+          "/evil.com",
+          "\\evil.com"
+        ]
+      },
+      "response": {},
+      "duration_ms": 2720.897794701159
+    },
+    {
+      "attack": "web.open_redirect",
+      "variant": "javascript_redirect",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "No javascript: URI reflected in redirect headers",
+      "details": "Tested 4 javascript/data URI payloads across endpoints",
+      "request": {
+        "payloads_tested": [
+          "javascript:alert(1)",
+          "javascript:alert(document.domain)",
+          "jAvAsCrIpT:alert(1)",
+          "data:text/html,<script>alert(1)</script>"
+        ]
+      },
+      "response": {},
+      "duration_ms": 1508.3931358531117
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "content_security_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Content-Security-Policy header missing",
+      "details": "No CSP header; the site is vulnerable to XSS and data injection attacks",
+      "request": {},
+      "response": {
+        "Content-Security-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "strict_transport_security",
+      "status": "defended",
+      "severity": "low",
+      "evidence": "HSTS present with max-age=31536000",
+      "details": "Strict-Transport-Security properly configured",
+      "request": {},
+      "response": {
+        "Strict-Transport-Security": "max-age=31536000;"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "x_frame_options",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "X-Frame-Options header missing",
+      "details": "No clickjacking protection; page can be embedded in iframes on any site",
+      "request": {},
+      "response": {
+        "X-Frame-Options": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "x_content_type_options",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "X-Content-Type-Options header missing",
+      "details": "No MIME sniffing protection; browsers may interpret files as different content types",
+      "request": {},
+      "response": {
+        "X-Content-Type-Options": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "referrer_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Referrer-Policy header missing",
+      "details": "No Referrer-Policy; full URLs may leak via Referer header to third parties",
+      "request": {},
+      "response": {
+        "Referrer-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "permissions_policy",
+      "status": "vulnerable",
+      "severity": "low",
+      "evidence": "Neither Permissions-Policy nor Feature-Policy header present",
+      "details": "No permissions policy; browser features like camera, microphone, geolocation are unrestricted",
+      "request": {},
+      "response": {
+        "Permissions-Policy": "missing",
+        "Feature-Policy": "missing"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.security_headers",
+      "variant": "server_header",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Server: nginx (no version)",
+      "details": "Server identified as nginx but no version disclosed",
+      "request": {},
+      "response": {
+        "Server": "nginx"
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "server_header",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Server: nginx (no version number)",
+      "details": "Server identified as 'nginx' but version number is not disclosed",
+      "request": {},
+      "response": {
+        "Server": "nginx"
+      },
+      "duration_ms": 31.081256456673145
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "powered_by_header",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "X-Powered-By header not present",
+      "details": "Server does not disclose its technology stack via X-Powered-By",
+      "request": {},
+      "response": {
+        "X-Powered-By": "missing"
+      },
+      "duration_ms": 31.73707891255617
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "common_files",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No common indicator files found",
+      "details": "Probed 5 common paths, none returned content",
+      "request": {
+        "probed_paths": [
+          "/robots.txt",
+          "/sitemap.xml",
+          "/humans.txt",
+          "/crossdomain.xml",
+          "/.well-known/security.txt"
+        ]
+      },
+      "response": {},
+      "duration_ms": 157.05628227442503
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "error_page_fingerprint",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Error page (404) does not reveal technology",
+      "details": "The error page does not contain recognizable technology signatures",
+      "request": {
+        "path": "/nonexistent_redteam_probe_xyz123"
+      },
+      "response": {
+        "status": 404,
+        "body_preview": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Page Not Found</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbac"
+      },
+      "duration_ms": 31.115246936678886
+    },
+    {
+      "attack": "web.server_fingerprint",
+      "variant": "response_header_analysis",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No known technology markers found in response headers",
+      "details": "Response headers do not contain recognized technology-identifying headers",
+      "request": {
+        "method": "GET",
+        "path": "/"
+      },
+      "response": {
+        "total_headers": 10
+      },
+      "duration_ms": 30.668891966342926
+    },
+    {
+      "attack": "web.session",
+      "variant": "httponly_flag",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "HttpOnly flag MISSING from Set-Cookie: ",
+      "details": "Session cookie accessible via document.cookie - XSS can steal sessions",
+      "request": {
+        "checked": "HttpOnly flag"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 30.86107224225998
+    },
+    {
+      "attack": "web.session",
+      "variant": "secure_flag",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "Secure flag MISSING from Set-Cookie: ",
+      "details": "Session cookie can be sent over plain HTTP - network sniffing possible",
+      "request": {
+        "checked": "Secure flag"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 30.86107224225998
+    },
+    {
+      "attack": "web.session",
+      "variant": "samesite_attribute",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "SameSite attribute MISSING from Set-Cookie: ",
+      "details": "No SameSite attribute - browser defaults apply (Lax in modern browsers)",
+      "request": {
+        "checked": "SameSite attribute"
+      },
+      "response": {
+        "Set-Cookie": ""
+      },
+      "duration_ms": 30.86107224225998
+    },
+    {
+      "attack": "web.sri",
+      "variant": "external_scripts",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "",
+      "details": "Homepage returned HTTP 403",
+      "request": {},
+      "response": {
+        "status": 403
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.sri",
+      "variant": "external_styles",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "",
+      "details": "Homepage returned HTTP 403",
+      "request": {},
+      "response": {
+        "status": 403
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.sri",
+      "variant": "cdn_resources",
+      "status": "error",
+      "severity": "medium",
+      "evidence": "",
+      "details": "Homepage returned HTTP 403",
+      "request": {},
+      "response": {
+        "status": 403
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "https_available",
+      "status": "defended",
+      "severity": "medium",
+      "evidence": "Site served over HTTPS (status 403)",
+      "details": "Target is accessible via HTTPS",
+      "request": {},
+      "response": {
+        "status": 403,
+        "scheme": "https"
+      },
+      "duration_ms": 31.43842052668333
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "http_redirect",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "HTTP serves content directly (status 403, no HTTPS redirect)",
+      "details": "HTTP requests serve content without redirecting to HTTPS; users can be served unencrypted content",
+      "request": {},
+      "response": {
+        "status": 403,
+        "Location": "none"
+      },
+      "duration_ms": 65.31322095543146
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "mixed_content_headers",
+      "status": "partial",
+      "severity": "info",
+      "evidence": "No mixed content CSP directives found",
+      "details": "CSP does not include upgrade-insecure-requests or block-all-mixed-content; browsers may still load HTTP resources on HTTPS pages",
+      "request": {},
+      "response": {
+        "CSP": "missing"
+      },
+      "duration_ms": 33.35943724960089
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "hsts_preload",
+      "status": "partial",
+      "severity": "medium",
+      "evidence": "HSTS present but no preload directive: max-age=31536000;",
+      "details": "HSTS is set but without preload; site is not eligible for browser HSTS preload lists",
+      "request": {},
+      "response": {
+        "Strict-Transport-Security": "max-age=31536000;"
+      },
+      "duration_ms": 32.01638720929623
+    },
+    {
+      "attack": "web.tls_security",
+      "variant": "secure_cookies",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No Set-Cookie headers returned from login endpoint",
+      "details": "GET /login did not set any cookies",
+      "request": {
+        "endpoint": "/login"
+      },
+      "response": {
+        "status": 404
+      },
+      "duration_ms": 31.232531182467937
+    },
+    {
+      "attack": "web.xss",
+      "variant": "script_tag",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Basic script tag injection in chat message - payload not reflected",
+      "request": {
+        "payload": "<script>alert('XSS')</script>",
+        "target": "chat",
+        "session_id": "redteam-xss-6163ec26"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 63.89882322400808
+    },
+    {
+      "attack": "web.xss",
+      "variant": "event_handler",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Event handler injection in bearing note - payload not reflected",
+      "request": {
+        "payload": "<img src=x onerror=alert('XSS')>",
+        "target": "note"
+      },
+      "response": {
+        "status": 404,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Page Not Found</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px "
+      },
+      "duration_ms": 62.48361989855766
+    },
+    {
+      "attack": "web.xss",
+      "variant": "svg_onload",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "SVG onload injection in chat message - payload not reflected",
+      "request": {
+        "payload": "<svg onload=alert('XSS')>",
+        "target": "chat",
+        "session_id": "redteam-xss-6163ec26"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 62.7354821190238
+    },
+    {
+      "attack": "web.xss",
+      "variant": "markdown_javascript",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "Markdown link with javascript: URI - payload not reflected",
+      "request": {
+        "payload": "[Click me](javascript:alert('XSS'))",
+        "target": "chat",
+        "session_id": "redteam-xss-6163ec26"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 62.63653468340635
+    },
+    {
+      "attack": "web.xss",
+      "variant": "html_entity_bypass",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "HTML entity encoding bypass attempt - payload not reflected",
+      "request": {
+        "payload": "<scr&#x69;pt>alert('XSS')</script>",
+        "target": "chat",
+        "session_id": "redteam-xss-6163ec26"
+      },
+      "response": {
+        "status": 403,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Access Denied</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px 1"
+      },
+      "duration_ms": 62.327477149665356
+    },
+    {
+      "attack": "web.xss",
+      "variant": "css_injection",
+      "status": "defended",
+      "severity": "high",
+      "evidence": "Payload not found in response (stripped or not stored)",
+      "details": "CSS injection via style attribute in bearing note - payload not reflected",
+      "request": {
+        "payload": "<div style=\"background:url(javascript:alert('XSS'))\">",
+        "target": "note"
+      },
+      "response": {
+        "status": 404,
+        "body": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n\t\t<title>Page Not Found</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial,\n\t\t\t\t\t\"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\",\n\t\t\t\t\t\"Noto Color Emoji\";\n\t\t\t\ttext-shadow: 0px "
+      },
+      "duration_ms": 62.88215611129999
+    }
+  ]
+}

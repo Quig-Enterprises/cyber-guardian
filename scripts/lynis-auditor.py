@@ -127,8 +127,19 @@ class LynisAuditor:
             return
 
         try:
-            with open(report_file, 'r') as f:
-                lines = f.readlines()
+            # Use sudo to read the report file (owned by root)
+            result = subprocess.run(
+                ['sudo', 'cat', str(report_file)],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+
+            if result.returncode != 0:
+                logger.error(f"Failed to read Lynis report: {result.stderr}")
+                return
+
+            lines = result.stdout.splitlines()
 
             # Parse report data format: key=value
             for line in lines:

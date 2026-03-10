@@ -1,0 +1,216 @@
+{
+  "generated": "2026-03-07T22:27:19.562503",
+  "total_attacks": 3,
+  "total_variants": 7,
+  "total_vulnerable": 4,
+  "total_partial": 0,
+  "total_defended": 3,
+  "total_errors": 0,
+  "worst_severity": "high",
+  "by_category": {
+    "dns": {
+      "attacks": 3,
+      "vulnerable": 4,
+      "partial": 0,
+      "defended": 3,
+      "errors": 0,
+      "duration_ms": 793.9896583557129
+    }
+  },
+  "by_severity": {
+    "critical": 0,
+    "high": 3,
+    "medium": 1,
+    "low": 0,
+    "info": 0
+  },
+  "timing": {
+    "start": "2026-03-07T22:27:18.756612",
+    "end": "2026-03-07T22:27:19.551084",
+    "duration_ms": 794.5
+  },
+  "attacks": [
+    {
+      "name": "dns.dnssec",
+      "category": "dns",
+      "duration_ms": 44.1,
+      "vulnerable": 1,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    },
+    {
+      "name": "dns.email_auth",
+      "category": "dns",
+      "duration_ms": 338.9,
+      "vulnerable": 3,
+      "partial": 0,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "dns.subdomain_takeover",
+      "category": "dns",
+      "duration_ms": 411.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "dns.dnssec",
+      "variant": "dnssec_enabled",
+      "status": "vulnerable",
+      "severity": "medium",
+      "evidence": "No RRSIG records found for 8qdj5it341kfv92u.brandonquig.com",
+      "details": "DNSSEC is not enabled for this domain. Without DNSSEC, DNS responses can be forged (DNS spoofing/cache poisoning attacks).",
+      "request": {
+        "command": "dig +dnssec 8qdj5it341kfv92u.brandonquig.com A"
+      },
+      "response": {
+        "has_rrsig": false,
+        "has_ad_flag": false,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> +dnssec 8qdj5it341kfv92u.brandonquig.com A\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56640\n;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;8qdj5it341kfv92u.brandonquig.com. IN\tA\n\n;; ANSWER SECTION:\n8qdj5it341kfv92u.brandonquig.com. 94 IN\tA\t199.27.199.56\n\n;; Query time: 0 msec\n;; SERVER: 127.0.0.5"
+      },
+      "duration_ms": 22.4995668977499
+    },
+    {
+      "attack": "dns.dnssec",
+      "variant": "ds_record",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "DS record found at parent zone for 8qdj5it341kfv92u.brandonquig.com",
+      "details": "DS record is present at the parent zone \u2014 the DNSSEC chain of trust is established",
+      "request": {
+        "command": "dig DS 8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "has_ds": true,
+        "nxdomain": false,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> DS 8qdj5it341kfv92u.brandonquig.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 63544\n;; flags: qr aa rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;8qdj5it341kfv92u.brandonquig.com. IN\tDS\n\n;; Query time: 0 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: Sat Mar 07 22:27:18 CST 2026\n;; MSG SIZE  rcvd"
+      },
+      "duration_ms": 21.284357644617558
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "spf",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No SPF record found for 8qdj5it341kfv92u.brandonquig.com",
+      "details": "No SPF TXT record exists. Without SPF, anyone can send email claiming to be from this domain (email spoofing).",
+      "request": {
+        "command": "dig TXT 8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "spf_record": null,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> TXT 8qdj5it341kfv92u.brandonquig.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 50851\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;8qdj5it341kfv92u.brandonquig.com. IN\tTXT\n\n;; AUTHORITY SECTION:\nbrandonquig.com.\t1800\tIN\tSOA\tdayana.ns.cloudflare.com. dns.cloudflare.com. 2398235511 10000 2400 604800 1800\n\n;; Query time: 22 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: Sat Mar 07 22:2"
+      },
+      "duration_ms": 42.27967839688063
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "dkim",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No DKIM records found for any of the common selectors on 8qdj5it341kfv92u.brandonquig.com",
+      "details": "No DKIM TXT records found at common selectors (default, google, selector1, selector2, mail, k1). Without DKIM, recipients cannot verify that emails were sent by authorised servers and email contents may be modified in transit.",
+      "request": {
+        "command": "dig TXT <selector>._domainkey.8qdj5it341kfv92u.brandonquig.com",
+        "selectors_checked": [
+          "default",
+          "google",
+          "selector1",
+          "selector2",
+          "mail",
+          "k1"
+        ]
+      },
+      "response": {
+        "found_selectors": [],
+        "missing_selectors": [
+          "default",
+          "google",
+          "selector1",
+          "selector2",
+          "mail",
+          "k1"
+        ]
+      },
+      "duration_ms": 255.39452768862247
+    },
+    {
+      "attack": "dns.email_auth",
+      "variant": "dmarc",
+      "status": "vulnerable",
+      "severity": "high",
+      "evidence": "No DMARC record found at _dmarc.8qdj5it341kfv92u.brandonquig.com",
+      "details": "No DMARC record exists. Without DMARC, email receivers have no policy guidance for handling SPF/DKIM failures, enabling phishing and email spoofing.",
+      "request": {
+        "command": "dig TXT _dmarc.8qdj5it341kfv92u.brandonquig.com"
+      },
+      "response": {
+        "dmarc_record": null,
+        "output_preview": "\n; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> TXT _dmarc.8qdj5it341kfv92u.brandonquig.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 43718\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;_dmarc.8qdj5it341kfv92u.brandonquig.com. IN TXT\n\n;; AUTHORITY SECTION:\nbrandonquig.com.\t1800\tIN\tSOA\tdayana.ns.cloudflare.com. dns.cloudflare.com. 2398235511 10000 2400 604800 1800\n\n;; Query time: 21 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: S"
+      },
+      "duration_ms": 40.951114147901535
+    },
+    {
+      "attack": "dns.subdomain_takeover",
+      "variant": "dangling_cname",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No CNAME record on 8qdj5it341kfv92u.brandonquig.com",
+      "details": "The primary hostname does not use a CNAME record \u2014 no dangling CNAME risk here",
+      "request": {
+        "command": "dig CNAME 8qdj5it341kfv92u.brandonquig.com && dig A <cname_target>"
+      },
+      "response": {
+        "has_cname": false,
+        "cname_target": null,
+        "is_dangling": false
+      },
+      "duration_ms": 41.30375664681196
+    },
+    {
+      "attack": "dns.subdomain_takeover",
+      "variant": "common_subdomains",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "No CNAME records found on common subdomains of 8qdj5it341kfv92u.brandonquig.com",
+      "details": "None of the common subdomains use CNAME records \u2014 no subdomain takeover risk via CNAMEs",
+      "request": {
+        "command": "dig CNAME <subdomain>.<domain> && dig A <cname_target>",
+        "subdomains_checked": [
+          "www",
+          "mail",
+          "ftp",
+          "dev",
+          "staging",
+          "api",
+          "admin",
+          "cdn",
+          "blog"
+        ],
+        "aws_mode": false
+      },
+      "response": {
+        "vulnerable": [],
+        "defended": [],
+        "no_cname": [
+          "www.8qdj5it341kfv92u.brandonquig.com",
+          "mail.8qdj5it341kfv92u.brandonquig.com",
+          "ftp.8qdj5it341kfv92u.brandonquig.com",
+          "dev.8qdj5it341kfv92u.brandonquig.com",
+          "staging.8qdj5it341kfv92u.brandonquig.com",
+          "api.8qdj5it341kfv92u.brandonquig.com",
+          "admin.8qdj5it341kfv92u.brandonquig.com",
+          "cdn.8qdj5it341kfv92u.brandonquig.com",
+          "blog.8qdj5it341kfv92u.brandonquig.com"
+        ]
+      },
+      "duration_ms": 369.53058931976557
+    }
+  ]
+}

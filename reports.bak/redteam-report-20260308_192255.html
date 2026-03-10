@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Security Red Team Report</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #0d1117; color: #c9d1d9; }
+  h1 { color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+  h2 { color: #8b949e; margin-top: 30px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }
+  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 15px; text-align: center; }
+  .stat .number { font-size: 2em; font-weight: bold; }
+  .stat .label { color: #8b949e; font-size: 0.9em; }
+  .critical { color: #f85149; } .high { color: #f0883e; } .medium { color: #d29922; } .low { color: #58a6ff; } .info { color: #8b949e; }
+  .vulnerable { color: #f85149; } .partial { color: #d29922; } .defended { color: #3fb950; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #30363d; }
+  th { background: #161b22; color: #8b949e; }
+  .finding { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 15px; margin: 10px 0; }
+  .finding-header { display: flex; justify-content: space-between; align-items: center; }
+  .evidence { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  .repro { margin-top: 12px; }
+  .repro summary { cursor: pointer; color: #58a6ff; font-weight: 600; font-size: 0.9em; }
+  .repro summary:hover { text-decoration: underline; }
+  .repro-section { margin-top: 8px; }
+  .repro-section h4 { color: #8b949e; font-size: 0.8em; text-transform: uppercase; margin: 8px 0 4px 0; }
+  .repro-block { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.82em; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+  .duration { color: #8b949e; font-size: 0.8em; margin-top: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .badge.critical { background: #f8514922; border: 1px solid #f85149; }
+  .badge.high { background: #f0883e22; border: 1px solid #f0883e; }
+  .badge.medium { background: #d2992222; border: 1px solid #d29922; }
+  .badge.low { background: #58a6ff22; border: 1px solid #58a6ff; }
+</style>
+</head><body>
+<h1>Security Red Team Report</h1>
+<p>Generated: 2026-03-08 19:22:55</p>
+
+<p>Run: 2026-03-08T19:12:23.217578 &mdash; 2026-03-08T19:22:55.493570 (632.3s total)</p>
+
+
+<div class="summary">
+  <div class="stat"><div class="number">44</div><div class="label">Attacks</div></div>
+  <div class="stat"><div class="number">158</div><div class="label">Variants</div></div>
+  <div class="stat"><div class="number vulnerable">23</div><div class="label">Vulnerable</div></div>
+  <div class="stat"><div class="number partial">20</div><div class="label">Partial</div></div>
+  <div class="stat"><div class="number defended">80</div><div class="label">Defended</div></div>
+  <div class="stat"><div class="number critical">CRITICAL</div><div class="label">Worst Severity</div></div>
+  <div class="stat"><div class="number">632.3s</div><div class="label">Duration</div></div>
+</div>
+
+<h2>Results by Category</h2>
+<table>
+<tr><th>Category</th><th>Attacks</th><th>Vulnerable</th><th>Partial</th><th>Defended</th><th>Errors</th><th>Duration</th></tr>
+
+<tr><td>API</td><td>6</td><td class="vulnerable">3</td><td class="partial">9</td><td class="defended">7</td><td>0</td><td>13.8s</td></tr>
+
+<tr><td>CLOUD</td><td>3</td><td class="vulnerable">0</td><td class="partial">0</td><td class="defended">0</td><td>0</td><td>2.9s</td></tr>
+
+<tr><td>CVE</td><td>4</td><td class="vulnerable">0</td><td class="partial">1</td><td class="defended">2</td><td>0</td><td>0.2s</td></tr>
+
+<tr><td>DNS</td><td>3</td><td class="vulnerable">4</td><td class="partial">0</td><td class="defended">3</td><td>0</td><td>1.6s</td></tr>
+
+<tr><td>EXPOSURE</td><td>2</td><td class="vulnerable">2</td><td class="partial">0</td><td class="defended">7</td><td>0</td><td>21.8s</td></tr>
+
+<tr><td>INFRASTRUCTURE</td><td>8</td><td class="vulnerable">4</td><td class="partial">5</td><td class="defended">14</td><td>1</td><td>9.2s</td></tr>
+
+<tr><td>MALWARE</td><td>3</td><td class="vulnerable">1</td><td class="partial">1</td><td class="defended">4</td><td>0</td><td>571.0s</td></tr>
+
+<tr><td>SECRETS</td><td>3</td><td class="vulnerable">0</td><td class="partial">0</td><td class="defended">5</td><td>0</td><td>3.4s</td></tr>
+
+<tr><td>WEB</td><td>12</td><td class="vulnerable">9</td><td class="partial">4</td><td class="defended">38</td><td>3</td><td>8.3s</td></tr>
+
+</table>
+
+<h2>Findings</h2>
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.error_leakage / trigger_pdo_exception</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Sent malformed analysis_id values to trigger database errors. Found 2 leakage indicators. Details: BODY: Web server identity exposed (matched &#x27;nginx&#x27;); HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)</p>
+  <div class="evidence">Findings: [&quot;BODY: Web server identity exposed (matched &#x27;nginx&#x27;)&quot;, &quot;HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)&quot;], Status: 414, Body: &lt;html&gt;
+&lt;head&gt;&lt;title&gt;414 Request-URI Too Large&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;414 Request-URI Too Large&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;payloads&quot;: [
+    &quot;&#x27; ; --&quot;,
+    &quot;not-a-uuid-at-all-!@#$%^&amp;*()&quot;,
+    &quot;\u0000\u0001\u0002\u0003&quot;,
+    &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 414,
+  &quot;body&quot;: &quot;&lt;html&gt;\r\n&lt;head&gt;&lt;title&gt;414 Request-URI Too Large&lt;/title&gt;&lt;/head&gt;\r\n&lt;body&gt;\r\n&lt;center&gt;&lt;h1&gt;414 Request-URI Too Large&lt;/h1&gt;&lt;/center&gt;\r\n&lt;hr&gt;&lt;center&gt;nginx&lt;/center&gt;\r\n&lt;/body&gt;\r\n&lt;/html&gt;\r\n&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.error_leakage / trigger_type_error</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Sent payloads with wrong types (arrays, objects, null, numbers) to trigger type errors. Found 1 leakage indicators. Details: HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)</p>
+  <div class="evidence">Findings: [&quot;HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)&quot;], Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial,
+					&quot;Noto Sans&quot;, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;,
+					&quot;Noto Color Emoji&quot;;
+				text-shadow: 0px 1</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;payloads&quot;: [
+    &quot;{&#x27;action&#x27;: [&#x27;send_message&#x27;], &#x27;message&#x27;: {&#x27;nested&#x27;: &#x27;object&#x27;}, &#x27;session_id&#x27;: 42}&quot;,
+    &quot;{&#x27;action&#x27;: None}&quot;,
+    &quot;{&#x27;action&#x27;: &#x27;send_message&#x27;, &#x27;message&#x27;: [&#x27;array&#x27;, &#x27;of&#x27;, &#x27;strings&#x27;]}&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \&quot;Segoe UI\&quot;, Roboto, \&quot;Helvetica Neue\&quot;, Arial,\n\t\t\t\t\t\&quot;Noto Sans\&quot;, sans-serif, \&quot;Apple Color Emoji\&quot;, \&quot;Segoe UI Emoji\&quot;, \&quot;Segoe UI Symbol\&quot;,\n\t\t\t\t\t\&quot;Noto Color Emoji\&quot;;\n\t\t\t\ttext-shadow: 0px 1&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.error_leakage / internal_details_in_errors</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Sent 5 probe requests to trigger error conditions. Scanned all responses for file paths, DB names, table names, and server info. Found 1 unique leakage indicators. Indicators: HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)</p>
+  <div class="evidence">Total findings: 1, Details: [&quot;HEADER: Web server identity exposed (matched &#x27;nginx&#x27;)&quot;]</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;probes&quot;: [
+    &quot;GET {&#x27;analysis_id&#x27;: &#x27;invalid&#x27;}&quot;,
+    &quot;GET {&#x27;session_id&#x27;: &#x27;&#x27;}&quot;,
+    &quot;POST {&#x27;action&#x27;: &#x27;send_message&#x27;}&quot;,
+    &quot;DELETE {&#x27;action&#x27;: &#x27;delete_note&#x27;, &#x27;id&#x27;: &#x27;not_a_number&#x27;}&quot;,
+    &quot;POST {&#x27;action&#x27;: &#x27;add_note&#x27;}&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, BlinkMacSystemFont, \&quot;Segoe UI\&quot;, Roboto, \&quot;Helvetica Neue\&quot;, Arial,\n\t\t\t\t\t\&quot;Noto Sans\&quot;, sans-serif, \&quot;Apple Color Emoji\&quot;, \&quot;Segoe UI Emoji\&quot;, \&quot;Segoe UI Symbol\&quot;,\n\t\t\t\t\t\&quot;Noto Color Emoji\&quot;;\n\t\t\t\ttext-shadow: 0px 1&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / oversized_message_1mb</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent 1MB message (1048576 chars). Got 403. Server should reject with 413 or 400.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;message_size&quot;: &quot;1048576 chars (1MB)&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / null_bytes_in_message</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent message with embedded null bytes (\x00). Got 403. Null bytes can cause string truncation or DB errors.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;message&quot;: &quot;&#x27;Hello\\x00World\\x00INJECTED&#x27;&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / unicode_control_chars</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent message with Unicode control characters (RTL override U+202E, zero-width space U+200B, BOM U+FEFF). Got 403. These can enable text spoofing in UI.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;message&quot;: &quot;&#x27;Normal text \\u202eHIDDEN REVERSED TEXT\\u202c\\u200b\\u200d\\ufeff end of message&#x27;&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / empty_json_body</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent POST with empty JSON body {}. Got 403. Server should return 400 for missing required fields.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;body&quot;: &quot;{}&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / malformed_json</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent POST with malformed JSON body. Got 403. Server should return 400 for unparseable JSON.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;body&quot;: &quot;{not valid json at all&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.input_validation / wrong_types</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Sent message=12345 (int), session_id=true (bool). Got 403. Server should validate input types.</p>
+  <div class="evidence">Status: 403, Body: &lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&quot;utf-8&quot; /&gt;
+		&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+		&lt;title&gt;Access Denied&lt;/title&gt;
+		&lt;style&gt;
+			body {
+				background-color: #f5f5f5;
+				margin-top: 8%;
+				color: #5d5d5d;
+				font-family:
+					-apple-system, </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;message&quot;: 12345,
+  &quot;session_id&quot;: true
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;body&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot;&gt;\n\t&lt;head&gt;\n\t\t&lt;meta charset=\&quot;utf-8\&quot; /&gt;\n\t\t&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot; /&gt;\n\t\t&lt;title&gt;Access Denied&lt;/title&gt;\n\t\t&lt;style&gt;\n\t\t\tbody {\n\t\t\t\tbackground-color: #f5f5f5;\n\t\t\t\tmargin-top: 8%;\n\t\t\t\tcolor: #5d5d5d;\n\t\t\t\tfont-family:\n\t\t\t\t\t-apple-system, &quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.rate_limiting / rapid_fire_50_gets</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Mixed responses (no 429). Statuses: {403}.</p>
+  <div class="evidence">Sent 50 requests in 1.6s. 429 count: 0, 200 count: 0</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;num_requests&quot;: 50,
+  &quot;elapsed_sec&quot;: 1.6
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status_distribution&quot;: {
+    &quot;403&quot;: 50
+  }
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.rate_limiting / concurrent_sse_10_streams</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Mixed responses under concurrent load. Statuses: {403}.</p>
+  <div class="evidence">Sent 10 concurrent requests in 0.1s. Statuses: [403, 403, 403, 403, 403, 403, 403, 403, 403, 403]</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;num_concurrent&quot;: 10,
+  &quot;elapsed_sec&quot;: 0.13
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status_distribution&quot;: {
+    &quot;403&quot;: 10
+  }
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>api.rate_limiting / note_spam_100</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Mixed responses during note spam. Statuses: {403}.</p>
+  <div class="evidence">Created 0 of 100 notes in 3.3s. 429 count: 0</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;num_notes&quot;: 100,
+  &quot;device_id&quot;: &quot;redteam-ratelimit-device-ccd283b2&quot;,
+  &quot;elapsed_sec&quot;: 3.27
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status_distribution&quot;: {
+    &quot;403&quot;: 100
+  }
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>cve.server_cve / server/nginx/no_version</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>The server identifies as &#x27;nginx&#x27; but does not disclose a specific version. CVE lookup skipped.</p>
+  <div class="evidence">Server software &#x27;nginx&#x27; detected but no version</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;method&quot;: &quot;GET&quot;,
+  &quot;path&quot;: &quot;/&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;headers&quot;: {
+    &quot;Server&quot;: &quot;nginx&quot;,
+    &quot;X-Powered-By&quot;: &quot;&quot;
+  }
+}</div>
+      
+      
+      <p class="duration">Duration: 0.0ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>dns.dnssec / dnssec_enabled</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>DNSSEC is not enabled for this domain. Without DNSSEC, DNS responses can be forged (DNS spoofing/cache poisoning attacks).</p>
+  <div class="evidence">No RRSIG records found for cp.quigs.com</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;command&quot;: &quot;dig +dnssec cp.quigs.com A&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;has_rrsig&quot;: false,
+  &quot;has_ad_flag&quot;: false,
+  &quot;output_preview&quot;: &quot;\n; &lt;&lt;&gt;&gt; DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu &lt;&lt;&gt;&gt; +dnssec cp.quigs.com A\n;; global options: +cmd\n;; Got answer:\n;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 39417\n;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;cp.quigs.com.\t\t\tIN\tA\n\n;; ANSWER SECTION:\ncp.quigs.com.\t\t103\tIN\tCNAME\tec2-3-17-162-37.us-east-2.compute.amazonaws.com.\nec2-3-17-162-37.us-east-2.compute.amazonaws.com. 103 IN\tA 3.&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 18.5ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>dns.email_auth / spf</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No SPF TXT record exists. Without SPF, anyone can send email claiming to be from this domain (email spoofing).</p>
+  <div class="evidence">No SPF record found for cp.quigs.com</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;command&quot;: &quot;dig TXT cp.quigs.com&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;spf_record&quot;: null,
+  &quot;output_preview&quot;: &quot;\n; &lt;&lt;&gt;&gt; DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu &lt;&lt;&gt;&gt; TXT cp.quigs.com\n;; global options: +cmd\n;; Got answer:\n;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 37420\n;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;cp.quigs.com.\t\t\tIN\tTXT\n\n;; ANSWER SECTION:\ncp.quigs.com.\t\t103\tIN\tCNAME\tec2-3-17-162-37.us-east-2.compute.amazonaws.com.\n\n;; AUTHORITY SECTION:\nus-east-2.compute.amazonaws.com. 60 IN\tSOA\tns-1855.awsdns-39.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 60\n\n;; ADDITIONAL SECTIO&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 40.4ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>dns.email_auth / dkim</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No DKIM TXT records found at common selectors (default, google, selector1, selector2, mail, k1). Without DKIM, recipients cannot verify that emails were sent by authorised servers and email contents may be modified in transit.</p>
+  <div class="evidence">No DKIM records found for any of the common selectors on cp.quigs.com</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;command&quot;: &quot;dig TXT &lt;selector&gt;._domainkey.cp.quigs.com&quot;,
+  &quot;selectors_checked&quot;: [
+    &quot;default&quot;,
+    &quot;google&quot;,
+    &quot;selector1&quot;,
+    &quot;selector2&quot;,
+    &quot;mail&quot;,
+    &quot;k1&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;found_selectors&quot;: [],
+  &quot;missing_selectors&quot;: [
+    &quot;default&quot;,
+    &quot;google&quot;,
+    &quot;selector1&quot;,
+    &quot;selector2&quot;,
+    &quot;mail&quot;,
+    &quot;k1&quot;
+  ]
+}</div>
+      
+      
+      <p class="duration">Duration: 247.6ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>dns.email_auth / dmarc</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No DMARC record exists. Without DMARC, email receivers have no policy guidance for handling SPF/DKIM failures, enabling phishing and email spoofing.</p>
+  <div class="evidence">No DMARC record found at _dmarc.cp.quigs.com</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;command&quot;: &quot;dig TXT _dmarc.cp.quigs.com&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;dmarc_record&quot;: null,
+  &quot;output_preview&quot;: &quot;\n; &lt;&lt;&gt;&gt; DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu &lt;&lt;&gt;&gt; TXT _dmarc.cp.quigs.com\n;; global options: +cmd\n;; Got answer:\n;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NXDOMAIN, id: 61692\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;_dmarc.cp.quigs.com.\t\tIN\tTXT\n\n;; AUTHORITY SECTION:\nquigs.com.\t\t1800\tIN\tSOA\tdayana.ns.cloudflare.com. dns.cloudflare.com. 2398484352 10000 2400 604800 1800\n\n;; Query time: 21 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: Sun Mar 08 19:12:40 CDT 2026\n;; MSG SIZE  rc&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 41.2ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>exposure.sensitive_paths / admin_panels</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Found 2 admin panel(s) returning 200 without authentication or login redirect. These may allow unauthorized access to administrative functions. Paths: /phpmyadmin/, /phpmyadmin</p>
+  <div class="evidence">Admin panel(s) accessible without authentication: /phpmyadmin/, /phpmyadmin</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;paths_probed&quot;: [
+    &quot;/admin/&quot;,
+    &quot;/admin&quot;,
+    &quot;/administrator/&quot;,
+    &quot;/administrator&quot;,
+    &quot;/phpmyadmin/&quot;,
+    &quot;/phpmyadmin&quot;,
+    &quot;/adminer.php&quot;,
+    &quot;/adminer/&quot;,
+    &quot;/pma/&quot;,
+    &quot;/pma&quot;,
+    &quot;/mysql/&quot;,
+    &quot;/db/&quot;,
+    &quot;/_profiler/&quot;,
+    &quot;/_profiler&quot;,
+    &quot;/manage/&quot;,
+    &quot;/management/&quot;,
+    &quot;/controlpanel/&quot;,
+    &quot;/cpanel/&quot;,
+    &quot;/wp-admin/&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;accessible_paths&quot;: [
+    {
+      &quot;path&quot;: &quot;/phpmyadmin/&quot;,
+      &quot;status&quot;: 200,
+      &quot;preview&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot; dir=\&quot;ltr\&quot;&gt;\n&lt;head&gt;\n  &lt;meta charset=\&quot;utf-8\&quot;&gt;\n  &lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot;&gt;\n  &lt;meta name=\&quot;referrer\&quot; content=\&quot;same-origin\&quot;&gt;\n  &lt;meta&quot;
+    },
+    {
+      &quot;path&quot;: &quot;/phpmyadmin&quot;,
+      &quot;status&quot;: 200,
+      &quot;preview&quot;: &quot;&lt;!doctype html&gt;\n&lt;html lang=\&quot;en\&quot; dir=\&quot;ltr\&quot;&gt;\n&lt;head&gt;\n  &lt;meta charset=\&quot;utf-8\&quot;&gt;\n  &lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot;&gt;\n  &lt;meta name=\&quot;referrer\&quot; content=\&quot;same-origin\&quot;&gt;\n  &lt;meta&quot;
+    }
+  ],
+  &quot;auth_protected&quot;: []
+}</div>
+      
+      
+      <p class="duration">Duration: 2772.8ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>exposure.sensitive_paths / debug_endpoints</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Found 1 debug/status endpoint(s) that expose sensitive server information. These may reveal environment variables, credentials, stack traces, or server internals. Paths: /server-status</p>
+  <div class="evidence">Debug/status endpoint(s) expose sensitive data: /server-status. Indicators: Server MPM, phpinfo, Apache Server Status, Server Version, requests currently being processed</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;paths_probed&quot;: [
+    &quot;/debug&quot;,
+    &quot;/debug/&quot;,
+    &quot;/trace&quot;,
+    &quot;/status&quot;,
+    &quot;/server-status&quot;,
+    &quot;/server-info&quot;,
+    &quot;/health&quot;,
+    &quot;/healthz&quot;,
+    &quot;/info&quot;,
+    &quot;/_debug/&quot;,
+    &quot;/__debug__/&quot;,
+    &quot;/actuator&quot;,
+    &quot;/actuator/env&quot;,
+    &quot;/actuator/health&quot;,
+    &quot;/actuator/info&quot;,
+    &quot;/actuator/metrics&quot;,
+    &quot;/.env&quot;,
+    &quot;/env&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;vulnerable_paths&quot;: [
+    {
+      &quot;path&quot;: &quot;/server-status&quot;,
+      &quot;status&quot;: 200,
+      &quot;indicators&quot;: [
+        &quot;phpinfo&quot;,
+        &quot;Server Version&quot;,
+        &quot;Server MPM&quot;,
+        &quot;Apache Server Status&quot;,
+        &quot;requests currently being processed&quot;
+      ],
+      &quot;preview&quot;: &quot;&lt;!DOCTYPE HTML PUBLIC \&quot;-//W3C//DTD HTML 3.2 Final//EN\&quot;&gt;\n&lt;html&gt;&lt;head&gt;\n&lt;title&gt;Apache Status&lt;/title&gt;\n&lt;/head&gt;&lt;body&gt;\n&lt;h1&gt;Apache Server Status for cp.quigs.com (via 172.31.3.116)&lt;/h1&gt;\n\n&lt;dl&gt;&lt;dt&gt;Server Version: Apache/2.4.58 (Ubuntu) mod_fcgid/2.3.9 OpenSSL/3.0.13&lt;/dt&gt;\n&lt;dt&gt;Server MPM: event&lt;/dt&gt;\n&lt;dt&gt;Server &quot;
+    }
+  ]
+}</div>
+      
+      
+      <p class="duration">Duration: 2400.6ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.file_permissions / sensitive_configs</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Sensitive configuration files have permissions that are too loose. This may allow unauthorized users to read credentials or private keys:
+  - /etc/ssl/private: 0o710 (should be 0o700 or stricter)</p>
+  <div class="evidence">1 sensitive file(s) with overly permissive permissions</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;files_checked&quot;: [
+    &quot;/etc/shadow&quot;,
+    &quot;/etc/shadow-&quot;,
+    &quot;/etc/gshadow&quot;,
+    &quot;/etc/gshadow-&quot;,
+    &quot;/etc/ssh/ssh_host_rsa_key&quot;,
+    &quot;/etc/ssh/ssh_host_ecdsa_key&quot;,
+    &quot;/etc/ssh/ssh_host_ed25519_key&quot;,
+    &quot;/etc/ssh/sshd_config&quot;,
+    &quot;/etc/ssl/private&quot;
+  ]
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;issues&quot;: [
+    &quot;/etc/ssl/private: 0o710 (should be 0o700 or stricter)&quot;
+  ],
+  &quot;checked&quot;: 9
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.file_permissions / web_root_perms</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Permission issues found in /var/www/html:
+  - /var/www/html: group-writable and world-executable (0o2775)
+  - /var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials
+  - /var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials
+  - /var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials
+  - /var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials
+  - /var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials
+Ensure web files are owned by www-data with minimal permissions (644 for files, 755 for directories).</p>
+  <div class="evidence">6 permission issue(s) in web root</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;web_root&quot;: &quot;/var/www/html&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;issues&quot;: [
+    &quot;/var/www/html: group-writable and world-executable (0o2775)&quot;,
+    &quot;/var/www/html/wordpress/wp-config.php: world-readable (0o775), may contain credentials&quot;,
+    &quot;/var/www/html/eqmon/api/config.php: world-readable (0o644), may contain credentials&quot;,
+    &quot;/var/www/html/eqmon/.htaccess: world-readable (0o755), may contain credentials&quot;,
+    &quot;/var/www/html/ecoeye_alert_relay/public_html/.htaccess: world-readable (0o664), may contain credentials&quot;,
+    &quot;/var/www/html/wordpress/.htaccess: world-readable (0o775), may contain credentials&quot;
+  ]
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.firewall_audit / open_ports</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>Found 11 port ACCEPT rule(s). Sensitive ports with ACCEPT rules:
+  - Port 22 (SSH): 22/tcp                     ALLOW       Anywhere                   # SSH
+  - Port 5432 (PostgreSQL): 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere
+  - Port 22 (SSH): 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH
+Review whether all of these ports need to be accessible.</p>
+  <div class="evidence">11 ACCEPT rule(s), 3 on sensitive ports</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;firewall&quot;: &quot;ufw&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;total_rules&quot;: 11,
+  &quot;flagged&quot;: [
+    &quot;Port 22 (SSH): 22/tcp                     ALLOW       Anywhere                   # SSH&quot;,
+    &quot;Port 5432 (PostgreSQL): 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere&quot;,
+    &quot;Port 22 (SSH): 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH&quot;
+  ]
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.firewall_audit / unrestricted_input</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Sensitive ports are accessible from any source IP (0.0.0.0/0). Restrict these rules to specific IP ranges:
+  - Port 22 (SSH) allowed from Anywhere: 22/tcp                     ALLOW       Anywhere                   # SSH
+  - Port 5432 (PostgreSQL) allowed from Anywhere: 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere
+  - Port 22 (SSH) allowed from Anywhere: 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH</p>
+  <div class="evidence">3 unrestricted rule(s) on sensitive ports</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;firewall&quot;: &quot;ufw&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;unrestricted_rules&quot;: [
+    &quot;Port 22 (SSH) allowed from Anywhere: 22/tcp                     ALLOW       Anywhere                   # SSH&quot;,
+    &quot;Port 5432 (PostgreSQL) allowed from Anywhere: 172.200.1.1 5432/tcp on br-a4dae1881f84 ALLOW       Anywhere&quot;,
+    &quot;Port 22 (SSH) allowed from Anywhere: 22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH&quot;
+  ]
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.kernel_patch / pending_updates</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>There are 15 pending package update(s), but none are explicitly flagged as security updates. Consider applying them:
+  - libvirt-clients/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon-config-network/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon-config-nwfilter/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon-driver-qemu/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon-system-systemd/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon-system/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-daemon/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt-l10n/noble-updates 10.0.0-2ubuntu8.12 all [upgradable from: 10.0.0-2ubuntu8.11]
+  - libvirt0/noble-updates 10.0.0-2ubuntu8.12 amd64 [upgradable from: 10.0.0-2ubuntu8.11]
+  - linux-base/noble-updates 4.5ubuntu9+24.04.2 all [upgradable from: 4.5ubuntu9+24.04.1]</p>
+  <div class="evidence">15 pending update(s), none flagged as security</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;tool&quot;: &quot;apt list --upgradable&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;total_upgradable&quot;: 15,
+  &quot;security_upgradable&quot;: 0
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.kernel_patch / reboot_required</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>A system reboot is required to apply installed updates.
+Packages requiring reboot (5):
+  - gnome-shell
+  - libc6
+  - linux-image-6.17.0-14-generic
+  - linux-base
+  - evolution-data-server</p>
+  <div class="evidence">/var/run/reboot-required exists -- reboot required</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;checked&quot;: &quot;/var/run/reboot-required&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;reboot_required&quot;: true,
+  &quot;packages&quot;: [
+    &quot;gnome-shell&quot;,
+    &quot;libc6&quot;,
+    &quot;linux-image-6.17.0-14-generic&quot;,
+    &quot;linux-base&quot;,
+    &quot;evolution-data-server&quot;
+  ]
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.ssh_audit / root_login</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>PermitRootLogin is not explicitly configured. Modern OpenSSH defaults to &#x27;prohibit-password&#x27;, but explicit configuration is recommended.</p>
+  <div class="evidence">PermitRootLogin not explicitly set in sshd_config</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;config_file&quot;: &quot;/etc/ssh/sshd_config&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;permitrootlogin&quot;: &quot;not set (default)&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.ssh_audit / password_auth</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Password-based SSH authentication is enabled. This exposes the server to brute-force attacks. Disable PasswordAuthentication and use key-based authentication exclusively.</p>
+  <div class="evidence">PasswordAuthentication not set (defaults to yes)</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;config_file&quot;: &quot;/etc/ssh/sshd_config&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;passwordauthentication&quot;: &quot;not set (default: yes)&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>infrastructure.ssh_audit / max_auth_tries</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>MaxAuthTries is not explicitly configured. OpenSSH defaults to 6, which allows more brute-force attempts per connection than recommended. Set MaxAuthTries to 3 or lower.</p>
+  <div class="evidence">MaxAuthTries not set (OpenSSH default is 6)</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;config_file&quot;: &quot;/etc/ssh/sshd_config&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;maxauthtries&quot;: &quot;not set (default: 6)&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>malware.clamav_scan / clamav_opt_artemis_www</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>ClamAV scan returned exit code 2: /opt/artemis/www: No such file or directory
+WARNING: /opt/artemis/www: Can&#x27;t access file
+</p>
+  <div class="evidence">Exit code: 2</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;scan_path&quot;: &quot;/opt/artemis/www&quot;,
+  &quot;tool&quot;: &quot;clamscan&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;exit_code&quot;: 2,
+  &quot;infected_count&quot;: 0
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>malware.webshell_detect / webshell_var_www_html</strong>
+    <span class="badge critical">CRITICAL</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Found 55 suspicious pattern(s) in /var/www/html (25022 files scanned):
+wordpress/wp-includes/compat-utf8.php:64 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/kses.php:2030 -- preg_replace /e modifier -- PHP code runner
+wordpress/wp-includes/kses.php:2018 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/utf8.php:91 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/class-wp-simplepie-sanitize-kses.php:42 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/functions.php:4841 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/formatting.php:1994 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/Requests/src/Iri.php:342 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/Requests/src/Requests.php:1054 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/IRI.php:307 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/Misc.php:94 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/SimplePie.php:239 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/Parser.php:91 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/File.php:253 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/Sanitize.php:421 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/Content/Type/Sniffer.php:112 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/XML/Declaration/Parser.php:149 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/library/SimplePie/Decode/HTML/Entities.php:152 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/PHPMailer/PHPMailer.php:1491 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/ID3/module.audio-video.riff.php:70 -- Hex-encoded payload (4+ consecutive)</p>
+  <div class="evidence">wordpress/wp-includes/compat-utf8.php:64 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/kses.php:2030 -- preg_replace /e modifier -- PHP code runner
+wordpress/wp-includes/kses.php:2018 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/utf8.php:91 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/class-wp-simplepie-sanitize-kses.php:42 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/functions.php:4841 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/formatting.php:1994 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/Requests/src/Iri.php:342 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/Requests/src/Requests.php:1054 -- Hex-encoded payload (4+ consecutive)
+wordpress/wp-includes/SimplePie/src/IRI.php:307 -- Hex-encoded payload (4+ consecutive)</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;scan_path&quot;: &quot;/var/www/html&quot;,
+  &quot;files_scanned&quot;: 25022
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;findings_count&quot;: 55
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.certificate / cert_expiry</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>TLS certificate for cp.quigs.com expires within 90 days - plan renewal</p>
+  <div class="evidence">Certificate expires in 40 days on Apr 18 06:11:46 2026 GMT</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;hostname&quot;: &quot;cp.quigs.com&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;notAfter&quot;: &quot;Apr 18 06:11:46 2026 GMT&quot;,
+  &quot;days_remaining&quot;: 40
+}</div>
+      
+      
+      <p class="duration">Duration: 1.2ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.csrf / no_csrf_token</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>CSRF token not detected but POST may have been rejected for other reasons</p>
+  <div class="evidence">No CSRF token found but POST returned 403</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;checked_headers&quot;: true
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;has_token&quot;: false,
+  &quot;post_status&quot;: 403
+}</div>
+      
+      
+      <p class="duration">Duration: 62.0ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.security_headers / content_security_policy</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No CSP header; the site is vulnerable to XSS and data injection attacks</p>
+  <div class="evidence">Content-Security-Policy header missing</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Content-Security-Policy&quot;: &quot;missing&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.security_headers / x_frame_options</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No clickjacking protection; page can be embedded in iframes on any site</p>
+  <div class="evidence">X-Frame-Options header missing</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;X-Frame-Options&quot;: &quot;missing&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.security_headers / x_content_type_options</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No MIME sniffing protection; browsers may interpret files as different content types</p>
+  <div class="evidence">X-Content-Type-Options header missing</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;X-Content-Type-Options&quot;: &quot;missing&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.security_headers / referrer_policy</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No Referrer-Policy; full URLs may leak via Referer header to third parties</p>
+  <div class="evidence">Referrer-Policy header missing</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Referrer-Policy&quot;: &quot;missing&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.security_headers / permissions_policy</strong>
+    <span class="badge low">LOW</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No permissions policy; browser features like camera, microphone, geolocation are unrestricted</p>
+  <div class="evidence">Neither Permissions-Policy nor Feature-Policy header present</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Permissions-Policy&quot;: &quot;missing&quot;,
+  &quot;Feature-Policy&quot;: &quot;missing&quot;
+}</div>
+      
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.session / httponly_flag</strong>
+    <span class="badge high">HIGH</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Session cookie accessible via document.cookie - XSS can steal sessions</p>
+  <div class="evidence">HttpOnly flag MISSING from Set-Cookie: </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;checked&quot;: &quot;HttpOnly flag&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Set-Cookie&quot;: &quot;&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 30.9ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.session / secure_flag</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>Session cookie can be sent over plain HTTP - network sniffing possible</p>
+  <div class="evidence">Secure flag MISSING from Set-Cookie: </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;checked&quot;: &quot;Secure flag&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Set-Cookie&quot;: &quot;&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 30.9ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.session / samesite_attribute</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>No SameSite attribute - browser defaults apply (Lax in modern browsers)</p>
+  <div class="evidence">SameSite attribute MISSING from Set-Cookie: </div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      <h4>Request</h4>
+      <div class="repro-block">{
+  &quot;checked&quot;: &quot;SameSite attribute&quot;
+}</div>
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Set-Cookie&quot;: &quot;&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 30.9ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.tls_security / http_redirect</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="vulnerable">VULNERABLE</p>
+  <p>HTTP requests serve content without redirecting to HTTPS; users can be served unencrypted content</p>
+  <div class="evidence">HTTP serves content directly (status 403, no HTTPS redirect)</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;status&quot;: 403,
+  &quot;Location&quot;: &quot;none&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 65.3ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.tls_security / mixed_content_headers</strong>
+    <span class="badge info">INFO</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>CSP does not include upgrade-insecure-requests or block-all-mixed-content; browsers may still load HTTP resources on HTTPS pages</p>
+  <div class="evidence">No mixed content CSP directives found</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;CSP&quot;: &quot;missing&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 33.4ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+<div class="finding">
+  <div class="finding-header">
+    <strong>web.tls_security / hsts_preload</strong>
+    <span class="badge medium">MEDIUM</span>
+  </div>
+  <p class="partial">PARTIAL</p>
+  <p>HSTS is set but without preload; site is not eligible for browser HSTS preload lists</p>
+  <div class="evidence">HSTS present but no preload directive: max-age=31536000;</div>
+  <details class="repro">
+    <summary>Reproduction Details</summary>
+    <div class="repro-section">
+      
+      
+      <h4>Response</h4>
+      <div class="repro-block">{
+  &quot;Strict-Transport-Security&quot;: &quot;max-age=31536000;&quot;
+}</div>
+      
+      
+      <p class="duration">Duration: 32.0ms</p>
+      
+    </div>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>
