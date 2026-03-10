@@ -1,6 +1,6 @@
 # Cyber-Guardian Security Platform
 
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Date:** 2026-03-10
 **Status:** Production Ready
 **License:** Proprietary - Quig Enterprises
@@ -17,6 +17,7 @@ Comprehensive security monitoring, malware scanning, and infrastructure assessme
 2. **CVE Assessment System** - Container vulnerability scanning with Trivy
 3. **Infrastructure Security Audits** - AWS-compliant security assessments
 4. **Compliance Scanner** - Multi-server infrastructure compliance monitoring with AWS checks
+5. **Lynis CIS Auditing** - Comprehensive system hardening and CIS benchmark compliance
 
 ### Features
 
@@ -31,6 +32,8 @@ Comprehensive security monitoring, malware scanning, and infrastructure assessme
 - 🔐 **AWS Security Checks** (IMDSv2, EBS encryption, security groups)
 - 📦 **MailCow Container Monitoring** (version, SSL, backups, health)
 - 📈 **Compliance Scoring** (0-100) with CIS/NIST CSF mapping
+- 🔒 **Lynis CIS Auditing** (200+ security tests, hardening index 0-100)
+- 📊 **Combined Security Posture** (compliance + Lynis integrated view)
 
 ### Architecture
 
@@ -812,6 +815,173 @@ curl -H "X-aws-ec2-metadata-token: $TOKEN" \
 - NIST Cybersecurity Framework (CSF)
   - PR.IP-4: Backups of information are conducted
   - PR.DS-2: Data-in-transit and data-at-rest are protected
+
+---
+
+## Lynis CIS Auditing
+
+### Overview
+
+**File:** `scripts/lynis-auditor.py` (256 lines)
+
+Comprehensive CIS (Center for Internet Security) benchmark compliance auditing using the industry-standard Lynis security tool. Performs 200+ security tests and generates a hardening index score (0-100).
+
+### Features
+
+- **200+ Security Tests:** Comprehensive system security assessment
+- **Hardening Index:** Overall security score (0-100)
+- **CIS Benchmark Compliance:** Industry-standard security checks
+- **Database Integration:** Historical tracking and trend analysis
+- **Combined Security Posture:** Integrated with compliance scanner results
+- **Finding Management:** Track warnings, suggestions, and resolutions
+
+### Database Schema
+
+**Tables:**
+- `blueteam.lynis_audits` - Audit summary records with hardening index
+- `blueteam.lynis_findings` - Individual warnings and suggestions
+
+**Views:**
+- `v_latest_lynis_audits` - Most recent audit per server
+- `v_unresolved_lynis_findings` - All unresolved findings
+- `v_lynis_hardening_trend` - Hardening index changes over time
+- `v_security_posture` - **Combined compliance + Lynis scores**
+
+**Functions:**
+- `get_lynis_stats(server_name)` - Comprehensive statistics
+- `resolve_lynis_finding(finding_id, notes)` - Mark finding as resolved
+
+### Usage
+
+**Run audit on local server:**
+```bash
+cd /opt/claude-workspace/projects/cyber-guardian
+sudo bash scripts/run-lynis-audit.sh alfred
+```
+
+**Run audit on remote server:**
+```bash
+ssh willie
+cd /opt/claude-workspace/projects/cyber-guardian
+sudo bash scripts/run-lynis-audit.sh willie
+```
+
+**Audit all servers:**
+```bash
+for server in alfred willie peter; do
+    echo "Auditing $server..."
+    sudo bash scripts/run-lynis-audit.sh $server
+done
+```
+
+### Output Example
+
+```
+================================================================================
+LYNIS AUDIT SUMMARY
+================================================================================
+Server: alfred
+Hardening Index: 78/100
+Tests Performed: 219
+Warnings: 12
+Suggestions: 34
+================================================================================
+```
+
+### Database Queries
+
+**View latest audits:**
+```sql
+SELECT * FROM blueteam.v_latest_lynis_audits;
+```
+
+**View unresolved findings:**
+```sql
+SELECT * FROM blueteam.v_unresolved_lynis_findings
+WHERE server_name = 'alfred'
+ORDER BY severity;
+```
+
+**View combined security posture:**
+```sql
+SELECT
+    server_name,
+    compliance_score,
+    lynis_hardening,
+    combined_score
+FROM blueteam.v_security_posture
+ORDER BY combined_score DESC;
+```
+
+**Get comprehensive statistics:**
+```sql
+SELECT * FROM blueteam.get_lynis_stats('alfred');
+```
+
+**Mark finding as resolved:**
+```sql
+SELECT blueteam.resolve_lynis_finding(
+    123,
+    'Updated SSH configuration per recommendation'
+);
+```
+
+### Hardening Index Interpretation
+
+| Score | Rating | Description |
+|-------|--------|-------------|
+| 90-100 | Excellent | Very few improvements needed |
+| 80-89 | Good | Minor hardening recommended |
+| 70-79 | Fair | Several improvements recommended |
+| 60-69 | Poor | Significant hardening needed |
+| 0-59 | Critical | Major security concerns |
+
+**Industry Benchmarks:**
+- Production servers: Target 80+
+- Development servers: Target 70+
+- Personal systems: Target 60+
+
+### Integration with Compliance Scanner
+
+Lynis provides comprehensive CIS benchmark auditing that complements the compliance scanner:
+
+**Compliance Scanner:**
+- Focused configuration checks (SSH, firewall, Docker, AWS)
+- Pass/fail binary results
+- Automated daily/weekly scans
+
+**Lynis Auditor:**
+- Comprehensive system hardening assessment
+- Hardening recommendations and best practices
+- 200+ security tests
+- Manual/scheduled execution
+
+**Combined View:**
+```sql
+-- View integrated security posture
+SELECT * FROM blueteam.v_security_posture;
+```
+
+### Automation
+
+**Weekly Lynis audits via cron:**
+```bash
+# Add to crontab
+0 2 * * 0 /opt/claude-workspace/projects/cyber-guardian/scripts/run-lynis-audit.sh alfred >> /var/log/lynis-cron.log 2>&1
+```
+
+### Documentation
+
+**Complete documentation:** `docs/LYNIS_INTEGRATION.md`
+
+Includes:
+- Architecture overview
+- Database schema details
+- Installation instructions
+- Usage examples
+- Troubleshooting guide
+- Remote server setup
+- Performance metrics
 
 ---
 
@@ -1665,6 +1835,6 @@ For issues, questions, or support:
 
 ---
 
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Last Updated:** 2026-03-10
 **Maintainer:** Quig Enterprises Security Team
