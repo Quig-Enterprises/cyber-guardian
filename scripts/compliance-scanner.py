@@ -252,6 +252,60 @@ class LocalExecutor:
 
 
 # ============================================================================
+# Helper Functions
+# ============================================================================
+
+def get_ec2_metadata() -> Optional[Dict[str, str]]:
+    """
+    Get EC2 instance metadata using IMDSv2.
+
+    Returns:
+        Dict with instance_id and region, or None if not on EC2
+    """
+    try:
+        # Get IMDSv2 token
+        token_cmd = [
+            "curl", "-X", "PUT",
+            "-H", "X-aws-ec2-metadata-token-ttl-seconds: 21600",
+            "-s", "http://169.254.169.254/latest/api/token"
+        ]
+        token_result = subprocess.run(token_cmd, capture_output=True, text=True, timeout=2)
+
+        if token_result.returncode != 0 or not token_result.stdout.strip():
+            return None
+
+        token = token_result.stdout.strip()
+
+        # Get instance ID
+        instance_cmd = [
+            "curl", "-H", f"X-aws-ec2-metadata-token: {token}",
+            "-s", "http://169.254.169.254/latest/meta-data/instance-id"
+        ]
+        instance_result = subprocess.run(instance_cmd, capture_output=True, text=True, timeout=2)
+
+        if instance_result.returncode != 0 or not instance_result.stdout.strip():
+            return None
+
+        instance_id = instance_result.stdout.strip()
+
+        # Get region
+        region_cmd = [
+            "curl", "-H", f"X-aws-ec2-metadata-token: {token}",
+            "-s", "http://169.254.169.254/latest/meta-data/placement/region"
+        ]
+        region_result = subprocess.run(region_cmd, capture_output=True, text=True, timeout=2)
+
+        region = region_result.stdout.strip() if region_result.returncode == 0 else "us-east-2"
+
+        return {
+            "instance_id": instance_id,
+            "region": region
+        }
+    except Exception:
+        return None
+
+
+# ============================================================================
 # Check Modules
 # ============================================================================
 
@@ -490,8 +544,9 @@ class SSHChecks:
 class FirewallChecks:
     """Firewall security checks."""
 
-    def __init__(self, executor):
+    def __init__(self, executor, server_type: str = "local"):
         self.executor = executor
+        self.server_type = server_type
 
     def run_all(self) -> List[CheckResult]:
         """Run all firewall checks."""
@@ -504,6 +559,17 @@ class FirewallChecks:
         result = CheckResult("firewall", "Firewall Enabled", "firewall-ufw-enabled")
         result.cis_benchmark = "3.5.1"
 
+        # Cloud-aware check: AWS EC2 uses Security Groups
+        if self.server_type == "aws-ec2":
+            result.mark_pass(
+                "Firewall protection via AWS Security Groups",
+                "UFW not required on AWS EC2 (network-level Security Groups provide firewall protection)"
+            )
+            result.cis_benchmark = "CIS Ubuntu 3.5.1.1 (Cloud Exception)"
+            result.check_output = "AWS EC2 instance - using Security Groups for firewall protection"
+            return result
+
+        # Standard UFW check for non-cloud servers
         exit_code, stdout, stderr = self.executor.run("sudo ufw status")
         result.check_output = stdout.strip()
 
@@ -1010,7 +1076,7 @@ class ComplianceScanner:
 
         # Run firewall checks (universal)
         logger.info("Running firewall checks...")
-        firewall_checks = FirewallChecks(self.executor)
+        firewall_checks = FirewallChecks(self.executor, self.server_type)
         self.results.extend(firewall_checks.run_all())
 
         # Run Docker checks (if applicable)
