@@ -2,28 +2,14 @@
 // JWT-based session check for security dashboard
 // Uses Project Keystone's JWT session system
 
-// Locate project-keystone admin libs.
-// DOCUMENT_ROOT is set by nginx to the keystone dashboard root (the directory
-// that contains both admin/ and security-dashboard/).
-// KEYSTONE_PATH env var overrides for non-standard deployments.
-$_keystone_candidates = array_filter([
-    getenv('KEYSTONE_PATH') ?: null,
-    $_SERVER['DOCUMENT_ROOT'] ?? null,
-    '/var/www/html/project-keystone/dashboard',  // alfred
-    '/opt/project-keystone/dashboard',           // artemis
-    '/opt/artemis/www',                          // artemis legacy
-]);
-$_keystone_admin = null;
-foreach ($_keystone_candidates as $_candidate) {
-    if (is_readable($_candidate . '/admin/lib/db.php')) {
-        $_keystone_admin = $_candidate . '/admin/lib';
-        break;
-    }
-}
-if (!$_keystone_admin) {
+// Locate project-keystone admin libs via DOCUMENT_ROOT.
+// Each deployment's nginx security-dashboard fastcgi block must set:
+//   fastcgi_param DOCUMENT_ROOT /path/to/project-keystone/dashboard;
+$_keystone_admin = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/admin/lib';
+if (!is_readable($_keystone_admin . '/db.php')) {
     http_response_code(500);
-    error_log('auth-check.php: Could not locate project-keystone admin/lib. Set KEYSTONE_PATH env var to the keystone dashboard root.');
-    exit('Security dashboard misconfigured: keystone admin lib not found.');
+    error_log('auth-check.php: admin/lib not found at ' . $_keystone_admin . '. Ensure nginx sets fastcgi_param DOCUMENT_ROOT to the project-keystone dashboard root.');
+    exit('Security dashboard misconfigured: ensure nginx sets DOCUMENT_ROOT to the project-keystone dashboard root.');
 }
 require_once $_keystone_admin . '/db.php';
 require_once $_keystone_admin . '/session.php';
