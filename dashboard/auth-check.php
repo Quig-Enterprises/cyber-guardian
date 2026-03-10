@@ -4,8 +4,8 @@
 
 // When symlinked from /var/www/html/alfred/dashboard/security-dashboard/ to here,
 // we need to reference the Keystone admin files by absolute path
-require_once '/var/www/html/alfred/dashboard/admin/lib/db.php';
-require_once '/var/www/html/alfred/dashboard/admin/lib/session.php';
+require_once '/var/www/html/project-keystone/dashboard/admin/lib/db.php';
+require_once '/var/www/html/project-keystone/dashboard/admin/lib/session.php';
 
 // Get session from JWT cookie
 $sessionData = Session::getCurrent();
