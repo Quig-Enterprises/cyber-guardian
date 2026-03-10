@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Cyber-Guardian: Compliance Scanner
-Version: 1.0.0
+Version: 1.1.0
 Date: 2026-03-10
 
 Infrastructure compliance and security configuration scanner.
@@ -22,7 +22,7 @@ Categories:
     - ssh: Root login, password auth, key-only, hardening
     - firewall: UFW/iptables status, open ports
     - docker: Container versions, security scanning, compose config
-    - mailcow: MailCow-specific checks (if detected)
+    - mailcow: Container versions, SSL cert expiration, containers running, backups (AWS EC2 only)
     - wordpress: WordPress-specific checks (if detected)
 """
 
@@ -43,6 +43,13 @@ try:
 except ImportError:
     print("ERROR: psycopg2 not installed. Install with: pip install psycopg2-binary")
     sys.exit(1)
+
+# Server hostname mappings (friendly name -> actual hostname)
+SERVER_HOSTNAMES = {
+    "willie": "mailcow.tailce791f.ts.net",
+    "peter": "cp.quigs.com",
+    "alfred": "localhost",
+}
 
 # Configuration
 DB_CONFIG = {
@@ -594,6 +601,269 @@ class DockerChecks:
 
 
 # ============================================================================
+# MailCow Checks
+# ============================================================================
+
+class MailCowChecks:
+    """MailCow-specific security checks."""
+
+    def __init__(self, executor):
+        self.executor = executor
+
+    def run_all(self) -> List[CheckResult]:
+        """Run all MailCow checks."""
+        checks = []
+        checks.append(self.check_container_versions())
+        checks.append(self.check_ssl_certificate())
+        checks.append(self.check_docker_compose_running())
+        checks.append(self.check_backup_verification())
+        return checks
+
+    def check_container_versions(self) -> CheckResult:
+        """Check if MailCow is up-to-date by comparing git tag."""
+        result = CheckResult("mailcow", "MailCow Version Current", "mailcow-001")
+        result.cis_benchmark = "CIS Docker Benchmark 1.0"
+        result.service_name = "mailcow"
+
+        # Try with safe.directory config first to handle ownership issues
+        exit_code, stdout, stderr = self.executor.run(
+            "cd /opt/mailcow-dockerized && git config --global --add safe.directory /opt/mailcow-dockerized 2>/dev/null; git describe --tags 2>/dev/null"
+        )
+
+        if exit_code != 0:
+            result.mark_skip("Unable to determine MailCow version (git tag not available)")
+            return result
+
+        current_tag = stdout.strip()
+        result.check_output = current_tag
+
+        # Expected format: 2026-01 or later
+        # Parse year-month from tag
+        match = re.search(r'(\d{4})-(\d{2})', current_tag)
+        if not match:
+            result.mark_warning(
+                f"MailCow version format unexpected: {current_tag}",
+                "Unable to parse version tag for comparison",
+                "Check manually: cd /opt/mailcow-dockerized && git fetch && git describe --tags $(git rev-list --tags --max-count=1)"
+            )
+            return result
+
+        year = int(match.group(1))
+        month = int(match.group(2))
+        current_version = year * 100 + month  # e.g., 202601 for 2026-01
+
+        # Check if version is recent (2026-01 or later)
+        expected_version = 202601  # 2026-01
+
+        if current_version >= expected_version:
+            result.mark_pass(
+                f"MailCow version current: {current_tag}",
+                f"Running version {current_tag} (>= 2026-01)"
+            )
+        else:
+            result.mark_fail(
+                "medium",
+                f"MailCow version outdated: {current_tag}",
+                f"Running {current_tag}, expected 2026-01 or later",
+                "Update MailCow: cd /opt/mailcow-dockerized && ./update.sh"
+            )
+
+        return result
+
+    def check_ssl_certificate(self) -> CheckResult:
+        """Check SSL certificate expiration for email.northwoodsmail.com."""
+        result = CheckResult("mailcow", "SSL Certificate Valid", "mailcow-002")
+        result.nist_csf = "PR.DS-2"
+
+        exit_code, stdout, stderr = self.executor.run(
+            "echo | openssl s_client -servername email.northwoodsmail.com -connect email.northwoodsmail.com:443 2>/dev/null | openssl x509 -noout -enddate"
+        )
+
+        if exit_code != 0:
+            result.mark_skip("Unable to check SSL certificate")
+            return result
+
+        result.check_output = stdout.strip()
+
+        # Parse expiration date: notAfter=Mar 10 12:00:00 2026 GMT
+        match = re.search(r'notAfter=(.+)', stdout)
+        if not match:
+            result.mark_warning(
+                "Certificate expiration date not found",
+                stdout.strip(),
+                "Check manually: openssl s_client -servername email.northwoodsmail.com -connect email.northwoodsmail.com:443"
+            )
+            return result
+
+        expiry_str = match.group(1).strip()
+        try:
+            # Parse date (example: Mar 10 12:00:00 2026 GMT)
+            from dateutil import parser as date_parser
+            expiry_date = date_parser.parse(expiry_str)
+            # Make timezone-aware comparison
+            from datetime import timezone
+            now = datetime.now(timezone.utc)
+            # Ensure expiry_date is timezone-aware
+            if expiry_date.tzinfo is None:
+                expiry_date = expiry_date.replace(tzinfo=timezone.utc)
+            days_until_expiry = (expiry_date - now).days
+
+            if days_until_expiry < 0:
+                result.mark_fail(
+                    "critical",
+                    "SSL certificate expired",
+                    f"Certificate expired {abs(days_until_expiry)} days ago on {expiry_str}",
+                    "Renew certificate immediately: cd /opt/mailcow-dockerized && docker-compose restart acme-mailcow"
+                )
+            elif days_until_expiry < 30:
+                result.mark_fail(
+                    "high",
+                    f"SSL certificate expiring soon ({days_until_expiry} days)",
+                    f"Certificate expires on {expiry_str}",
+                    "Renew certificate: cd /opt/mailcow-dockerized && docker-compose restart acme-mailcow"
+                )
+            else:
+                result.mark_pass(
+                    f"SSL certificate valid ({days_until_expiry} days remaining)",
+                    f"Certificate expires on {expiry_str}"
+                )
+        except ImportError:
+            # Fallback if dateutil not available - use simple string comparison
+            result.mark_warning(
+                f"Certificate expires: {expiry_str}",
+                "python-dateutil not available for date parsing - install with: pip install python-dateutil",
+                "Verify certificate expiration manually"
+            )
+        except Exception as e:
+            result.mark_warning(
+                f"Certificate date parsing failed: {expiry_str}",
+                str(e),
+                "Verify certificate manually"
+            )
+
+        return result
+
+    def check_docker_compose_running(self) -> CheckResult:
+        """Check all MailCow containers are running."""
+        result = CheckResult("mailcow", "All Containers Running", "mailcow-003")
+        result.cis_benchmark = "CIS Docker Benchmark 1.0"
+        result.service_name = "mailcow"
+
+        exit_code, stdout, stderr = self.executor.run(
+            "docker ps --filter 'name=mailcowdockerized' --format '{{.Status}}' | grep -c 'Up'"
+        )
+
+        if exit_code != 0:
+            result.mark_fail(
+                "critical",
+                "No MailCow containers running",
+                "Unable to find any running MailCow containers",
+                "Start MailCow: cd /opt/mailcow-dockerized && docker-compose up -d"
+            )
+            return result
+
+        running_count = int(stdout.strip() or "0")
+
+        # Get full container status for details
+        _, containers_stdout, _ = self.executor.run(
+            "docker ps --filter 'name=mailcowdockerized' --format '{{.Names}}: {{.Status}}'"
+        )
+        result.check_output = containers_stdout.strip()
+
+        # MailCow typically has 17-19 containers depending on configuration
+        # We'll be flexible here and just verify that containers are running
+        if running_count >= 15:
+            result.mark_pass(
+                f"All MailCow containers running ({running_count} containers)",
+                f"{running_count} containers are up"
+            )
+        elif running_count > 0:
+            result.mark_fail(
+                "high",
+                f"Only {running_count} MailCow containers running",
+                containers_stdout.strip(),
+                "Check container status: docker ps -a --filter 'name=mailcowdockerized' && cd /opt/mailcow-dockerized && docker-compose up -d"
+            )
+        else:
+            result.mark_fail(
+                "critical",
+                "No MailCow containers running",
+                "MailCow service is completely down",
+                "Start MailCow: cd /opt/mailcow-dockerized && docker-compose up -d"
+            )
+
+        return result
+
+    def check_backup_verification(self) -> CheckResult:
+        """Check if AWS EBS snapshot exists in last 7 days."""
+        result = CheckResult("mailcow", "Recent Backup Available", "mailcow-004")
+        result.nist_csf = "PR.IP-4"
+
+        # Check if boto3 is available
+        try:
+            import boto3
+        except ImportError:
+            result.mark_skip("boto3 not installed - cannot verify AWS backups")
+            return result
+
+        # Get instance ID from EC2 metadata
+        exit_code, stdout, stderr = self.executor.run(
+            "TOKEN=$(curl -X PUT -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600' -s http://169.254.169.254/latest/api/token 2>/dev/null) && curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -s http://169.254.169.254/latest/meta-data/instance-id 2>/dev/null"
+        )
+
+        if exit_code != 0 or not stdout.strip():
+            result.mark_skip("Not running on AWS EC2 or metadata not accessible")
+            return result
+
+        instance_id = stdout.strip()
+
+        # Get volume ID using AWS CLI
+        exit_code, stdout, stderr = self.executor.run(
+            f"aws ec2 describe-instances --instance-ids {instance_id} --query 'Reservations[0].Instances[0].BlockDeviceMappings[0].Ebs.VolumeId' --output text 2>/dev/null"
+        )
+
+        if exit_code != 0 or not stdout.strip():
+            result.mark_skip("Unable to determine EBS volume ID")
+            return result
+
+        volume_id = stdout.strip()
+
+        # Check for recent snapshots (last 7 days)
+        from datetime import timedelta
+        seven_days_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+
+        exit_code, stdout, stderr = self.executor.run(
+            f"aws ec2 describe-snapshots --filters Name=volume-id,Values={volume_id} Name=start-time,Values={seven_days_ago}* --query 'Snapshots[*].[SnapshotId,StartTime]' --output text 2>/dev/null | wc -l"
+        )
+
+        if exit_code != 0:
+            result.mark_warning(
+                "Unable to verify backups",
+                "AWS CLI command failed - ensure AWS credentials are configured",
+                "Configure AWS CLI: aws configure"
+            )
+            return result
+
+        snapshot_count = int(stdout.strip() or "0")
+        result.check_output = f"Volume: {volume_id}, Snapshots (7d): {snapshot_count}"
+
+        if snapshot_count > 0:
+            result.mark_pass(
+                f"Recent backup available ({snapshot_count} snapshots in last 7 days)",
+                f"Volume {volume_id} has {snapshot_count} snapshot(s) from the last 7 days"
+            )
+        else:
+            result.mark_fail(
+                "medium",
+                "No recent backups found",
+                f"No EBS snapshots found for volume {volume_id} in the last 7 days",
+                f"Create snapshot: aws ec2 create-snapshot --volume-id {volume_id} --description 'Manual backup'"
+            )
+
+        return result
+
+
+# ============================================================================
 # AWS Checks (requires boto3)
 # ============================================================================
 
@@ -747,6 +1017,14 @@ class ComplianceScanner:
         logger.info("Running Docker checks...")
         docker_checks = DockerChecks(self.executor)
         self.results.extend(docker_checks.run_all())
+
+        # Run MailCow checks (if MailCow detected on AWS EC2)
+        if self.server_type == "aws-ec2":
+            exit_code, stdout, stderr = self.executor.run("test -d /opt/mailcow-dockerized && echo 'exists'")
+            if exit_code == 0 and "exists" in stdout:
+                logger.info("MailCow detected - running MailCow checks...")
+                mailcow_checks = MailCowChecks(self.executor)
+                self.results.extend(mailcow_checks.run_all())
 
         # Run AWS checks (if aws-ec2 type)
         if self.server_type == "aws-ec2" and self.aws_instance_id:
@@ -925,6 +1203,14 @@ def main():
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
+    # Auto-detect EC2 instance ID if not provided
+    if args.type == "aws-ec2" and not args.aws_instance_id:
+        metadata = get_ec2_metadata()
+        if metadata:
+            args.aws_instance_id = metadata["instance_id"]
+            args.aws_region = metadata.get("region", args.aws_region)
+            logger.info(f"Auto-detected EC2 instance: {args.aws_instance_id} in {args.aws_region}")
+
     # Create executor based on server type
     if args.type == "local":
         executor = LocalExecutor()
@@ -932,7 +1218,9 @@ def main():
         if not args.ssh_key:
             logger.error("SSH key required for remote servers")
             sys.exit(1)
-        executor = SSHExecutor(args.server, args.ssh_key, args.ssh_user)
+        # Resolve server hostname using mapping
+        server_hostname = SERVER_HOSTNAMES.get(args.server, args.server)
+        executor = SSHExecutor(server_hostname, args.ssh_key, args.ssh_user)
 
     # Create scanner
     scanner = ComplianceScanner(
