@@ -1,5 +1,5 @@
 target:
-  base_url: "https://8qdj5it341kfv92u.brandonquig.com"
+  base_url: "https://alfred.quigs.com"
   api_path: "/api"
   auth_path: "/admin/api/auth.php"
   origin_ip: null
