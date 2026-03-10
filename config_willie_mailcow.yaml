@@ -1,0 +1,104 @@
+# Cyber-Guardian Configuration - Willie (MailCow Server)
+# AWS-Compliant Security Scan Configuration
+# Target: email.northwoodsmail.com (willie / mailcow.tailce791f.ts.net)
+
+target:
+  name: "willie"
+  description: "MailCow Email Server - AWS EC2"
+  hostname: "mailcow.tailce791f.ts.net"
+  ssh:
+    host: "mailcow.tailce791f.ts.net"
+    user: "ubuntu"
+    key: "/home/ublirnevire/.ssh/bq_laptop_rsa"
+  environment:
+    type: "production"
+    cloud_provider: "aws"
+    service_type: "email"
+    os: "Ubuntu 24.04 LTS"
+
+categories:
+  # CVE Scanning - HIGH PRIORITY
+  cve:
+    enabled: true
+    priority: "critical"
+    sources:
+      - cvelistv5
+      - wpvulndb
+      - vulners
+    targets:
+      - ubuntu_packages
+      - docker_images
+      - mailcow_containers
+
+  # AWS Compliance
+  compliance:
+    enabled: true
+    frameworks:
+      - aws_foundational_security
+      - cis_benchmark
+    checks:
+      - ec2_security_groups
+      - ebs_encryption
+      - iam_roles
+      - security_patches
+      - backup_configuration
+
+  # System Hardening
+  hardening:
+    enabled: true
+    checks:
+      - ssh_configuration
+      - firewall_rules
+      - file_permissions
+      - running_services
+      - network_exposure
+
+  # Application Security
+  application:
+    enabled: true
+    targets:
+      - mailcow_configuration
+      - tls_certificates
+      - smtp_security
+      - imap_security
+      - web_interface_nginx
+      - docker_compose_config
+
+  # Malware Scanning
+  malware:
+    enabled: true
+    scanners:
+      - clamav
+      - maldet
+    targets:
+      - system_files
+      - mail_storage
+      - docker_volumes
+
+scanning:
+  depth: "comprehensive"
+  timeout: 3600  # 1 hour
+  parallel: true
+  save_evidence: true
+
+reporting:
+  formats:
+    - json
+    - html
+    - markdown
+  output_dir: "/opt/claude-workspace/projects/cyber-guardian/reports"
+  include_remediation: true
+  severity_levels:
+    - critical
+    - high
+    - medium
+    - low
+    - info
+
+credentials:
+  database:
+    host: "localhost"
+    port: 5432
+    name: "eqmon"
+    user: "eqmon"
+    # Password via environment: EQMON_AUTH_DB_PASS
