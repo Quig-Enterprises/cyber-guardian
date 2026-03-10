@@ -1,0 +1,44 @@
+
+Report Summary
+
+┌──────────────────────────────────┬────────┬─────────────────┬─────────┐
+│              Target              │  Type  │ Vulnerabilities │ Secrets │
+├──────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ memcached:alpine (alpine 3.22.1) │ alpine │        6        │    -    │
+└──────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+memcached:alpine (alpine 3.22.1)
+================================
+Total: 6 (HIGH: 4, CRITICAL: 2)
+
+┌────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│  Library   │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3 │ CVE-2025-15467 │ CRITICAL │ fixed  │ 3.5.1-r0          │ 3.5.5-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│            │                │          │        │                   │               │ file processing                                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├────────────┼────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ libssl3    │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│            │                │          │        │                   │               │ file processing                                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+└────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘

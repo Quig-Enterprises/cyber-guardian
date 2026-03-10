@@ -1,0 +1,115 @@
+
+Report Summary
+
+┌────────────────────────────────────────────┬────────┬─────────────────┬─────────┐
+│                   Target                   │  Type  │ Vulnerabilities │ Secrets │
+├────────────────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ ghcr.io/mailcow/clamd:1.70 (alpine 3.21.3) │ alpine │       27        │    -    │
+└────────────────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+ghcr.io/mailcow/clamd:1.70 (alpine 3.21.3)
+==========================================
+Total: 27 (HIGH: 22, CRITICAL: 5)
+
+┌────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│  Library   │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ bind-libs  │ CVE-2025-13878 │ HIGH     │ fixed  │ 9.18.34-r0        │ 9.18.44-r0    │ bind: bind: Denial of Service via corrupt or malicious       │
+│            │                │          │        │                   │               │ record                                                       │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-13878                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40775 │          │        │                   │ 9.18.37-r0    │ bind: DNS message with invalid TSIG causes an assertion      │
+│            │                │          │        │                   │               │ failure                                                      │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40775                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40778 │          │        │                   │ 9.18.41-r0    │ bind: Cache poisoning attacks with unsolicited RRs           │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40778                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40780 │          │        │                   │               │ bind: Cache poisoning due to weak PRNG                       │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40780                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-8677  │          │        │                   │               │ bind: Resource exhaustion via malformed DNSKEY handling      │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-8677                    │
+├────────────┼────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│ bind-tools │ CVE-2025-13878 │          │        │                   │ 9.18.44-r0    │ bind: bind: Denial of Service via corrupt or malicious       │
+│            │                │          │        │                   │               │ record                                                       │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-13878                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40775 │          │        │                   │ 9.18.37-r0    │ bind: DNS message with invalid TSIG causes an assertion      │
+│            │                │          │        │                   │               │ failure                                                      │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40775                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40778 │          │        │                   │ 9.18.41-r0    │ bind: Cache poisoning attacks with unsolicited RRs           │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40778                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-40780 │          │        │                   │               │ bind: Cache poisoning due to weak PRNG                       │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-40780                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-8677  │          │        │                   │               │ bind: Resource exhaustion via malformed DNSKEY handling      │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-8677                    │
+├────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ c-ares     │ CVE-2025-31498 │          │        │ 1.34.3-r0         │ 1.34.5-r0     │ c-ares: c-ares has a use-after-free in read_answers()        │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-31498                   │
+├────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3 │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│            │                │          │        │                   │               │ file processing                                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├────────────┼────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ libssl3    │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│            │                │          │        │                   │               │ via oversized Initialization...                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│            ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│            │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│            │                │          │        │                   │               │ file processing                                              │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libxml2    │ CVE-2024-56171 │ CRITICAL │        │ 2.13.4-r3         │ 2.13.4-r4     │ libxml2: Use-After-Free in libxml2                           │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-56171                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-49794 │          │        │                   │ 2.13.9-r0     │ libxml: Heap use after free (UAF) leads to Denial of service │
+│            │                │          │        │                   │               │ (DoS)...                                                     │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49794                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-49796 │          │        │                   │               │ libxml: Type confusion leads to Denial of service (DoS)      │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49796                   │
+│            ├────────────────┼──────────┤        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-24928 │ HIGH     │        │                   │ 2.13.4-r4     │ libxml2: Stack-based buffer overflow in xmlSnprintfElements  │
+│            │                │          │        │                   │               │ of libxml2                                                   │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-24928                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-27113 │          │        │                   │ 2.13.4-r5     │ libxml2: NULL Pointer Dereference in libxml2 xmlPatMatch     │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-27113                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-32414 │          │        │                   │ 2.13.4-r6     │ libxml2: Out-of-Bounds Read in libxml2                       │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32414                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-32415 │          │        │                   │               │ libxml2: Out-of-bounds Read in xmlSchemaIDCFillNodeTables    │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32415                   │
+│            ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-49795 │          │        │                   │ 2.13.9-r0     │ libxml: Null pointer dereference leads to Denial of service  │
+│            │                │          │        │                   │               │ (DoS)                                                        │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49795                   │
+│            ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│            │ CVE-2025-6021  │          │        │                   │               │ libxml2: Integer Overflow in xmlBuildQName() Leads to Stack  │
+│            │                │          │        │                   │               │ Buffer Overflow in libxml2...                                │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-6021                    │
+├────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ xz-libs    │ CVE-2025-31115 │          │        │ 5.6.3-r0          │ 5.6.3-r1      │ xz: XZ has a heap-use-after-free bug in threaded .xz decoder │
+│            │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-31115                   │
+└────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘

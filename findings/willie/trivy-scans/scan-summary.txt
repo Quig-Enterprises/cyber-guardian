@@ -1,0 +1,67 @@
+acme-1.93.txt:Total: 27 (HIGH: 20, CRITICAL: 7)
+acme-1.93.txt:│ bind-libs   │ CVE-2025-13878 │ HIGH     │ fixed  │ 9.18.37-r0        │ 9.18.44-r0    │ bind: bind: Denial of Service via corrupt or malicious       │
+acme-1.93.txt:│ libcrypto3  │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+acme-1.93.txt:│             │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+acme-1.93.txt:│ libssl3     │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+acme-1.93.txt:│             │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+acme-1.93.txt:│ libxml2     │ CVE-2025-49794 │ CRITICAL │        │ 2.13.4-r6         │ 2.13.9-r0     │ libxml: Heap use after free (UAF) leads to Denial of service │
+acme-1.93.txt:│             │ CVE-2025-49795 │ HIGH     │        │                   │               │ libxml: Null pointer dereference leads to Denial of service  │
+acme-1.93.txt:│ openssl     │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+acme-1.93.txt:│             │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+acme-1.93.txt:│ redis       │ CVE-2025-49844 │ CRITICAL │        │ 7.2.9-r0          │ 7.2.11-r0     │ Redis: Redis Lua Use-After-Free may lead to remote code      │
+acme-1.93.txt:│             │ CVE-2025-32023 │ HIGH     │        │                   │               │ redis: Redis Hyperloglog Out-of-Bounds Write Vulnerability   │
+acme-1.93.txt:│ sqlite-libs │ CVE-2025-6965  │ CRITICAL │        │ 3.48.0-r2         │ 3.48.0-r3     │ sqlite: Integer Truncation in SQLite                         │
+dockerapi-2.11.txt:Total: 30 (HIGH: 25, CRITICAL: 5)
+dockerapi-2.11.txt:│ libcrypto3           │ CVE-2025-15467 │ CRITICAL │ fixed  │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+dockerapi-2.11.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+dockerapi-2.11.txt:│ libssl3              │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+dockerapi-2.11.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+dockerapi-2.11.txt:│ openssl              │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+dockerapi-2.11.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+dockerapi-2.11.txt:│ sqlite-libs          │ CVE-2025-3277  │ CRITICAL │        │ 3.48.0-r0         │ 3.48.0-r1     │ SQLite: integer overflow in SQLite                           │
+dockerapi-2.11.txt:│                      │ CVE-2025-29087 │ HIGH     │        │                   │ 3.48.0-r1     │ sqlite: Integer Overflow in SQLite concat_ws Function        │
+dockerapi-2.11.txt:Total: 6 (HIGH: 5, CRITICAL: 1)
+dockerapi-2.11.txt:│ aiohttp (METADATA)   │ CVE-2025-69223 │ HIGH     │ fixed  │ 3.11.13           │ 3.13.3        │ aiohttp: AIOHTTP's HTTP Parser auto_decompress feature is   │
+dockerapi-2.11.txt:│ h11 (METADATA)       │ CVE-2025-43859 │ CRITICAL │        │ 0.14.0            │ 0.16.0        │ h11: h11 accepts some malformed Chunked-Encoding bodies     │
+dockerapi-2.11.txt:│ starlette (METADATA) │ CVE-2025-62727 │ HIGH     │        │ 0.46.1            │ 0.49.1        │ starlette: Starlette DoS via Range header merging           │
+memcached-alpine.txt:Total: 6 (HIGH: 4, CRITICAL: 2)
+memcached-alpine.txt:│ libcrypto3 │ CVE-2025-15467 │ CRITICAL │ fixed  │ 3.5.1-r0          │ 3.5.5-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+memcached-alpine.txt:│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+memcached-alpine.txt:│ libssl3    │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+memcached-alpine.txt:│            │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+nginx-1.03.txt:Total: 45 (HIGH: 38, CRITICAL: 7)
+nginx-1.03.txt:│ c-ares               │ CVE-2025-31498 │ HIGH     │ fixed  │ 1.34.3-r0         │ 1.34.5-r0     │ c-ares: c-ares has a use-after-free in read_answers()        │
+nginx-1.03.txt:│ libcrypto3           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+nginx-1.03.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+nginx-1.03.txt:│ libssl3              │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+nginx-1.03.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+nginx-1.03.txt:│ libxml2              │ CVE-2024-56171 │ CRITICAL │        │ 2.13.4-r3         │ 2.13.4-r4     │ libxml2: Use-After-Free in libxml2                           │
+nginx-1.03.txt:│                      │ CVE-2025-24928 │ HIGH     │        │                   │ 2.13.4-r4     │ libxml2: Stack-based buffer overflow in xmlSnprintfElements  │
+nginx-1.03.txt:│ sqlite-libs          │ CVE-2025-3277  │ CRITICAL │        │ 3.48.0-r0         │ 3.48.0-r1     │ SQLite: integer overflow in SQLite                           │
+nginx-1.03.txt:│                      │ CVE-2025-29087 │ HIGH     │        │                   │ 3.48.0-r1     │ sqlite: Integer Overflow in SQLite concat_ws Function        │
+phpfpm-1.93.txt:Total: 57 (HIGH: 48, CRITICAL: 9)
+phpfpm-1.93.txt:│ c-ares            │ CVE-2025-31498 │ HIGH     │ fixed  │ 1.34.3-r0         │ 1.34.5-r0     │ c-ares: c-ares has a use-after-free in read_answers()        │
+phpfpm-1.93.txt:│ libcrypto3        │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+phpfpm-1.93.txt:│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+phpfpm-1.93.txt:│ libssl3           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+phpfpm-1.93.txt:│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+phpfpm-1.93.txt:│ libxml2           │ CVE-2025-49794 │ CRITICAL │        │ 2.13.4-r5         │ 2.13.9-r0     │ libxml: Heap use after free (UAF) leads to Denial of service │
+phpfpm-1.93.txt:│                   │ CVE-2025-32414 │ HIGH     │        │                   │ 2.13.4-r6     │ libxml2: Out-of-Bounds Read in libxml2                       │
+phpfpm-1.93.txt:│ openssl           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+phpfpm-1.93.txt:│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+phpfpm-1.93.txt:│ redis             │ CVE-2025-27151 │ CRITICAL │        │ 7.2.7-r0          │ 7.2.9-r0      │ redis: Redis Stack Buffer Overflow                           │
+phpfpm-1.93.txt:│                   │ CVE-2025-21605 │ HIGH     │        │                   │ 7.2.8-r0      │ redis: Redis DoS Vulnerability due to unlimited growth of    │
+phpfpm-1.93.txt:│ sqlite-libs       │ CVE-2025-3277  │ CRITICAL │        │ 3.48.0-r0         │ 3.48.0-r1     │ SQLite: integer overflow in SQLite                           │
+phpfpm-1.93.txt:│                   │ CVE-2025-29087 │ HIGH     │        │                   │ 3.48.0-r1     │ sqlite: Integer Overflow in SQLite concat_ws Function        │
+unbound-1.24.txt:Total: 50 (HIGH: 43, CRITICAL: 7)
+unbound-1.24.txt:│ bind-libs            │ CVE-2025-13878 │ HIGH     │ fixed  │ 9.18.34-r0        │ 9.18.44-r0    │ bind: bind: Denial of Service via corrupt or malicious       │
+unbound-1.24.txt:│ libcrypto3           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+unbound-1.24.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+unbound-1.24.txt:│ libssl3              │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+unbound-1.24.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+unbound-1.24.txt:│ libxml2              │ CVE-2025-49794 │ CRITICAL │        │ 2.13.4-r4         │ 2.13.9-r0     │ libxml: Heap use after free (UAF) leads to Denial of service │
+unbound-1.24.txt:│                      │ CVE-2025-27113 │ HIGH     │        │                   │ 2.13.4-r5     │ libxml2: NULL Pointer Dereference in libxml2 xmlPatMatch     │
+unbound-1.24.txt:│ openssl              │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+unbound-1.24.txt:│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+unbound-1.24.txt:│ sqlite-libs          │ CVE-2025-3277  │ CRITICAL │        │ 3.48.0-r0         │ 3.48.0-r1     │ SQLite: integer overflow in SQLite                           │
+unbound-1.24.txt:│                      │ CVE-2025-29087 │ HIGH     │        │                   │ 3.48.0-r1     │ sqlite: Integer Overflow in SQLite concat_ws Function        │

@@ -1,0 +1,226 @@
+
+Report Summary
+
+┌─────────────────────────────────────────────┬────────┬─────────────────┬─────────┐
+│                   Target                    │  Type  │ Vulnerabilities │ Secrets │
+├─────────────────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ ghcr.io/mailcow/phpfpm:1.93 (alpine 3.21.3) │ alpine │       57        │    -    │
+└─────────────────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+ghcr.io/mailcow/phpfpm:1.93 (alpine 3.21.3)
+===========================================
+Total: 57 (HIGH: 48, CRITICAL: 9)
+
+┌───────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│      Library      │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├───────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ c-ares            │ CVE-2025-31498 │ HIGH     │ fixed  │ 1.34.3-r0         │ 1.34.5-r0     │ c-ares: c-ares has a use-after-free in read_answers()        │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-31498                   │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ git               │ CVE-2025-46334 │          │        │ 2.47.2-r0         │ 2.47.3-r0     │ Git GUI allows you to use the Git source control management  │
+│                   │                │          │        │                   │               │ tools...                                                     │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-46334                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-48384 │          │        │                   │               │ git: Git arbitrary code execution                            │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-48384                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-48385 │          │        │                   │               │ git: Git arbitrary file writes                               │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-48385                   │
+├───────────────────┼────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ git-init-template │ CVE-2025-46334 │          │        │                   │               │ Git GUI allows you to use the Git source control management  │
+│                   │                │          │        │                   │               │ tools...                                                     │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-46334                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-48384 │          │        │                   │               │ git: Git arbitrary code execution                            │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-48384                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-48385 │          │        │                   │               │ git: Git arbitrary file writes                               │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-48385                   │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ gnupg             │ CVE-2025-68973 │          │        │ 2.4.7-r0          │ 2.4.9-r0      │ GnuPG: GnuPG: Information disclosure and potential arbitrary │
+│                   │                │          │        │                   │               │ code execution via out-of-bounds write...                    │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-68973                   │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gnupg-dirmngr     │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gnupg-gpgconf     │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gnupg-keyboxd     │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gnupg-utils       │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gnupg-wks-client  │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ gnutls            │ CVE-2025-32988 │          │        │ 3.8.8-r0          │ 3.8.12-r0     │ gnutls: Vulnerability in GnuTLS otherName SAN export         │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32988                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-32990 │          │        │                   │               │ gnutls: Vulnerability in GnuTLS certtool template parsing    │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32990                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2026-1584  │          │        │                   │               │ gnutls: gnutls: Remote Denial of Service via crafted         │
+│                   │                │          │        │                   │               │ ClientHello with invalid PSK...                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-1584                    │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ gpg               │ CVE-2025-68973 │          │        │ 2.4.7-r0          │ 2.4.9-r0      │ GnuPG: GnuPG: Information disclosure and potential arbitrary │
+│                   │                │          │        │                   │               │ code execution via out-of-bounds write...                    │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-68973                   │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gpg-agent         │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gpg-wks-server    │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gpgsm             │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ gpgv              │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ icu-data-en       │ CVE-2025-5222  │          │        │ 74.2-r0           │ 74.2-r1       │ icu: Stack buffer overflow in the SRBRoot::addTag function   │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-5222                    │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ icu-libs          │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libarchive        │ CVE-2025-25724 │          │        │ 3.7.7-r0          │ 3.7.9-r0      │ libarchive: Buffer Overflow vulnerability in libarchive      │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-25724                   │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3        │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                   │                │          │        │                   │               │ via oversized Initialization...                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                   ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                   │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                   │                │          │        │                   │               │ file processing                                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libpng            │ CVE-2025-64720 │          │        │ 1.6.47-r0         │ 1.6.53-r0     │ libpng: LIBPNG buffer overflow                               │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-64720                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-65018 │          │        │                   │               │ libpng: LIBPNG heap buffer overflow                          │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-65018                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-66293 │          │        │                   │               │ libpng: LIBPNG out-of-bounds read in                         │
+│                   │                │          │        │                   │               │ png_image_read_composite                                     │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-66293                   │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2026-22695 │          │        │                   │ 1.6.54-r0     │ libpng: libpng: Denial of service and information disclosure │
+│                   │                │          │        │                   │               │ via heap buffer over-read...                                 │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-22695                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2026-22801 │          │        │                   │               │ libpng: libpng: Information disclosure and denial of service │
+│                   │                │          │        │                   │               │ via integer truncation in...                                 │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-22801                   │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2026-25646 │          │        │                   │ 1.6.55-r0     │ libpng: LIBPNG has a heap buffer overflow in                 │
+│                   │                │          │        │                   │               │ png_set_quantize                                             │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-25646                   │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libssl3           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                   │                │          │        │                   │               │ via oversized Initialization...                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                   ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                   │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                   │                │          │        │                   │               │ file processing                                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libxml2           │ CVE-2025-49794 │ CRITICAL │        │ 2.13.4-r5         │ 2.13.9-r0     │ libxml: Heap use after free (UAF) leads to Denial of service │
+│                   │                │          │        │                   │               │ (DoS)...                                                     │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49794                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-49796 │          │        │                   │               │ libxml: Type confusion leads to Denial of service (DoS)      │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49796                   │
+│                   ├────────────────┼──────────┤        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-32414 │ HIGH     │        │                   │ 2.13.4-r6     │ libxml2: Out-of-Bounds Read in libxml2                       │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32414                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-32415 │          │        │                   │               │ libxml2: Out-of-bounds Read in xmlSchemaIDCFillNodeTables    │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32415                   │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-49795 │          │        │                   │ 2.13.9-r0     │ libxml: Null pointer dereference leads to Denial of service  │
+│                   │                │          │        │                   │               │ (DoS)                                                        │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49795                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-6021  │          │        │                   │               │ libxml2: Integer Overflow in xmlBuildQName() Leads to Stack  │
+│                   │                │          │        │                   │               │ Buffer Overflow in libxml2...                                │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-6021                    │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ openssl           │ CVE-2025-15467 │ CRITICAL │        │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                   │                │          │        │                   │               │ via oversized Initialization...                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                   ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                   │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                   │                │          │        │                   │               │ file processing                                              │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ redis             │ CVE-2025-27151 │ CRITICAL │        │ 7.2.7-r0          │ 7.2.9-r0      │ redis: Redis Stack Buffer Overflow                           │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-27151                   │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-49844 │          │        │                   │ 7.2.11-r0     │ Redis: Redis Lua Use-After-Free may lead to remote code      │
+│                   │                │          │        │                   │               │ execution                                                    │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-49844                   │
+│                   ├────────────────┼──────────┤        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-21605 │ HIGH     │        │                   │ 7.2.8-r0      │ redis: Redis DoS Vulnerability due to unlimited growth of    │
+│                   │                │          │        │                   │               │ output buffers abused...                                     │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-21605                   │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-32023 │          │        │                   │ 7.2.11-r0     │ redis: Redis Hyperloglog Out-of-Bounds Write Vulnerability   │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-32023                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-46817 │          │        │                   │               │ redis: Lua library commands may lead to integer overflow and │
+│                   │                │          │        │                   │               │ potential RCE...                                             │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-46817                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-46818 │          │        │                   │               │ Redis: Redis: Authenticated users can execute LUA scripts as │
+│                   │                │          │        │                   │               │ a different user...                                          │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-46818                   │
+│                   ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-46819 │          │        │                   │               │ Redis: Redis is vulnerable to DoS via specially crafted LUA  │
+│                   │                │          │        │                   │               │ scripts                                                      │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-46819                   │
+├───────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ sqlite-libs       │ CVE-2025-3277  │ CRITICAL │        │ 3.48.0-r0         │ 3.48.0-r1     │ SQLite: integer overflow in SQLite                           │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-3277                    │
+│                   ├────────────────┤          │        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-6965  │          │        │                   │ 3.48.0-r3     │ sqlite: Integer Truncation in SQLite                         │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-6965                    │
+│                   ├────────────────┼──────────┤        │                   ├───────────────┼──────────────────────────────────────────────────────────────┤
+│                   │ CVE-2025-29087 │ HIGH     │        │                   │ 3.48.0-r1     │ sqlite: Integer Overflow in SQLite concat_ws Function        │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-29087                   │
+├───────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ xz                │ CVE-2025-31115 │          │        │ 5.6.3-r0          │ 5.6.3-r1      │ xz: XZ has a heap-use-after-free bug in threaded .xz decoder │
+│                   │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-31115                   │
+├───────────────────┤                │          │        │                   │               │                                                              │
+│ xz-libs           │                │          │        │                   │               │                                                              │
+│                   │                │          │        │                   │               │                                                              │
+└───────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘

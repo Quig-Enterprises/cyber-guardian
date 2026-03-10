@@ -1,0 +1,159 @@
+
+Report Summary
+
+┌────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┐
+│                                   Target                                   │    Type    │ Vulnerabilities │ Secrets │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ ghcr.io/mailcow/olefy:1.15 (alpine 3.21.3)                                 │   alpine   │       26        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/asyncio-3.4.3.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/cffi-1.17.1.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/colorclass-2.2.2.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/cryptography-44.0.3.dist-info/METADATA    │ python-pkg │        1        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/easygui-0.98.3.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/msoffcrypto_tool-5.4.2.dist-info/METADATA │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/olefile-0.47.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/oletools-0.60.2.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/pcodedmp-1.2.6.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/pip-25.1.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/pycparser-2.22.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/lib/python3.12/site-packages/python_magic-0.4.27.dist-info/METADATA    │ python-pkg │        0        │    -    │
+└────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+ghcr.io/mailcow/olefy:1.15 (alpine 3.21.3)
+==========================================
+Total: 26 (HIGH: 22, CRITICAL: 4)
+
+┌──────────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│       Library        │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                             │
+├──────────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ libcrypto3           │ CVE-2025-15467 │ CRITICAL │ fixed  │ 3.3.3-r0          │ 3.3.6-r0      │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                      │                │          │        │                   │               │ via oversized Initialization...                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                      ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                      │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                      │                │          │        │                   │               │ file processing                                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├──────────────────────┼────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ libssl3              │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                      │                │          │        │                   │               │ via oversized Initialization...                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                      ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                      │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                      │                │          │        │                   │               │ file processing                                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├──────────────────────┼────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ openssl              │ CVE-2025-15467 │ CRITICAL │        │                   │               │ openssl: OpenSSL: Remote code execution or Denial of Service │
+│                      │                │          │        │                   │               │ via oversized Initialization...                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-15467                   │
+│                      ├────────────────┼──────────┤        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69419 │ HIGH     │        │                   │               │ openssl: OpenSSL: Arbitrary code execution due to            │
+│                      │                │          │        │                   │               │ out-of-bounds write in PKCS#12 processing...                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69419                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-69421 │          │        │                   │               │ openssl: OpenSSL: Denial of Service via malformed PKCS#12    │
+│                      │                │          │        │                   │               │ file processing                                              │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69421                   │
+├──────────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ pyc                  │ CVE-2024-12718 │          │        │ 3.12.10-r0        │ 3.12.11-r0    │ cpython: python: Bypass extraction filter to modify file     │
+│                      │                │          │        │                   │               │ metadata outside extraction directory...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-12718                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4138  │          │        │                   │               │ cpython: python: Bypassing extraction filter to create       │
+│                      │                │          │        │                   │               │ symlinks to arbitrary targets outside...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4138                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4330  │          │        │                   │               │ cpython: python: Extraction filter bypass for linking        │
+│                      │                │          │        │                   │               │ outside extraction directory                                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4330                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4517  │          │        │                   │               │ python: cpython: Arbitrary writes via tarfile realpath       │
+│                      │                │          │        │                   │               │ overflow                                                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4517                    │
+├──────────────────────┼────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ python3              │ CVE-2024-12718 │          │        │                   │               │ cpython: python: Bypass extraction filter to modify file     │
+│                      │                │          │        │                   │               │ metadata outside extraction directory...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-12718                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4138  │          │        │                   │               │ cpython: python: Bypassing extraction filter to create       │
+│                      │                │          │        │                   │               │ symlinks to arbitrary targets outside...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4138                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4330  │          │        │                   │               │ cpython: python: Extraction filter bypass for linking        │
+│                      │                │          │        │                   │               │ outside extraction directory                                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4330                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4517  │          │        │                   │               │ python: cpython: Arbitrary writes via tarfile realpath       │
+│                      │                │          │        │                   │               │ overflow                                                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4517                    │
+├──────────────────────┼────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ python3-pyc          │ CVE-2024-12718 │          │        │                   │               │ cpython: python: Bypass extraction filter to modify file     │
+│                      │                │          │        │                   │               │ metadata outside extraction directory...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-12718                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4138  │          │        │                   │               │ cpython: python: Bypassing extraction filter to create       │
+│                      │                │          │        │                   │               │ symlinks to arbitrary targets outside...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4138                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4330  │          │        │                   │               │ cpython: python: Extraction filter bypass for linking        │
+│                      │                │          │        │                   │               │ outside extraction directory                                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4330                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4517  │          │        │                   │               │ python: cpython: Arbitrary writes via tarfile realpath       │
+│                      │                │          │        │                   │               │ overflow                                                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4517                    │
+├──────────────────────┼────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│ python3-pycache-pyc0 │ CVE-2024-12718 │          │        │                   │               │ cpython: python: Bypass extraction filter to modify file     │
+│                      │                │          │        │                   │               │ metadata outside extraction directory...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-12718                   │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4138  │          │        │                   │               │ cpython: python: Bypassing extraction filter to create       │
+│                      │                │          │        │                   │               │ symlinks to arbitrary targets outside...                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4138                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4330  │          │        │                   │               │ cpython: python: Extraction filter bypass for linking        │
+│                      │                │          │        │                   │               │ outside extraction directory                                 │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4330                    │
+│                      ├────────────────┤          │        │                   │               ├──────────────────────────────────────────────────────────────┤
+│                      │ CVE-2025-4517  │          │        │                   │               │ python: cpython: Arbitrary writes via tarfile realpath       │
+│                      │                │          │        │                   │               │ overflow                                                     │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-4517                    │
+├──────────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│ sqlite-libs          │ CVE-2025-6965  │ CRITICAL │        │ 3.48.0-r2         │ 3.48.0-r3     │ sqlite: Integer Truncation in SQLite                         │
+│                      │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-6965                    │
+└──────────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────────┘
+
+Python (python-pkg)
+===================
+Total: 1 (HIGH: 1, CRITICAL: 0)
+
+┌─────────────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬───────────────────────────────────────────────────────────┐
+│         Library         │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                           Title                           │
+├─────────────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼───────────────────────────────────────────────────────────┤
+│ cryptography (METADATA) │ CVE-2026-26007 │ HIGH     │ fixed  │ 44.0.3            │ 46.0.5        │ cryptography: cryptography Subgroup Attack Due to Missing │
+│                         │                │          │        │                   │               │ Subgroup Validation for SECT Curves...                    │
+│                         │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-26007                │
+└─────────────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴───────────────────────────────────────────────────────────┘
