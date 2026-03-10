@@ -257,7 +257,7 @@ class LocalExecutor:
 
 def get_ec2_metadata() -> Optional[Dict[str, str]]:
     """
-    Get EC2 instance metadata using IMDSv2.
+    Get EC2 instance metadata using IMDSv2 (local execution).
 
     Returns:
         Dict with instance_id and region, or None if not on EC2
@@ -300,6 +300,45 @@ def get_ec2_metadata() -> Optional[Dict[str, str]]:
         return {
             "instance_id": instance_id,
             "region": region
+        }
+    except Exception:
+        return None
+
+
+def remote_get_ec2_metadata(executor) -> Optional[Dict[str, str]]:
+    """
+    Get EC2 instance metadata from remote server via executor.
+
+    Args:
+        executor: SSHExecutor or LocalExecutor instance
+
+    Returns:
+        Dict with instance_id and region, or None if not on EC2
+    """
+    try:
+        # Get IMDSv2 token
+        token_cmd = 'curl -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" -s http://169.254.169.254/latest/api/token'
+        exit_code, token, stderr = executor.run(token_cmd)
+
+        if exit_code != 0 or not token.strip():
+            return None
+
+        token = token.strip()
+
+        # Get instance ID
+        instance_cmd = f'curl -H "X-aws-ec2-metadata-token: {token}" -s http://169.254.169.254/latest/meta-data/instance-id'
+        exit_code, instance_id, stderr = executor.run(instance_cmd)
+
+        if exit_code != 0 or not instance_id.strip():
+            return None
+
+        # Get region
+        region_cmd = f'curl -H "X-aws-ec2-metadata-token: {token}" -s http://169.254.169.254/latest/meta-data/placement/region'
+        exit_code, region, stderr = executor.run(region_cmd)
+
+        return {
+            "instance_id": instance_id.strip(),
+            "region": region.strip() if exit_code == 0 else "us-east-2"
         }
     except Exception:
         return None
@@ -1269,13 +1308,8 @@ def main():
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
-    # Auto-detect EC2 instance ID if not provided
-    if args.type == "aws-ec2" and not args.aws_instance_id:
-        metadata = get_ec2_metadata()
-        if metadata:
-            args.aws_instance_id = metadata["instance_id"]
-            args.aws_region = metadata.get("region", args.aws_region)
-            logger.info(f"Auto-detected EC2 instance: {args.aws_instance_id} in {args.aws_region}")
+    # Auto-detect EC2 instance ID for remote scans (after executor is created)
+    # This is done later, after executor creation
 
     # Create executor based on server type
     if args.type == "local":
@@ -1287,6 +1321,17 @@ def main():
         # Resolve server hostname using mapping
         server_hostname = SERVER_HOSTNAMES.get(args.server, args.server)
         executor = SSHExecutor(server_hostname, args.ssh_key, args.ssh_user)
+
+    # Auto-detect EC2 instance ID for remote scans
+    if args.type == "aws-ec2" and not args.aws_instance_id:
+        logger.info("Auto-detecting EC2 instance ID on remote server...")
+        metadata = remote_get_ec2_metadata(executor)
+        if metadata:
+            args.aws_instance_id = metadata["instance_id"]
+            args.aws_region = metadata.get("region", args.aws_region)
+            logger.info(f"Auto-detected EC2 instance: {args.aws_instance_id} in {args.aws_region}")
+        else:
+            logger.warning("Could not auto-detect EC2 instance ID")
 
     # Create scanner
     scanner = ComplianceScanner(
