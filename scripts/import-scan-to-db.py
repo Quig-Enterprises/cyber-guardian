@@ -102,14 +102,31 @@ class ScanImporter:
             'errors': 0
         }
 
+    def _sanitize_text(self, text):
+        """Remove null bytes from TEXT field strings."""
+        if text is None:
+            return None
+        if isinstance(text, str):
+            return text.replace('\x00', '').replace('\\u0000', '').replace('\u0000', '')
+        return text
+
     def _sanitize_json(self, data):
-        """Remove null bytes from JSON data that PostgreSQL TEXT can't store."""
+        """
+        Recursively remove null bytes from JSON data that PostgreSQL TEXT can't store.
+
+        PostgreSQL TEXT columns cannot contain \\u0000 (null byte).
+        This recursively sanitizes all strings in nested dicts/lists.
+        """
         if isinstance(data, dict):
             return {k: self._sanitize_json(v) for k, v in data.items()}
         elif isinstance(data, list):
             return [self._sanitize_json(item) for item in data]
         elif isinstance(data, str):
-            return data.replace('\x00', '').replace('\u0000', '')
+            # Remove both literal null bytes and Unicode null sequences
+            sanitized = data.replace('\x00', '').replace('\\u0000', '')
+            # Also remove the actual Unicode character if present
+            sanitized = sanitized.replace('\u0000', '')
+            return sanitized
         else:
             return data
 
@@ -373,12 +390,12 @@ class ScanImporter:
                 variant['status'],
                 variant['severity'],
                 variant.get('duration_ms'),
-                evidence.get('summary'),
-                evidence.get('technical_details'),
+                self._sanitize_text(evidence.get('summary')),
+                self._sanitize_text(evidence.get('technical_details')),
                 Json(self._sanitize_json(evidence.get('proof', {}))),
                 Json(self._sanitize_json(request)),
                 Json(self._sanitize_json(response)),
-                recommendation.get('remediation'),
+                self._sanitize_text(recommendation.get('remediation')),
                 recommendation.get('priority'),
                 recommendation.get('references', [])
             ))
