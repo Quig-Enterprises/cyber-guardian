@@ -2,24 +2,27 @@
 // JWT-based session check for security dashboard
 // Uses Project Keystone's JWT session system
 
-// Locate project-keystone admin libs — path varies by deployment.
-// Search common locations: KEYSTONE_PATH env var, then well-known paths.
-$_keystone_candidates = [
-    getenv('KEYSTONE_PATH') ?: '',
-    '/var/www/html/project-keystone/dashboard',
-    '/opt/project-keystone',
-    '/opt/artemis/www',
-];
+// Locate project-keystone admin libs.
+// DOCUMENT_ROOT is set by nginx to the keystone dashboard root (the directory
+// that contains both admin/ and security-dashboard/).
+// KEYSTONE_PATH env var overrides for non-standard deployments.
+$_keystone_candidates = array_filter([
+    getenv('KEYSTONE_PATH') ?: null,
+    $_SERVER['DOCUMENT_ROOT'] ?? null,
+    '/var/www/html/project-keystone/dashboard',  // alfred
+    '/opt/project-keystone/dashboard',           // artemis
+    '/opt/artemis/www',                          // artemis legacy
+]);
 $_keystone_admin = null;
 foreach ($_keystone_candidates as $_candidate) {
-    if ($_candidate && file_exists($_candidate . '/admin/lib/db.php')) {
+    if (is_readable($_candidate . '/admin/lib/db.php')) {
         $_keystone_admin = $_candidate . '/admin/lib';
         break;
     }
 }
 if (!$_keystone_admin) {
     http_response_code(500);
-    error_log('auth-check.php: Could not locate project-keystone admin/lib — set KEYSTONE_PATH env var');
+    error_log('auth-check.php: Could not locate project-keystone admin/lib. Set KEYSTONE_PATH env var to the keystone dashboard root.');
     exit('Security dashboard misconfigured: keystone admin lib not found.');
 }
 require_once $_keystone_admin . '/db.php';
