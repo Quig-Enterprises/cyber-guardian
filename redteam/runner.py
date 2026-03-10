@@ -363,7 +363,8 @@ async def run(args):
             from redteam.client import RedTeamClient as PFClient
             LoginResult = None
 
-        async with PFClient(base_url, origin_ip=origin_ip, verify_ssl=verify_ssl) as preflight_client:
+        auth_path_pf = config.get("target", {}).get("auth_path", "/api/auth/login.php")
+        async with PFClient(base_url, origin_ip=origin_ip, verify_ssl=verify_ssl, auth_path=auth_path_pf) as preflight_client:
             # Test connectivity
             try:
                 status, body, headers = await preflight_client.get("/")
@@ -554,7 +555,8 @@ async def run(args):
         wp_cfg = config.get("target", {}).get("wordpress", {})
         client = WordPressClient(base_url, wp_config=wp_cfg, origin_ip=origin_ip)
     else:
-        client = RedTeamClient(base_url, timeout=30, origin_ip=origin_ip, verify_ssl=verify_ssl)
+        auth_path = config.get("target", {}).get("auth_path", "/api/auth/login.php")
+        client = RedTeamClient(base_url, timeout=30, origin_ip=origin_ip, verify_ssl=verify_ssl, auth_path=auth_path)
 
     async with client:
         # Authenticate with appropriate method

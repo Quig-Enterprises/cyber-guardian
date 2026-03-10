@@ -50,7 +50,7 @@ class LoginResult(str, Enum):
 class RedTeamClient:
     """HTTP client for testing EQMON API endpoints."""
 
-    def __init__(self, base_url: str, timeout: int = 180, origin_ip: str = None, verify_ssl: bool = True):
+    def __init__(self, base_url: str, timeout: int = 180, origin_ip: str = None, verify_ssl: bool = True, auth_path: str = "/api/auth/login.php"):
         from urllib.parse import urlparse, urlunparse
         self._origin_ip = origin_ip
         self._host_header: Optional[str] = None
@@ -67,6 +67,7 @@ class RedTeamClient:
             self.base_url = base_url.rstrip("/")
             self._verify_ssl = verify_ssl
 
+        self._auth_path = auth_path.lstrip("/")
         self.timeout = aiohttp.ClientTimeout(total=timeout)
         self._session: Optional[aiohttp.ClientSession] = None
         self._cookies: dict = {}
@@ -116,7 +117,7 @@ class RedTeamClient:
         """Authenticate and capture JWT cookie. Returns LoginResult enum."""
         self._last_login_email = email
         self._last_login_password = password
-        url = f"{self.base_url}/api/auth/login.php"
+        url = f"{self.base_url}/{self._auth_path}"
         start = time.monotonic()
         try:
             async with self._session.post(url, json={"email": email, "password": password}) as resp:

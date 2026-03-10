@@ -1,6 +1,7 @@
 target:
-  base_url: "http://localhost"
+  base_url: "https://8qdj5it341kfv92u.brandonquig.com"
   api_path: "/api"
+  auth_path: "/admin/api/auth.php"
   origin_ip: null
   source_path: "/opt/claude-workspace/projects"
 
@@ -17,8 +18,8 @@ redteam:
   auth:
     test_users:
       system_admin:
-        username: ""
-        password: ""
+        username: "claude@alfred.local"
+        password: "DenimJulietGolden73+"
         role: "system-admin"
   test_data:
     session_id_prefix: "redteam-alfred-"
