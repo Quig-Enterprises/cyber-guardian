@@ -1,0 +1,124 @@
+{
+  "generated": "2026-03-08T09:22:24.608571",
+  "total_attacks": 3,
+  "total_variants": 4,
+  "total_vulnerable": 0,
+  "total_partial": 1,
+  "total_defended": 3,
+  "total_errors": 0,
+  "worst_severity": "low",
+  "by_category": {
+    "malware": {
+      "attacks": 3,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 3,
+      "errors": 0,
+      "duration_ms": 0.0
+    }
+  },
+  "by_severity": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 1,
+    "info": 0
+  },
+  "timing": {},
+  "attacks": [
+    {
+      "name": "malware.clamav_scan",
+      "category": "malware",
+      "duration_ms": 0.0,
+      "vulnerable": 0,
+      "partial": 1,
+      "defended": 0,
+      "errors": 0
+    },
+    {
+      "name": "malware.rootkit_check",
+      "category": "malware",
+      "duration_ms": 0.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 2,
+      "errors": 0
+    },
+    {
+      "name": "malware.webshell_detect",
+      "category": "malware",
+      "duration_ms": 0.0,
+      "vulnerable": 0,
+      "partial": 0,
+      "defended": 1,
+      "errors": 0
+    }
+  ],
+  "findings": [
+    {
+      "attack": "malware.clamav_scan",
+      "variant": "clamav_var_www_html_eqmon",
+      "status": "partial",
+      "severity": "low",
+      "evidence": "Exit code: 2",
+      "details": "ClamAV scan returned exit code 2: ",
+      "request": {
+        "scan_path": "/var/www/html/eqmon",
+        "tool": "clamscan"
+      },
+      "response": {
+        "exit_code": 2,
+        "infected_count": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.rootkit_check",
+      "variant": "rkhunter",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "rkhunter: clean (exit code 0)",
+      "details": "rkhunter found no rootkit indicators",
+      "request": {
+        "tool": "rkhunter --check"
+      },
+      "response": {
+        "exit_code": 0,
+        "warnings": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.rootkit_check",
+      "variant": "chkrootkit",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "chkrootkit: clean (exit code 0)",
+      "details": "chkrootkit found no rootkit indicators",
+      "request": {
+        "tool": "chkrootkit -q"
+      },
+      "response": {
+        "exit_code": 0,
+        "infections": 0
+      },
+      "duration_ms": 0.0
+    },
+    {
+      "attack": "malware.webshell_detect",
+      "variant": "webshell_var_www_html_eqmon",
+      "status": "defended",
+      "severity": "info",
+      "evidence": "Clean: 227 files scanned",
+      "details": "No webshell patterns detected in /var/www/html/eqmon (227 files scanned)",
+      "request": {
+        "scan_path": "/var/www/html/eqmon",
+        "files_scanned": 227
+      },
+      "response": {
+        "findings_count": 0
+      },
+      "duration_ms": 0.0
+    }
+  ]
+}
