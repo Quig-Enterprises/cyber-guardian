@@ -81,3 +81,4 @@ Thumbs.db
 Test change for git pushb
 Test Matrix import fix
 Test Matrix notification with custom wrapper
+Fix Matrix homeserver configuration
