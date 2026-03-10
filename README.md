@@ -1,6 +1,6 @@
 # Cyber-Guardian Security Platform
 
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Date:** 2026-03-10
 **Status:** Production Ready
 **License:** Proprietary - Quig Enterprises
@@ -969,6 +969,38 @@ SELECT * FROM blueteam.v_security_posture;
 # Add to crontab
 0 2 * * 0 /opt/claude-workspace/projects/cyber-guardian/scripts/run-lynis-audit.sh alfred >> /var/log/lynis-cron.log 2>&1
 ```
+
+### Keystone Dashboard Integration
+
+**Web UI Access:** https://8qdj5it341kfv92u.brandonquig.com/admin/lynis-config.php
+
+The Lynis security audit system is integrated into the Project Keystone admin dashboard, providing:
+
+**Features:**
+- Web-based schedule configuration
+- Real-time security posture display
+- Manual audit trigger button
+- Historical audit viewing
+- Score trend visualization
+
+**API Endpoints:**
+- `GET /cyber-guardian/api/schedule.php` - Get current schedule
+- `POST /cyber-guardian/api/schedule.php` - Update schedule
+- `POST /cyber-guardian/api/schedule.php?action=run-now` - Run immediate audit
+- `GET /cyber-guardian/api/schedule.php?action=status` - Get audit status
+
+**Authentication:**
+- Protected by Keystone auth_request
+- Requires admin or super user role
+- Session-based access control
+
+**Schedule Options:**
+- Daily - Every day at specified time
+- Weekly - Every Sunday (recommended)
+- Monthly - First of month
+- Disabled - Turn off automated scanning
+
+**Documentation:** `docs/KEYSTONE_INTEGRATION.md`
 
 ### Documentation
 
