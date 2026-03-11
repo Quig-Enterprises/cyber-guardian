@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Cyber-Guardian Matrix Notifier
-Version: 1.1.0
+Version: 1.2.0
 Date: 2026-03-11
 
-Sends security findings to Matrix #cyber-guardian room.
+Sends security findings to Matrix #eqmon:artemis-matrix.ecoeyetech.com room.
 Posts CRITICAL and HIGH severity findings as separate messages.
 Tags appropriate bot based on affected server.
 
@@ -29,7 +29,7 @@ from psycopg2.extras import RealDictCursor
 sys.path.insert(0, str(Path(__file__).parent.parent / "lib" / "matrix-client"))
 from matrix_client import MatrixClient
 
-CYBER_GUARDIAN_ROOM = "#cyber-guardian:artemis-matrix.ecoeyetech.com"
+CYBER_GUARDIAN_ROOM = "#eqmon:artemis-matrix.ecoeyetech.com"
 
 # Bot mention tags based on server
 BOT_MENTIONS = {
