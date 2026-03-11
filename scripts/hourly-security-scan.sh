@@ -118,6 +118,10 @@ else
     log "First scan - baseline established"
 fi
 
+# Send CRITICAL/HIGH findings to Matrix
+log "Sending findings to Matrix..."
+python3 "$PROJECT_DIR/scripts/send-to-matrix.py" --scan-report "$LATEST_JSON" --min-severity HIGH >> "$STATE_DIR/matrix-notify.log" 2>&1 || log "WARNING: Failed to send Matrix notification"
+
 # Update previous counts for next run
 cp "$STATE_DIR/latest-counts.txt" "$STATE_DIR/previous-counts.txt"
 
@@ -151,6 +155,10 @@ Security Dashboard: https://8qdj5it341kfv92u.brandonquig.com/security-dashboard/
 Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
 
             "$SCRIPT_DIR/send-security-alert.sh" "$WP_ALERT_SUBJECT" "$WP_ALERT_BODY" >> "$STATE_DIR/scan.log" 2>&1 || log "WARNING: Failed to send email alert"
+
+            # Send to Matrix
+            log "Sending WordPress log findings to Matrix..."
+            python3 "$PROJECT_DIR/scripts/send-to-matrix.py" --wp-log-report "$WP_LOG_REPORT" >> "$STATE_DIR/matrix-notify.log" 2>&1 || log "WARNING: Failed to send Matrix notification"
         else
             log "${GREEN}✓ WordPress log scan: All sites secure${NC}"
         fi
