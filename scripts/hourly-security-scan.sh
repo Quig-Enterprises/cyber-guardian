@@ -121,8 +121,43 @@ fi
 # Update previous counts for next run
 cp "$STATE_DIR/latest-counts.txt" "$STATE_DIR/previous-counts.txt"
 
-# Generate mitigation TODOs and dashboard (once daily at midnight)
+# Run WordPress log accessibility scan (every 6 hours)
 HOUR=$(date +%H)
+if [ "$((HOUR % 6))" -eq 0 ]; then
+    log "Running WordPress log accessibility scan..."
+    WP_LOG_REPORT="$REPORTS_DIR/wordpress-log-scan-$TIMESTAMP.json"
+    python3 "$PROJECT_DIR/scripts/wordpress-log-scanner.py" --server peter --output "$WP_LOG_REPORT" >> "$STATE_DIR/wp-log-scan.log" 2>&1
+
+    # Check for vulnerabilities
+    if [ -f "$WP_LOG_REPORT" ]; then
+        VULNERABLE_SITES=$(jq -r '.vulnerable_sites' "$WP_LOG_REPORT")
+        TOTAL_VULNERABLE_LOGS=$(jq -r '.total_vulnerable_logs' "$WP_LOG_REPORT")
+
+        if [ "$VULNERABLE_SITES" -gt 0 ]; then
+            log "${RED}WARNING: $VULNERABLE_SITES WordPress sites have exposed log files!${NC}"
+            log "  Total vulnerable logs: $TOTAL_VULNERABLE_LOGS"
+
+            # Send alert
+            WP_ALERT_SUBJECT="[Cyber-Guardian] WordPress Log Exposure: $VULNERABLE_SITES sites vulnerable"
+            WP_ALERT_BODY="WordPress log accessibility scan detected exposed log files on $(hostname):
+
+Vulnerable sites: $VULNERABLE_SITES
+Total exposed log files: $TOTAL_VULNERABLE_LOGS
+
+Report: $WP_LOG_REPORT
+
+Security Dashboard: https://8qdj5it341kfv92u.brandonquig.com/security-dashboard/
+
+Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
+
+            "$SCRIPT_DIR/send-security-alert.sh" "$WP_ALERT_SUBJECT" "$WP_ALERT_BODY" >> "$STATE_DIR/scan.log" 2>&1 || log "WARNING: Failed to send email alert"
+        else
+            log "${GREEN}✓ WordPress log scan: All sites secure${NC}"
+        fi
+    fi
+fi
+
+# Generate mitigation TODOs and dashboard (once daily at midnight)
 if [ "$HOUR" = "00" ]; then
     log "Generating mitigation TODOs and dashboard..."
     python3 "$PROJECT_DIR/scripts/generate-mitigation-todos.py" >> "$STATE_DIR/todo-generation.log" 2>&1
