@@ -165,6 +165,81 @@ Generated at: $(date '+%Y-%m-%d %H:%M:%S')"
     fi
 fi
 
+# Run compliance scans (weekly on Mondays at 2am)
+DAY_OF_WEEK=$(date +%u)  # 1=Monday, 7=Sunday
+if [ "$HOUR" = "02" ] && [ "$DAY_OF_WEEK" = "1" ]; then
+    log "Running weekly compliance scans..."
+
+    # Willie (MailCow)
+    log "  Scanning willie (MailCow)..."
+    python3 "$PROJECT_DIR/scripts/compliance-scanner.py" \
+        --server willie \
+        --type aws-ec2 \
+        --aws-instance-id i-0a005dde4e6e366e5 \
+        --ssh-key ~/.ssh/bq_laptop_rsa \
+        >> "$STATE_DIR/compliance-willie.log" 2>&1 || log "WARNING: Willie compliance scan failed"
+
+    # Get scan ID from database
+    WILLIE_SCAN_ID=$(python3 -c "
+import psycopg2
+from pathlib import Path
+db_config = {'host': 'localhost', 'port': 5432, 'database': 'eqmon', 'user': 'eqmon'}
+pgpass = Path.home() / '.pgpass'
+if pgpass.exists():
+    for line in pgpass.read_text().splitlines():
+        parts = line.split(':')
+        if len(parts) == 5 and parts[0] == 'localhost' and parts[2] == 'eqmon' and parts[3] == 'eqmon':
+            db_config['password'] = parts[4]
+            break
+conn = psycopg2.connect(**db_config)
+cur = conn.cursor()
+cur.execute(\"SELECT scan_id FROM blueteam.compliance_scans WHERE server_name = 'willie' ORDER BY scan_date DESC LIMIT 1\")
+print(cur.fetchone()[0])
+conn.close()
+" 2>/dev/null)
+
+    if [ -n "$WILLIE_SCAN_ID" ]; then
+        log "  Willie scan complete (ID: $WILLIE_SCAN_ID)"
+        # Send findings to Matrix (MEDIUM+ severity)
+        python3 "$PROJECT_DIR/scripts/send-to-matrix.py" --compliance-scan-id "$WILLIE_SCAN_ID" --min-severity MEDIUM >> "$STATE_DIR/matrix-notify.log" 2>&1 || log "WARNING: Failed to send Matrix notification"
+    fi
+
+    # Peter (cp.quigs.com)
+    log "  Scanning peter (cp.quigs.com)..."
+    python3 "$PROJECT_DIR/scripts/compliance-scanner.py" \
+        --server peter \
+        --type remote-ssh \
+        --ssh-key ~/.ssh/webhost_key \
+        >> "$STATE_DIR/compliance-peter.log" 2>&1 || log "WARNING: Peter compliance scan failed"
+
+    # Get scan ID from database
+    PETER_SCAN_ID=$(python3 -c "
+import psycopg2
+from pathlib import Path
+db_config = {'host': 'localhost', 'port': 5432, 'database': 'eqmon', 'user': 'eqmon'}
+pgpass = Path.home() / '.pgpass'
+if pgpass.exists():
+    for line in pgpass.read_text().splitlines():
+        parts = line.split(':')
+        if len(parts) == 5 and parts[0] == 'localhost' and parts[2] == 'eqmon' and parts[3] == 'eqmon':
+            db_config['password'] = parts[4]
+            break
+conn = psycopg2.connect(**db_config)
+cur = conn.cursor()
+cur.execute(\"SELECT scan_id FROM blueteam.compliance_scans WHERE server_name = 'peter' ORDER BY scan_date DESC LIMIT 1\")
+print(cur.fetchone()[0])
+conn.close()
+" 2>/dev/null)
+
+    if [ -n "$PETER_SCAN_ID" ]; then
+        log "  Peter scan complete (ID: $PETER_SCAN_ID)"
+        # Send findings to Matrix (MEDIUM+ severity)
+        python3 "$PROJECT_DIR/scripts/send-to-matrix.py" --compliance-scan-id "$PETER_SCAN_ID" --min-severity MEDIUM >> "$STATE_DIR/matrix-notify.log" 2>&1 || log "WARNING: Failed to send Matrix notification"
+    fi
+
+    log "Weekly compliance scans complete"
+fi
+
 # Generate mitigation TODOs and dashboard (once daily at midnight)
 if [ "$HOUR" = "00" ]; then
     log "Generating mitigation TODOs and dashboard..."

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Cyber-Guardian Matrix Notifier
-Version: 1.0.0
+Version: 1.1.0
 Date: 2026-03-11
 
 Sends security findings to Matrix #cyber-guardian room.
@@ -11,6 +11,7 @@ Tags appropriate bot based on affected server.
 Usage:
     python3 send-to-matrix.py --scan-report reports/codebase-security-scan-*.json
     python3 send-to-matrix.py --compliance-report reports/compliance-*.json
+    python3 send-to-matrix.py --compliance-scan-id 21 --min-severity MEDIUM
     python3 send-to-matrix.py --wp-log-report reports/wordpress-log-scan-*.json
 """
 
@@ -21,6 +22,8 @@ import os
 import sys
 from pathlib import Path
 from typing import List, Dict
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 # Add lib directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "lib" / "matrix-client"))
@@ -183,6 +186,95 @@ def process_compliance_scan(report_path: str, min_severity: str = "HIGH") -> Lis
     return findings
 
 
+def process_compliance_scan_from_db(scan_id: int, min_severity: str = "HIGH") -> List[Dict]:
+    """Extract CRITICAL/HIGH findings from compliance scan in database.
+
+    Returns list of (message, severity) tuples.
+    """
+    # Database config (same as compliance-scanner.py)
+    db_config = {
+        "host": os.getenv("DB_HOST", "localhost"),
+        "port": int(os.getenv("DB_PORT", "5432")),
+        "database": os.getenv("DB_NAME", "eqmon"),
+        "user": os.getenv("DB_USER", "eqmon"),
+    }
+
+    # Get password from .pgpass if available
+    pgpass_file = Path.home() / ".pgpass"
+    if pgpass_file.exists():
+        with open(pgpass_file) as f:
+            for line in f:
+                parts = line.strip().split(":")
+                if len(parts) == 5 and parts[0] == db_config["host"] and \
+                   parts[2] == db_config["database"] and parts[3] == db_config["user"]:
+                    db_config["password"] = parts[4]
+                    break
+
+    # Connect to database
+    conn = psycopg2.connect(**db_config)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Get scan info
+    cur.execute("""
+        SELECT server_name, server_type, scan_date, overall_score
+        FROM blueteam.compliance_scans
+        WHERE scan_id = %s
+    """, (scan_id,))
+    scan_info = cur.fetchone()
+
+    if not scan_info:
+        logger.error(f"Scan ID {scan_id} not found")
+        return []
+
+    server = scan_info['server_name']
+
+    # Get findings
+    severity_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
+    min_level = severity_order.get(min_severity, 1)
+
+    cur.execute("""
+        SELECT check_id, check_name, status, severity,
+               finding_summary, finding_details, remediation_steps
+        FROM blueteam.compliance_findings
+        WHERE scan_id = %s
+        ORDER BY
+            CASE severity
+                WHEN 'CRITICAL' THEN 0
+                WHEN 'HIGH' THEN 1
+                WHEN 'MEDIUM' THEN 2
+                WHEN 'LOW' THEN 3
+                ELSE 4
+            END
+    """, (scan_id,))
+
+    findings = []
+    for row in cur.fetchall():
+        severity = (row['severity'] or 'MEDIUM').upper()
+        status = row['status']
+
+        # Only include failed/warning findings
+        if status.upper() not in ('FAIL', 'WARNING'):
+            continue
+
+        # Filter by severity
+        if severity_order.get(severity, 3) <= min_level:
+            # Map database fields to expected format
+            finding_dict = {
+                "check_id": row['check_id'],
+                "title": row['check_name'] or row['finding_summary'] or "No title",
+                "description": row['finding_details'] or row['finding_summary'] or "",
+                "recommendation": row['remediation_steps'] or "",
+                "severity": severity
+            }
+            message = format_compliance_finding(finding_dict, server)
+            findings.append({"message": message, "severity": severity})
+
+    cur.close()
+    conn.close()
+
+    return findings
+
+
 def process_wordpress_log_scan(report_path: str) -> List[Dict]:
     """Extract WordPress log vulnerabilities from scan report.
 
@@ -231,6 +323,7 @@ def main():
     parser = argparse.ArgumentParser(description='Send cyber-guardian findings to Matrix')
     parser.add_argument('--scan-report', help='Codebase security scan JSON report')
     parser.add_argument('--compliance-report', help='Compliance scan JSON report')
+    parser.add_argument('--compliance-scan-id', type=int, help='Compliance scan ID from database')
     parser.add_argument('--wp-log-report', help='WordPress log scan JSON report')
     parser.add_argument('--min-severity', default='HIGH',
                        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'],
@@ -254,6 +347,12 @@ def main():
     if args.compliance_report:
         logger.info(f"Processing compliance scan: {args.compliance_report}")
         findings = process_compliance_scan(args.compliance_report, args.min_severity)
+        all_findings.extend(findings)
+        logger.info(f"  Found {len(findings)} findings")
+
+    if args.compliance_scan_id:
+        logger.info(f"Processing compliance scan ID {args.compliance_scan_id} from database")
+        findings = process_compliance_scan_from_db(args.compliance_scan_id, args.min_severity)
         all_findings.extend(findings)
         logger.info(f"  Found {len(findings)} findings")
 
