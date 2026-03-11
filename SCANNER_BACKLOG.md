@@ -13,45 +13,19 @@
 4. **WordPress Log Exposure** - 18+ log path security checks
 5. **WordPress Vulnerability Scanning** - Core/plugin/theme CVE detection ⭐ NEW
 6. **Container Image Scanning** - Trivy integration for Docker CVEs ⭐ NEW
+7. **Network Security Scanning** - Port exposure & service analysis ⭐ NEW
 
 ---
 
 ## 🚧 In Progress
 
-### 1. Port Scanning & Network Exposure Analysis
-**Priority:** HIGH  
-**Impact:** Medium  
-**Effort:** Low (20 min)  
-**Affected:** Willie, Peter
-
-**Description:**  
-Enhanced port exposure detection beyond firewall status checks. Identifies unnecessary open ports and compares against security baseline.
-
-**Implementation:**
-- Script: `scripts/network-security-scanner.py`
-- Integration: Add to `compliance-scanner.py`
-- Database: `blueteam.network_scans` table
-
-**Features:**
-- nmap or ss-based port enumeration
-- Service version detection
-- Port whitelist comparison
-- Unexpected service detection
-- Network egress analysis
-
-**Acceptance Criteria:**
-- [ ] Scan both servers for open ports
-- [ ] Compare against approved port list
-- [ ] Identify services running on non-standard ports
-- [ ] Flag unexpected listeners
-- [ ] Store results in database
-- [ ] Integrate with Matrix notifications
+None - All HIGH priority scanners completed!
 
 ---
 
 ## 📋 Backlog (Prioritized)
 
-### 2. Database Security Auditing
+### 1. Database Security Auditing
 **Priority:** HIGH  
 **Impact:** High  
 **Effort:** Medium (60 min)  
@@ -87,7 +61,7 @@ Comprehensive MySQL/MariaDB/PostgreSQL security assessment including password st
 
 ---
 
-### 3. SSL/TLS Configuration Audit
+### 2. SSL/TLS Configuration Audit
 **Priority:** MEDIUM  
 **Impact:** Medium  
 **Effort:** Low (30 min)  
@@ -123,7 +97,7 @@ Deep SSL/TLS analysis beyond certificate expiration. Evaluates cipher suites, pr
 
 ---
 
-### 4. Web Server Configuration Security
+### 3. Web Server Configuration Security
 **Priority:** MEDIUM  
 **Impact:** Medium  
 **Effort:** Medium (45 min)  
@@ -159,7 +133,7 @@ Nginx/Apache hardening verification including security headers, directory listin
 
 ---
 
-### 5. Dependency Vulnerability Scanning
+### 4. Dependency Vulnerability Scanning
 **Priority:** MEDIUM-LOW  
 **Impact:** Medium  
 **Effort:** High (90 min)  
@@ -191,7 +165,7 @@ Application-level dependency CVE detection for Python, PHP, and Node.js packages
 
 ---
 
-### 6. File Integrity Monitoring (AIDE Integration)
+### 5. File Integrity Monitoring (AIDE Integration)
 **Priority:** LOW  
 **Impact:** Low  
 **Effort:** Medium (60 min)  
@@ -221,7 +195,7 @@ Monitor and alert on unauthorized file system changes using AIDE (Advanced Intru
 
 ---
 
-### 7. API Security Scanning
+### 6. API Security Scanning
 **Priority:** LOW  
 **Impact:** Low  
 **Effort:** Medium (60 min)  
@@ -249,7 +223,7 @@ REST API endpoint security testing including authentication, authorization, rate
 
 ---
 
-### 8. Backup Verification & Testing
+### 7. Backup Verification & Testing
 **Priority:** LOW  
 **Impact:** Medium  
 **Effort:** Low (30 min)  
@@ -275,7 +249,7 @@ Verify backups exist, are accessible, and can be restored. Test backup integrity
 
 ---
 
-### 9. Password Policy Auditing
+### 8. Password Policy Auditing
 **Priority:** LOW  
 **Impact:** Low  
 **Effort:** Low (20 min)  
@@ -301,7 +275,7 @@ Audit WordPress user passwords against common password lists, check password age
 
 ---
 
-### 10. Supply Chain Security
+### 9. Supply Chain Security
 **Priority:** LOW  
 **Impact:** Medium  
 **Effort:** High (120 min)  
@@ -329,10 +303,10 @@ Verify software supply chain integrity including package signatures, repository 
 
 ## 🎯 Quick-Win Priorities (Next 2 Weeks)
 
-1. **Network Port Scanning** (20 min) - Immediate security visibility
-2. **Database Security Audit** (60 min) - High-risk exposure on Peter
-3. **SSL/TLS Quality Check** (30 min) - Quick cipher strength verification
-4. **Install Trivy** (5 min) - Enable container scanning on Willie
+1. **Database Security Audit** (60 min) - High-risk exposure on Peter
+2. **SSL/TLS Quality Check** (30 min) - Quick cipher strength verification
+3. **Install Trivy** (5 min) - Enable container scanning on Willie
+4. **Test new scanners** (30 min) - WordPress, Container, Network scans
 
 ---
 
