@@ -34,9 +34,9 @@ CYBER_GUARDIAN_ROOM = "#cyber-guardian:artemis-matrix.ecoeyetech.com"
 # Bot mention tags based on server
 BOT_MENTIONS = {
     "artemis": "@artemis:artemis-matrix.ecoeyetech.com",
-    "willie": "@alfred-bot:artemis-matrix.ecoeyetech.com",
-    "peter": "@alfred-bot:artemis-matrix.ecoeyetech.com",
-    "alfred": "@alfred-bot:artemis-matrix.ecoeyetech.com",
+    "willie": "@alfred-bot:alfred-matrix.quigs.com",
+    "peter": "@alfred-bot:alfred-matrix.quigs.com",
+    "alfred": "@alfred-bot:alfred-matrix.quigs.com",
 }
 
 logging.basicConfig(
